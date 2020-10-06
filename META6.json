@@ -8,8 +8,7 @@
     "authors" : [ "Anton Antonov" ],
     "license" : "Artistic-2.0",
     "provides" : {
-        "DSL::Shared::Utilities::ComprehensiveTranslation" : "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod",
-        "DSL::Shared::Utilities::MetaSpecsProcessing" : "lib/DSL/Shared/Utilities/MetaSpecsProcessing.rakumod"
+        "DSL::Shared::Utilities::ComprehensiveTranslation" : "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod"
     },
     "depends" : [
         "JSON::Marshal",
