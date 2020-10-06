@@ -1,0 +1,32 @@
+{
+    "perl" : "6.d",
+    "name" : "DSL::Shared::Utilities::ComprehensiveTranslation",
+    "api"  : "1",
+    "auth" : "github:antononcube",
+    "version" : "0.1.0",
+    "description" : "DSL::Shared::Utilities::ComprehensiveTranslation provides multi-DSL automatic determination and parsing.",
+    "authors" : [ "Anton Antonov" ],
+    "license" : "Artistic-2.0",
+    "provides" : {
+        "DSL::Shared::Utilities::ComprehensiveTranslation" : "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod",
+        "DSL::Shared::Utilities::MetaSpecsProcessing" : "lib/DSL/Shared/Utilities/MetaSpecsProcessing.rakumod"
+    },
+    "depends" : [
+        "JSON::Marshal",
+        "DSL::Shared",
+        "DSL::English::ClassificationWorkflows",
+        "DSL::English::DataQueryWorkflows",
+        "DSL::English::EpidemiologyModelingWorkflows",
+        "DSL::English::LatentSemanticAnalysisWorkflows",
+        "DSL::English::QuantileRegressionWorkflows",
+        "DSL::English::RecommenderWorkflows",
+        "DSL::English::SearchEngineQueries"
+    ],
+    "build-depends" : [ ],
+    "test-depends" : [ ],
+    "resources" : [ ],
+    "tags": [
+        "parser", "interpreter", "monad", "workflow", "pipeline"
+    ],
+    "source-url" : "https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation"
+}
