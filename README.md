@@ -1,2 +1,40 @@
-# Raku-DSL-Shared-Utilities-ComprehensiveTranslation
-Raku package for comprehensive multi-DSL translations.
+# Comprehensive Translation
+
+This Raku package provides comprehensive multi-DSL translations.
+
+To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku modules have to installed.
+
+Here is installation code:
+
+```perl6
+zef install https://github.com/antononcube/Raku-DSL-Shared.git
+zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-test
+```
+
+Here is an example of automatic determination of the DSL grammar with the command:
+
+```raku
+say ToDSLCode('
+    use dfTitanic;
+    select the columns name, species, mass and height;
+    cross tabulate species over mass', format => 'JSON');
+```
+
+that produces the following output (in JSON):
+
+```raku
+{
+  "DSLTARGET": "R-tidyverse",
+  "Code": "dfTitanic %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
+  "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, Str $target = \"tidyverse\") {*}",
+  "DSL": "DSL::English::DataQueryWorkflows"
+}
+```
+
+(In the example above the function `ToDSLCode` figured out that this sequence of commands specifies are data transformation workflow.)
