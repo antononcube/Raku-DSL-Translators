@@ -2,20 +2,22 @@
 
 This Raku package provides comprehensive multi-DSL translations.
 
-To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku modules have to installed.
+To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku modules have to be installed.
 
 Here is installation code:
 
 ```perl6
 zef install https://github.com/antononcube/Raku-DSL-Shared.git
 zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git
 zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-test
 zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-test
 ```
+
+(The modules listed above are under development, that is why the installation commands have `--force-test`.)
 
 Here is an example of automatic determination of the DSL grammar with the command:
 
@@ -37,4 +39,4 @@ that produces the following output (in JSON):
 }
 ```
 
-(In the example above the function `ToDSLCode` figured out that this sequence of commands specifies are data transformation workflow.)
+In the example above the function `ToDSLCode` figured out that this sequence of commands specifies are data transformation workflow.
