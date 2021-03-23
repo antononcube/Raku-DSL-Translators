@@ -17,6 +17,7 @@ use DSL::English::LatentSemanticAnalysisWorkflows;
 use DSL::English::QuantileRegressionWorkflows;
 use DSL::English::RecommenderWorkflows;
 use DSL::English::SearchEngineQueries;
+use DSL::English::FoodPreparationWorkflows;
 
 #-----------------------------------------------------------
 # DSL target to DSL module
@@ -41,7 +42,8 @@ my %moduleToRTarget =
         "DSL::English::LatentSemanticAnalysisWorkflows" => "R-LSAMon",
         "DSL::English::QuantileRegressionWorkflows" => "R-QRMon",
         "DSL::English::RecommenderWorkflows" => "R-SMRMon",
-        "DSL::English::SearchEngineQueries" => "R-tidyverse";
+        "DSL::English::SearchEngineQueries" => "R-tidyverse",
+        "DSL::English::FoodPreparationWorkflows" => "R-base";
 
 
 my %moduleToWLTarget =
@@ -52,7 +54,8 @@ my %moduleToWLTarget =
         "DSL::English::LatentSemanticAnalysisWorkflows" => "WL-LSAMon",
         "DSL::English::QuantileRegressionWorkflows" => "WL-QRMon",
         "DSL::English::RecommenderWorkflows" => "WL-SMRMon",
-        "DSL::English::SearchEngineQueries" => "WL-SMRMon";
+        "DSL::English::SearchEngineQueries" => "WL-SMRMon",
+        "DSL::English::FoodPreparationWorkflows" => "WL-System";
 
 
 my %specToModuleToTarget =
@@ -74,8 +77,8 @@ my %moduleToDSLGrammar =
         "DSL::English::LatentSemanticAnalysisWorkflows" => DSL::English::LatentSemanticAnalysisWorkflows::Grammar,
         "DSL::English::QuantileRegressionWorkflows" => DSL::English::QuantileRegressionWorkflows::Grammar,
         "DSL::English::RecommenderWorkflows" => DSL::English::RecommenderWorkflows::Grammar,
-        "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar;
-
+        "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
+        "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar;
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
@@ -88,7 +91,8 @@ my %moduleToDSLFunction =
         "DSL::English::LatentSemanticAnalysisWorkflows" => "ToLatentSemanticAnalysisWorkflowCode",
         "DSL::English::QuantileRegressionWorkflows" => "ToQuantileRegressionWorkflowCode",
         "DSL::English::RecommenderWorkflows" => "ToRecommenderWorkflowCode",
-        "DSL::English::SearchEngineQueries" => "ToSearchEngineQueryCode";
+        "DSL::English::SearchEngineQueries" => "ToSearchEngineQueryCode",
+        "DSL::English::FoodPreparationWorkflows" => "ToFoodPreparationWorkflowCode";
 
 
 #-----------------------------------------------------------
@@ -102,7 +106,8 @@ my %englishModuleFunctions =
         "DSL::English::LatentSemanticAnalysisWorkflows" => &ToLatentSemanticAnalysisWorkflowCode,
         "DSL::English::QuantileRegressionWorkflows" => &ToQuantileRegressionWorkflowCode,
         "DSL::English::RecommenderWorkflows" => &ToRecommenderWorkflowCode,
-        "DSL::English::SearchEngineQueries" => &ToSearchEngineQueryCode;
+        "DSL::English::SearchEngineQueries" => &ToSearchEngineQueryCode,
+        "DSL::English::FoodPreparationWorkflows" => &ToFoodPreparationWorkflowCode;
 
 
 #-----------------------------------------------------------
@@ -134,7 +139,11 @@ my %englishModuleShortcuts =
         "DSL::English::RecommenderWorkflows" => "DSL::English::RecommenderWorkflows",
 
         "SearchEngineQueries" => "DSL::English::SearchEngineQueries",
-        "DSL::English::SearchEngineQueries" => "DSL::English::SearchEngineQueries";
+        "DSL::English::SearchEngineQueries" => "DSL::English::SearchEngineQueries",
+
+        "FoodPrep" => "DSL::English::FoodPreparationWorkflows",
+        "FoodPreparation" => "DSL::English::FoodPreparationWorkflows",
+        "DSL::English::FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows";
 
 
 #-----------------------------------------------------------

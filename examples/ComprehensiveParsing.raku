@@ -31,9 +31,10 @@ my @testCommands = (
 'DSL MODULE SMRMon; create recommender with dfTitanic; recommend by profile male; echo value',
 'use dfTitanic; select the columns name, species, mass and height; cross tabulate species over mass',
 'use dfStarwars; select species, mass and height; cross tabulate species over mass;',
-'DSL MODULE DataQueryWorkflows; use dfStarwars; select species, mass and height; cross tabulate species over mass;'
-);
+'DSL MODULE DataQueryWorkflows; use dfStarwars; select species, mass and height; cross tabulate species over mass;',
+'DSL MODULE FoodPrep; i want to eat a protein lunch;'
 
+);
 
 for @testCommands -> $c {
     say "=" x 30;
@@ -44,6 +45,5 @@ say '-' x 30;
     say "time:", now - $start;
     say $res;
 };
-
 
 
