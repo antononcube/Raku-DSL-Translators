@@ -16,6 +16,7 @@
         "DSL::English::ClassificationWorkflows",
         "DSL::English::DataQueryWorkflows",
         "DSL::English::EpidemiologyModelingWorkflows",
+        "DSL::English::FoodPreparationWorkflows",
         "DSL::English::LatentSemanticAnalysisWorkflows",
         "DSL::English::QuantileRegressionWorkflows",
         "DSL::English::RecommenderWorkflows",
