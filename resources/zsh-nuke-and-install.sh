@@ -5,7 +5,7 @@
 # Comment out if there is no zef:
 #zef nuke site
 
-## Edit this correct directory name of the zef repository:
+## Edit the following line to be the correct directory name of the zef repository:
 #cd ~/GitHub/ugexe/zef
 #
 #raku -I. bin/zef install .
@@ -22,6 +22,7 @@ zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.g
 zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-QuantileRegressionWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-install --force-test

@@ -7,14 +7,16 @@ To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku mod
 Here is installation code:
 
 ```shell
-zef install https://github.com/antononcube/Raku-DSL-Shared.git
-zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git
-zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-test
-zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-test
+zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-QuantileRegressionWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-install --force-test
 ```
 
 (The modules listed above are under development, that is why the installation commands have `--force-test`.)
