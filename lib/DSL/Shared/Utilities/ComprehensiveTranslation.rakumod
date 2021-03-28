@@ -157,7 +157,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 
     die "The argument \$n is expected to be a postive integer." unless $n > 0;
 
-    my @pairs = map({ $_.key => get-dsl-parser-residual($_.value, $command, norm => $norm) }, %dslToGrammar.pairs);
+    my @pairs = map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) }, %dslToGrammar.pairs);
     @pairs = @pairs.sort({ $_.value });
 
     return $n < @pairs.elems ?? @pairs[^$n] !! @pairs;
@@ -167,7 +167,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') is export {*};
 
 multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') {
-    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, norm => $norm);
+    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm);
 
     my @pairs2 = grep( { not( $_.key eq "DSL::English::SearchEngineQueries" ) }, @pairs );
 
