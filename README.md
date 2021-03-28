@@ -6,7 +6,7 @@ To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku mod
 
 Here is installation code:
 
-```perl6
+```shell
 zef install https://github.com/antononcube/Raku-DSL-Shared.git
 zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git
