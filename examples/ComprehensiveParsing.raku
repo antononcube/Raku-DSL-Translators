@@ -24,7 +24,7 @@ say "=" x 30;
 #select the columns name, species, mass and height;
 #cross tabulate species over mass'
 #);
-
+#
 my @testCommands = (
 'create recommender with dfTitanic; recommend by profile male; echo value',
 'DSL TARGET WL-SMRMon; create recommender with dfTitanic; recommend by profile male; echo value',
@@ -32,16 +32,18 @@ my @testCommands = (
 'use dfTitanic; select the columns name, species, mass and height; cross tabulate species over mass',
 'use dfStarwars; select species, mass and height; cross tabulate species over mass;',
 'DSL MODULE DataQueryWorkflows; use dfStarwars; select species, mass and height; cross tabulate species over mass;',
-'DSL MODULE FoodPrep; i want to eat a protein lunch;'
-
+'I want to eat a Chinese lunch',
+'DSL MODULE FoodPrep; I want to eat a Chinese lunch;'
 );
+
+
 
 for @testCommands -> $c {
     say "=" x 30;
-say $c;
-say '-' x 30;
+    say $c;
+    say '-' x 30;
     my $start = now;
-    my $res = ToDSLCode( $c, language => "English", format => $format, guessGrammar => True, defaultTargetsSpec => 'WL');
+    my $res = ToDSLCode($c, language => "English", format => $format, guessGrammar => True, defaultTargetsSpec => 'WL');
     say "time:", now - $start;
     say $res;
 };
