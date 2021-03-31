@@ -227,8 +227,16 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
     # DSL translate
     my Str $code = &dslFunc($command, $dslTarget);
 
+    # Get user specifications
+    my %userSpecs = get-user-spec($command);
+
+    if not (%userSpecs and %userSpecs{'USERID'}:exists) {
+        %userSpecs = %userSpecs, 'USERID' => 'Anonymous';
+    }
+
     # Result
     my %rakuRes = Hash.new(%dslSpecs, { Code => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
+    %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
     if $format.lc eq 'raku' {
