@@ -8,6 +8,9 @@ Here is installation code:
 
 ```shell
 zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-Entity-English-Foods.git --force-install
+zef install https://github.com/antononcube/Raku-DSL-Entity-English-Geographics.git --force-install
+zef install https://github.com/antononcube/Raku-DSL-Entity-English-Jobs.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-install --force-test
@@ -16,7 +19,7 @@ zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalys
 zef install https://github.com/antononcube/Raku-DSL-English-QuantileRegressionWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation.git --force-install --force-test
 ```
 
 (The modules listed above are under development, that is why the installation commands have `--force-test`.)
