@@ -43,7 +43,7 @@ for @testCommands -> $c {
     say $c;
     say '-' x 30;
     my $start = now;
-    my $res = ToDSLCode($c, language => "English", format => $format, guessGrammar => True, defaultTargetsSpec => 'WL');
+    my $res = ToDSLCode($c, language => "English", :$format, :guessGrammar, defaultTargetsSpec => 'WL');
     say "time:", now - $start;
     say $res;
 };

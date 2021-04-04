@@ -231,11 +231,11 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
     my %userSpecs = get-user-spec($command);
 
     if not (%userSpecs and %userSpecs{'USERID'}:exists) {
-        %userSpecs = %userSpecs, 'USERID' => 'Anonymous';
+        %userSpecs = %userSpecs, 'USERID' => '';
     }
 
     # Result
-    my %rakuRes = Hash.new(%dslSpecs, { Code => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
+    my %rakuRes = Hash.new(%dslSpecs,  %userSpecs, { Code => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
