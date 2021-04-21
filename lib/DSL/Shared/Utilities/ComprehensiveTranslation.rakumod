@@ -232,6 +232,8 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
 
     if not (%userSpecs and %userSpecs{'USERID'}:exists) {
         %userSpecs = %userSpecs, 'USERID' => '';
+    } elsif %userSpecs{'USERID'} (elem) <NONE NULL> {
+        %userSpecs = %userSpecs, 'USERID' => '';
     }
 
     # Result
