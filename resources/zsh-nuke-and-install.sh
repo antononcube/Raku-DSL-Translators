@@ -6,17 +6,18 @@
 #zef nuke site
 
 # Edit the following line to be the correct directory name of the zef repository:
-cd ~/GitHub/ugexe/zef
-
-raku -I. bin/zef install .
-
-cd -
+#cd ~/GitHub/ugexe/zef
+#
+#raku -I. bin/zef install .
+#
+#cd -
 
 ## Install prove6
 #zef install App::Prove6
 
 ## Install Sous-Chef Susana Raku packages
-zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
+zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Foods.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Geographics.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Jobs.git --force-install

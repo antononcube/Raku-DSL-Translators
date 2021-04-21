@@ -7,7 +7,8 @@ To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku mod
 Here is installation code:
 
 ```shell
-zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
+zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Foods.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Geographics.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-English-Jobs.git --force-install
