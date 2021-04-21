@@ -32,7 +32,8 @@ my @testCommands = (
 'use dfTitanic; select the columns name, species, mass and height; cross tabulate species over mass',
 'use dfStarwars; select species, mass and height; cross tabulate species over mass;',
 'DSL MODULE DataQueryWorkflows; USER ID mimiMal233; use dfStarwars; select species, mass and height; cross tabulate species over mass;',
-'USER IDENTIFIER 8989-jkko-9009-klkl; I want to eat a Chinese lunch',
+'USER IDENTIFIER 8989-jkko-9009-klkl; I want to eat a Chiese lunch',
+'USER IDENTIFIER NONE; I want to eat a Greek protein lunch',
 'DSL MODULE FoodPrep; I want to eat a Chinese lunch;'
 );
 
