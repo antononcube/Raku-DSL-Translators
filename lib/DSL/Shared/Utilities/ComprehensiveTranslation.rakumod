@@ -157,7 +157,18 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 
     die "The argument \$n is expected to be a postive integer." unless $n > 0;
 
-    my @pairs = map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) }, %dslToGrammar.pairs);
+    # "Elegant" version, but enumerates all DSLs.
+    # my @pairs = map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) }, %dslToGrammar.pairs);
+
+    # "Optimized" version, stops as soon as
+    # the residual is 0 and the attempted grammar is not 'DSL::English::SearchEngineQueries'.
+    my @pairs;
+    for %dslToGrammar.kv -> $k, $v {
+        my $pres = get-dsl-parser-residual($v, $command, :$norm);
+        @pairs = @pairs.append( $k => $pres);
+        last if $pres == 0 and $k ne 'DSL::English::SearchEngineQueries';
+    };
+
     @pairs = @pairs.sort({ $_.value });
 
     return $n < @pairs.elems ?? @pairs[^$n] !! @pairs;
