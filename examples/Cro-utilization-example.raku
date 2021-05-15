@@ -45,21 +45,21 @@ my $application = route {
 
     get -> 'translate', $commands {
         my Str $commands2 = $commands;
-        $commands2 = $commands2 ~~ / ['"' | '\''] .* ['"' | '\''] / ?? $commands2.substr(1,*-1) !! $commands2;
+        $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
         content 'text/html', ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');;
     }
 
     get -> 'translate', 'foodprep', $commands {
         my Str $commands2 = $commands;
-        $commands2 = $commands2 ~~ / ['"' | '\''] .* ['"' | '\''] / ?? $commands2.substr(1,*-1) !! $commands2;
+        $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
         content 'text/html', ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');;
     }
 
     get -> 'translate', 'numeric', $commands {
         my Str $commands2 = $commands;
-        $commands2 = $commands2 ~~ / ['"' | '\''] .* ['"' | '\''] / ?? $commands2.substr(1,*-1) !! $commands2;
+        $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
 
-        my $res =  $commands2 ~~ / [ ';' | \d ]* / ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
+        my $res =  ($commands2 ~~ / ^ [ ';' | \d ]* $ /) ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
 
         content 'text/html', marshal($res);
     }
