@@ -14,6 +14,7 @@
   },
   "depends": [
     "JSON::Marshal",
+    "Lingua::NumericWordForms",
     "DSL::Shared",
     "DSL::English::ClassificationWorkflows",
     "DSL::English::DataQueryWorkflows",
