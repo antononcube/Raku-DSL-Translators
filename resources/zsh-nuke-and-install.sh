@@ -26,6 +26,7 @@ zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-Foods.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-Geographics.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Entity-Jobs.git --force-install
+zef install https://github.com/antononcube/Raku-DSL-Entity-Metadata.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-install --force-test
