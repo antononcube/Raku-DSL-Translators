@@ -18,6 +18,7 @@ use DSL::English::QuantileRegressionWorkflows;
 use DSL::English::RecommenderWorkflows;
 use DSL::English::SearchEngineQueries;
 use DSL::English::FoodPreparationWorkflows;
+use DSL::English::DataAcquisitionWorkflows;
 
 #-----------------------------------------------------------
 # DSL target to DSL module
@@ -55,7 +56,8 @@ my %moduleToWLTarget =
         "DSL::English::QuantileRegressionWorkflows" => "WL-QRMon",
         "DSL::English::RecommenderWorkflows" => "WL-SMRMon",
         "DSL::English::SearchEngineQueries" => "WL-SMRMon",
-        "DSL::English::FoodPreparationWorkflows" => "WL-System";
+        "DSL::English::FoodPreparationWorkflows" => "WL-System",
+        "DSL::English::DataAcquisitionWorkflows" => "WL-System";
 
 
 my %specToModuleToTarget =
@@ -78,7 +80,8 @@ my %moduleToDSLGrammar =
         "DSL::English::QuantileRegressionWorkflows" => DSL::English::QuantileRegressionWorkflows::Grammar,
         "DSL::English::RecommenderWorkflows" => DSL::English::RecommenderWorkflows::Grammar,
         "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
-        "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar;
+        "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar,
+        "DSL::English::DataAcquisitionWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar;
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
@@ -92,7 +95,8 @@ my %moduleToDSLFunction =
         "DSL::English::QuantileRegressionWorkflows" => "ToQuantileRegressionWorkflowCode",
         "DSL::English::RecommenderWorkflows" => "ToRecommenderWorkflowCode",
         "DSL::English::SearchEngineQueries" => "ToSearchEngineQueryCode",
-        "DSL::English::FoodPreparationWorkflows" => "ToFoodPreparationWorkflowCode";
+        "DSL::English::FoodPreparationWorkflows" => "ToFoodPreparationWorkflowCode",
+        "DSL::English::DataAcquisitionWorkflows" => "ToDataAcquisitionWorkflowCode";
 
 
 #-----------------------------------------------------------
@@ -107,7 +111,8 @@ my %englishModuleFunctions =
         "DSL::English::QuantileRegressionWorkflows" => &ToQuantileRegressionWorkflowCode,
         "DSL::English::RecommenderWorkflows" => &ToRecommenderWorkflowCode,
         "DSL::English::SearchEngineQueries" => &ToSearchEngineQueryCode,
-        "DSL::English::FoodPreparationWorkflows" => &ToFoodPreparationWorkflowCode;
+        "DSL::English::FoodPreparationWorkflows" => &ToFoodPreparationWorkflowCode,
+        "DSL::English::DataAcquisitionWorkflows" => &ToDataAcquisitionWorkflowCode;
 
 
 #-----------------------------------------------------------
@@ -143,7 +148,11 @@ my %englishModuleShortcuts =
 
         "FoodPrep" => "DSL::English::FoodPreparationWorkflows",
         "FoodPreparation" => "DSL::English::FoodPreparationWorkflows",
-        "DSL::English::FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows";
+        "DSL::English::FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows",
+
+        "DataAcquirer" => "DSL::English::DataAcquisitionWorkflows",
+        "DataAcquisition" => "DSL::English::DataAcquisitionWorkflows",
+        "DSL::English::DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows";
 
 
 #-----------------------------------------------------------

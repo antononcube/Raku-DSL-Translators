@@ -15,8 +15,10 @@
   "depends": [
     "JSON::Marshal",
     "Lingua::NumericWordForms",
+    "Chemistry::Stoichiometry",
     "DSL::Shared",
     "DSL::English::ClassificationWorkflows",
+    "DSL::English::DataAcquisitionWorkflows",
     "DSL::English::DataQueryWorkflows",
     "DSL::English::EpidemiologyModelingWorkflows",
     "DSL::English::FoodPreparationWorkflows",
