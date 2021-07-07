@@ -1,30 +1,24 @@
 # Comprehensive Translation
 
+[![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
+
 This Raku package provides comprehensive multi-DSL translations.
 
-To install DSL::Shared::Utilities::ComprehensiveTranslation certain DSL Raku modules have to be installed.
+-------
 
-Here is installation code:
+## Installation
 
-```shell
-zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
-zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install
-zef install https://github.com/antononcube/Raku-DSL-Entity-Foods.git --force-install
-zef install https://github.com/antononcube/Raku-DSL-Entity-Geographics.git --force-install
-zef install https://github.com/antononcube/Raku-DSL-Entity-Jobs.git --force-install
-zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-EpidemiologyModelingWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-LatentSemanticAnalysisWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-QuantileRegressionWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-install --force-test
-zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation.git --force-install --force-test
-```
+To install 
+`DSL::Shared::Utilities::ComprehensiveTranslation` 
+certain DSL Raku modules have to be installed.
+
+See the installation code in the resource file ["zsh-nuke-and-install.sh"](./resources/zsh-nuke-and-install.sh). 
 
 (The modules listed above are under development, that is why the installation commands have `--force-test`.)
 
+-------
+
+## Usage
 Here is an example of automatic determination of the DSL grammar with the command:
 
 ```raku
@@ -46,3 +40,21 @@ that produces the following output (in JSON):
 ```
 
 In the example above the function `ToDSLCode` figured out that this sequence of commands specifies are data transformation workflow.
+
+------
+
+## References
+
+### Videos
+
+[AAv1] Anton Antonov,
+["Multi-language Data-Wrangling Conversational Agent"](https://www.youtube.com/watch?v=pQk5jwoMSxs),
+(2020),
+Wolfram Technology Conference 2020.
+
+### Repositories
+
+[AAr1] Anton Antonov,
+["Raku for Prediction" book](),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube/RakuForPrediction-book).
