@@ -61,7 +61,7 @@ my %moduleToWLTarget =
 
 
 my %specToModuleToTarget =
-
+        "Python" => %moduleToPythonTarget,
         "R" => %moduleToRTarget,
         "WL" => %moduleToWLTarget;
 
