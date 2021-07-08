@@ -267,7 +267,7 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
     }
 
     # Result
-    my %rakuRes = Hash.new(%dslSpecs,  %userSpecs, { Code => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
+    my %rakuRes = Hash.new(%dslSpecs,  %userSpecs, { CODE => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
