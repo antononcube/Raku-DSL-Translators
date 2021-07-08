@@ -160,7 +160,9 @@ my %languageDispatch =
         English => %englishModuleShortcuts;
 
 #-----------------------------------------------------------
+#| Finds most applicable DSL grammar.
 proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum') is export {*};
+#= Uses parsing residuals -- the DSL grammar with the smallest count of un-parsed characters is the most applicable.
 
 multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum') {
 
@@ -184,6 +186,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 }
 
 #-----------------------------------------------------------
+#| Picks most applicable DSL grammar.
 proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') is export {*};
 
 multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') {
@@ -206,6 +209,13 @@ multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = '
 }
 
 #-----------------------------------------------------------
+#|( Translates natural language commands into programming code.
+    * C<$command> is a string with one or many commands (separated by ';').
+    * C<$language> is the natural language to translate from.
+    * C<$format> is the format of the output one of 'raku' or 'json'.
+    * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
+    * C<$defaultTargetsSpec> is programming language name, one of 'Python', 'R', 'WL'.
+)
 proto ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku', Bool :$guessGrammar = True, Str :$defaultTargetsSpec = 'R') is export {*};
 
 multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku', Bool :$guessGrammar = True, Str :$defaultTargetsSpec = 'R') {
