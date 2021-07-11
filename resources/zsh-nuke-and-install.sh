@@ -19,7 +19,7 @@ zef install Linenoise
 ## Install cro
 zef install --/test cro
 
-## Install Sous-Chef Susana Raku packages
+## Install DSL Raku packages
 zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
 zef install https://github.com/antononcube/Raku-Chemistry-Stoichiometry.git --force-install
 zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install
@@ -37,3 +37,8 @@ zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.
 zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-English-DataAcquisitionWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation.git --force-install --force-test
+
+## Install packages used to invoke DSL::Shared::Utilities::ComprehensiveTranslation
+## in R, WL, Jupyter notebooks and Markdown, Org-mode, Pod6 files.
+zef install Net::ZMQ --force-install
+zef install Text::CodeProcessing --force-install
