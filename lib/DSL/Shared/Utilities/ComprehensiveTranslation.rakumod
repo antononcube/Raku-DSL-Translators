@@ -44,7 +44,8 @@ my %moduleToRTarget =
         "DSL::English::QuantileRegressionWorkflows" => "R-QRMon",
         "DSL::English::RecommenderWorkflows" => "R-SMRMon",
         "DSL::English::SearchEngineQueries" => "R-tidyverse",
-        "DSL::English::FoodPreparationWorkflows" => "R-base";
+        "DSL::English::FoodPreparationWorkflows" => "R-base",
+        "DSL::English::DataAcquisitionWorkflows" => "R-base";
 
 
 my %moduleToWLTarget =
