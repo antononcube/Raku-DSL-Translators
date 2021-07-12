@@ -162,10 +162,10 @@ my %languageDispatch =
 
 #-----------------------------------------------------------
 #| Finds most applicable DSL grammar.
-proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum') is export {*};
+proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum', Int :$batch = 64, Int :$degree = 1) is export {*};
 #= Uses parsing residuals -- the DSL grammar with the smallest count of un-parsed characters is the most applicable.
 
-multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum') {
+multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum', Int :$batch = 64, Int :$degree = 1) {
 
     die "The argument \$n is expected to be a postive integer." unless $n > 0;
 
@@ -175,11 +175,21 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
     # "Optimized" version, stops as soon as
     # the residual is 0 and the attempted grammar is not 'DSL::English::SearchEngineQueries'.
     my @pairs;
-    for %dslToGrammar.kv -> $k, $v {
-        my $pres = get-dsl-parser-residual($v, $command, :$norm);
-        @pairs = @pairs.append( $k => $pres);
-        last if $pres == 0 and $k ne 'DSL::English::SearchEngineQueries';
-    };
+    if $degree <= 1 {
+        for %dslToGrammar.kv -> $k, $v {
+            my $pres = get-dsl-parser-residual($v, $command, :$norm);
+            @pairs = @pairs.append( $k => $pres);
+            last if $pres == 0 and $k ne 'DSL::English::SearchEngineQueries';
+        }
+    } else {
+        # Using the "elegant" version for parallel execution.
+        # @pairs = race %dslToGrammar.pairs.race(:$batch, :$degree).map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) });
+
+        @pairs = race for %dslToGrammar.list.race( :$batch, :$degree ) -> $p {
+            my $pres = get-dsl-parser-residual($p.value, $command, :$norm);
+            $p.key => $pres
+        }
+    }
 
     @pairs = @pairs.sort({ $_.value });
 
@@ -188,10 +198,10 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 
 #-----------------------------------------------------------
 #| Picks most applicable DSL grammar.
-proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') is export {*};
+proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) is export {*};
 
-multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum') {
-    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm);
+multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) {
+    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm, :$degree, batch => max( floor(%dslToGrammar.elems / $degree), 1));
 
     my @pairs2 = grep( { not( $_.key eq "DSL::English::SearchEngineQueries" ) }, @pairs );
 
@@ -217,9 +227,19 @@ multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = '
     * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
     * C<$defaultTargetsSpec> is programming language name, one of 'Python', 'R', 'WL'.
 )
-proto ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku', Bool :$guessGrammar = True, Str :$defaultTargetsSpec = 'R') is export {*};
+proto ToDSLCode(Str $command,
+                Str :$language = 'English',
+                Str :$format = 'hash',
+                Bool :$guessGrammar = True,
+                Str :$defaultTargetsSpec = 'R',
+                Int :$degree = 1) is export {*};
 
-multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku', Bool :$guessGrammar = True, Str :$defaultTargetsSpec = 'R') {
+multi ToDSLCode(Str $command,
+                Str :$language = 'English',
+                Str :$format = 'hash',
+                Bool :$guessGrammar = True,
+                Str :$defaultTargetsSpec = 'R',
+                Int :$degree = 1) {
 
     die "Unknown natural language: $language." unless %languageDispatch{$language}:exists;
 
@@ -236,9 +256,9 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
         if %dslSpecs{'DSLTARGET'}:exists and %targetToModule{%dslSpecs{'DSLTARGET'}}:exists {
             # Restrict the DSL guessing to the specified target DSLs
             my %small = %moduleToDSLGrammar{ |%targetToModule{%dslSpecs{'DSLTARGET'}} }:p;
-            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %small );
+            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %small);
         } else {
-            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %moduleToDSLGrammar );
+            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %moduleToDSLGrammar, :$degree );
         }
     }
 
@@ -272,12 +292,14 @@ multi ToDSLCode(Str $command, Str :$language = 'English', Str :$format = 'raku',
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
-    if $format.lc eq 'raku' {
+    if $format.lc (elem) <object hash> {
         return %rakuRes;
+    } elsif $format.lc eq 'raku' {
+        return %rakuRes.raku;
     } elsif $format.lc eq 'json' {
         return marshal(%rakuRes);
     } else {
-        warn "Unknown format: $format. Using 'raku' instead.";
+        warn "Unknown format: $format. Using 'Hash' instead.";
         return %rakuRes;
     }
 }
