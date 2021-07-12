@@ -298,6 +298,8 @@ multi ToDSLCode(Str $command,
         return %rakuRes.raku;
     } elsif $format.lc eq 'json' {
         return marshal(%rakuRes);
+    } elsif $format.lc eq 'code' {
+        return %rakuRes<CODE>;
     } else {
         warn "Unknown format: $format. Using 'Hash' instead.";
         return %rakuRes;
