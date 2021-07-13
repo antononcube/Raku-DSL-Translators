@@ -39,7 +39,10 @@ that produces the following output (in JSON):
 }
 ```
 
-In the example above the function `ToDSLCode` figured out that this sequence of commands specifies are data transformation workflow.
+In the example above the function `ToDSLCode` figured out that the sequence of commands 
+specifies a 
+[data transformation workflow](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows). 
+See [AAr2].
 
 ------
 
@@ -55,6 +58,11 @@ Wolfram Technology Conference 2020.
 ### Repositories
 
 [AAr1] Anton Antonov,
-["Raku for Prediction" book](),
+["Raku for Prediction" book](https://github.com/antononcube/RakuForPrediction-book),
 (2021),
-[GitHub/antononcube](https://github.com/antononcube/RakuForPrediction-book).
+[GitHub/antononcube](https://github.com/antononcube).
+
+[AAr2] Anton Antonov,
+[DSL::English::DataQueryWorkflow Raku package](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows),
+(2020),
+[GitHub/antononcube](https://github.com/antononcube).
