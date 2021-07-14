@@ -334,9 +334,22 @@ sub ToDSLSyntaxTree(Str $command,
                 Int :$degree = 1) is export {
 
     # Call ToDSLCode
-    my %res = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
+    my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
 
     # Result
-    %res<DSL> => %res<CODE>
+    my %rakuRes = %ast<DSL> => %ast<CODE>;
+
+    if $format.lc (elem) <object hash> {
+        return %rakuRes;
+    } elsif $format.lc eq 'raku' {
+        return %rakuRes.raku;
+    } elsif $format.lc eq 'json' {
+        return marshal( %( %ast<DSL> => %ast<CODE>.raku ) );
+    } elsif $format.lc eq 'code' {
+        return %ast<CODE>;
+    } else {
+        warn "Unknown format: $format. Using 'Hash' instead.";
+        return %rakuRes;
+    }
 }
 #= This function uses C<ToDSLCode> with C<ast => True>.
