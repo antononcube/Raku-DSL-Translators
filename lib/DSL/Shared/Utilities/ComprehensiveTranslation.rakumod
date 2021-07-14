@@ -220,26 +220,38 @@ multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = '
 }
 
 #-----------------------------------------------------------
+#| Get AST tree for a given command and (detected) DSL.
+sub get-ast(Str:D $command, Str:D $dsl) {
+    my $gram = %moduleToDSLGrammar{$dsl};
+
+    $gram.parse($command, rule => 'workflow-commands-list')
+}
+
+#-----------------------------------------------------------
 #|( Translates natural language commands into programming code.
     * C<$command> is a string with one or many commands (separated by ';').
     * C<$language> is the natural language to translate from.
     * C<$format> is the format of the output one of 'raku' or 'json'.
     * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
-    * C<$defaultTargetsSpec> is programming language name, one of 'Python', 'R', 'WL'.
+    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'WL'.
+    * C<$degree> is a positive integer for the degree parallelism.
+    * C<$ast> should Match object be returned for the key "CODE"?
 )
 proto ToDSLCode(Str $command,
                 Str :$language = 'English',
                 Str :$format = 'hash',
                 Bool :$guessGrammar = True,
                 Str :$defaultTargetsSpec = 'R',
-                Int :$degree = 1) is export {*};
+                Int :$degree = 1,
+                Bool :$ast = False) is export {*};
 
 multi ToDSLCode(Str $command,
                 Str :$language = 'English',
                 Str :$format = 'hash',
                 Bool :$guessGrammar = True,
                 Str :$defaultTargetsSpec = 'R',
-                Int :$degree = 1) {
+                Int :$degree = 1,
+                Bool :$ast = False) {
 
     die "Unknown natural language: $language." unless %languageDispatch{$language}:exists;
 
@@ -276,7 +288,7 @@ multi ToDSLCode(Str $command,
     my &dslFunc = %englishModuleFunctions{$dsl};
 
     # DSL translate
-    my Str $code = &dslFunc($command, $dslTarget);
+    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget);
 
     # Get user specifications
     my %userSpecs = get-user-spec($command);
@@ -306,3 +318,25 @@ multi ToDSLCode(Str $command,
     }
 }
 
+#-----------------------------------------------------------
+#|( Translates natural language commands into Abstract Syntax Trees (ASTs).
+    * C<$command> is a string with one or many commands (separated by ';').
+    * C<$language> is the natural language to translate from.
+    * C<$format> is the format of the output one of 'raku' or 'json'.
+    * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
+    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'WL'.
+)
+sub ToDSLSyntaxTree(Str $command,
+                Str :$language = 'English',
+                Str :$format = 'hash',
+                Bool :$guessGrammar = True,
+                Str :$defaultTargetsSpec = 'R',
+                Int :$degree = 1) is export {
+
+    # Call ToDSLCode
+    my %res = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
+
+    # Result
+    %res<DSL> => %res<CODE>
+}
+#= This function uses C<ToDSLCode> with C<ast => True>.
