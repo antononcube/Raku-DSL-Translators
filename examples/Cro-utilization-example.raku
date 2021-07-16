@@ -46,13 +46,29 @@ my $application = route {
     get -> 'translate', $commands {
         my Str $commands2 = $commands;
         $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
-        content 'text/html', ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');;
+
+        ## Redirecting stderr to a custom $err
+        my $err;
+
+        my $*ERR = $*ERR but role {
+            method print (*@args) {
+                $err ~= @args
+            }
+        }
+
+        ## Interpret
+        my %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, defaultTargetsSpec => 'WL');
+
+        ## Combine with custom $err with interpretation result
+        %res = %res , %( STDERR => $err );
+
+        content 'text/html', marshal(  %res );
     }
 
     get -> 'translate', 'foodprep', $commands {
         my Str $commands2 = $commands;
         $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
-        content 'text/html', ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');;
+        content 'text/html', ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');
     }
 
     get -> 'translate', 'numeric', $commands {
