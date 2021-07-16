@@ -66,8 +66,14 @@ my %specToModuleToTarget =
         "R" => %moduleToRTarget,
         "WL" => %moduleToWLTarget;
 
+# Make target-to-module rules by inverting the module-to-target rules
 my %targetToModule = reduce( { $^a.push( $^b.invert ) }, {}, |%specToModuleToTarget.values );
 
+# Make target-to-module rules by inverting the module-to-target rules and modifying the targets, e.g. "R-LSAMon" to "R::LSAMon"
+my %targetToModule2 = reduce( { $^a.push( $^b.deepmap({ $_.subst( '-', '::' ):g }).invert ) }, {}, |%specToModuleToTarget.values );
+
+# Join the two target-to-module dictionaries
+%targetToModule = %targetToModule , %targetToModule2;
 
 #-----------------------------------------------------------
 # DSL module to DSL grammar
