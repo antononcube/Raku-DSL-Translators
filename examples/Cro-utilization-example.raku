@@ -38,31 +38,50 @@ my @testCommands = (
 #   https://cro.services/docs/intro/getstarted
 #   https://cro.services/docs/intro/http-server
 
+sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec){
+
+    my Str $commands2 = $commands;
+
+    ## Remove wrapper quotes
+    $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
+
+    ## Redirecting stderr to a custom $err
+    my $err;
+
+    my $*ERR = $*ERR but role {
+        method print (*@args) {
+            $err ~= @args
+        }
+    }
+
+    ## Interpret
+    my %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
+
+    ## Combine with custom $err with interpretation result
+    %res = %res , %( STDERR => $err );
+
+    ## Result
+    %res
+}
+
+
 my $application = route {
     get -> {
-        content 'text/html', ToDSLCode(@testCommands[1], language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');;
+        content 'text/html', ToDSLCode(@testCommands[1], language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');
     }
 
     get -> 'translate', $commands {
-        my Str $commands2 = $commands;
-        $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
 
-        ## Redirecting stderr to a custom $err
-        my $err;
+        my %res = dsl-translate( $commands, 'WL');
 
-        my $*ERR = $*ERR but role {
-            method print (*@args) {
-                $err ~= @args
-            }
-        }
+        content 'text/html', marshal( %res );
+    }
 
-        ## Interpret
-        my %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, defaultTargetsSpec => 'WL');
+    get -> 'translate', $lang, $commands {
 
-        ## Combine with custom $err with interpretation result
-        %res = %res , %( STDERR => $err );
+        my %res = dsl-translate( $commands, $lang);
 
-        content 'text/html', marshal(  %res );
+        content 'text/html', marshal( %res );
     }
 
     get -> 'translate', 'foodprep', $commands {
