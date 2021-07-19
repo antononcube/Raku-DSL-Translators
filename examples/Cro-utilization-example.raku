@@ -24,7 +24,8 @@ my @testCommands = (
 );
 
 # http://localhost:10000/translate?commands='use dfTitanic;summarize data'
-# http://localhost:10000/translate/'DSL MODULE SMRMon; create recommender with dfTitanic; recommend by profile male; echo value'
+# http://localhost:10000/translate/R/'DSL MODULE SMRMon; create recommender with dfTitanic; recommend by profile male; echo value'
+# http://localhost:10000/translate/ast/'DSL MODULE SMRMon; create recommender with dfTitanic; recommend by profile male; echo value'
 # http://localhost:10000/translate/'USER ID sezin23; DSL MODULE FoodPrep; I want to eat Chinese protein lunch'
 # http://localhost:10000/translate/'I want to eat Chinese protein lunch'
 # http://localhost:10000/translate/'use texHamplet; create document term matrix; extract 12 topics; show statistical thesaurus for king and queen'
@@ -38,7 +39,7 @@ my @testCommands = (
 #   https://cro.services/docs/intro/getstarted
 #   https://cro.services/docs/intro/http-server
 
-sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec){
+sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec, Bool :$ast = False){
 
     my Str $commands2 = $commands;
 
@@ -55,7 +56,13 @@ sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec){
     }
 
     ## Interpret
-    my %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
+    my %res;
+    if $ast {
+        %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec, :$ast );
+        %res = %res , %( CODE => %res{"CODE"}.gist );
+    } else {
+        %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
+    }
 
     ## Combine with custom $err with interpretation result
     %res = %res , %( STDERR => $err );
@@ -80,6 +87,13 @@ my $application = route {
     get -> 'translate', $lang, $commands {
 
         my %res = dsl-translate( $commands, $lang);
+
+        content 'text/html', marshal( %res );
+    }
+
+    get -> 'translate', 'ast', $commands {
+
+        my %res = dsl-translate( $commands, 'WL'):ast;
 
         content 'text/html', marshal( %res );
     }
