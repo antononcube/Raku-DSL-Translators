@@ -58,8 +58,10 @@ sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec, Bool :$ast = False
     ## Interpret
     my %res;
     if $ast {
-        %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec, :$ast );
-        %res = %res , %( CODE => %res{"CODE"}.gist );
+#        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
+#        %res = %res , %( CODE => %res{"CODE"}.gist );
+        %res = ToDSLSyntaxTree($commands2, language => 'English', format => 'object', :guessGrammar, defaultTargetsSpec => 'R', degree => 1):as-hash;
+
     } else {
         %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
     }

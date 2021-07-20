@@ -325,37 +325,57 @@ multi ToDSLCode(Str $command,
 }
 
 #-----------------------------------------------------------
+#| Converst parsed results into JSON-marhable hashes.
+sub to-pairs( $m ) {
+        given $m {
+               when Grammar | Match {
+                   my $k = $_.orig.substr($_.from .. $_.to-1).trim;
+                   $k => to-pairs( $_.hash ) }
+               when Hash | Map { $_.pairs.map({ $_.key => to-pairs( $_.value ) }).hash }
+               when Array | List { $_.map({ to-pairs($_) }) }
+               default { $_ }
+        }
+}
+
+#-----------------------------------------------------------
 #|( Translates natural language commands into Abstract Syntax Trees (ASTs).
     * C<$command> is a string with one or many commands (separated by ';').
     * C<$language> is the natural language to translate from.
     * C<$format> is the format of the output one of 'raku' or 'json'.
     * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
     * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'WL'.
+    * C<$as-hash> is a Boolean whether to return the AST as Hash.
+    * C<$degree> is a positive integer for the degree parallelism.
 )
 sub ToDSLSyntaxTree(Str $command,
                 Str :$language = 'English',
                 Str :$format = 'hash',
                 Bool :$guessGrammar = True,
                 Str :$defaultTargetsSpec = 'R',
+                Bool :$as-hash = True,
                 Int :$degree = 1) is export {
 
     # Call ToDSLCode
     my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
 
-    # Result
-    my %rakuRes = %ast<DSL> => %ast<CODE>;
+    # Convert to Hash pairs
+    if $as-hash {
+        %ast<CODE> = to-pairs( %ast<CODE> )
+    }
 
+    # Result
     if $format.lc (elem) <object hash> {
-        return %rakuRes;
+        return %ast;
     } elsif $format.lc eq 'raku' {
-        return %rakuRes.raku;
+        return %ast.raku;
     } elsif $format.lc eq 'json' {
-        return marshal( %( %ast<DSL> => %ast<CODE>.raku ) );
+        %ast<CODE> = to-pairs( %ast<CODE> );
+        return marshal(%ast);
     } elsif $format.lc eq 'code' {
         return %ast<CODE>;
     } else {
         warn "Unknown format: $format. Using 'Hash' instead.";
-        return %rakuRes;
+        return %ast;
     }
 }
 #= This function uses C<ToDSLCode> with C<ast => True>.
