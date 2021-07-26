@@ -234,6 +234,24 @@ sub get-ast(Str:D $command, Str:D $dsl) {
 }
 
 #-----------------------------------------------------------
+#| Post process interpretation results.
+sub post-process-result( %rakuRes, Str $format ) {
+
+    if $format.lc (elem) <object hash> {
+        return %rakuRes;
+    } elsif $format.lc eq 'raku' {
+        return %rakuRes.raku;
+    } elsif $format.lc eq 'json' {
+        return marshal(%rakuRes);
+    } elsif $format.lc eq 'code' {
+        return %rakuRes<CODE>;
+    } else {
+        warn "Unknown format: $format. Using 'Hash' instead.";
+        return %rakuRes;
+    }
+}
+
+#-----------------------------------------------------------
 #|( Translates natural language commands into programming code.
     * C<$command> is a string with one or many commands (separated by ';').
     * C<$language> is the natural language to translate from.
@@ -293,9 +311,6 @@ multi ToDSLCode(Str $command,
     # Get DSL function
     my &dslFunc = %englishModuleFunctions{$dsl};
 
-    # DSL translate
-    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget);
-
     # Get user specifications
     my %userSpecs = get-user-spec($command);
 
@@ -305,23 +320,23 @@ multi ToDSLCode(Str $command,
         %userSpecs = %userSpecs, 'USERID' => '';
     }
 
+    # DSL translate
+    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget);
+
+    # Handle failure from the parser-interpreters
+    CATCH {
+        default {
+            my %rakuRes = Hash.new(%dslSpecs, %userSpecs, { CODE => '', DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
+            return post-process-result(%rakuRes, $format)
+        }
+    }
+
     # Result
     my %rakuRes = Hash.new(%dslSpecs,  %userSpecs, { CODE => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku });
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
-    if $format.lc (elem) <object hash> {
-        return %rakuRes;
-    } elsif $format.lc eq 'raku' {
-        return %rakuRes.raku;
-    } elsif $format.lc eq 'json' {
-        return marshal(%rakuRes);
-    } elsif $format.lc eq 'code' {
-        return %rakuRes<CODE>;
-    } else {
-        warn "Unknown format: $format. Using 'Hash' instead.";
-        return %rakuRes;
-    }
+    return post-process-result(%rakuRes, $format)
 }
 
 #-----------------------------------------------------------
