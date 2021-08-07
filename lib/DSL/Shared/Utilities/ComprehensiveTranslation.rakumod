@@ -396,7 +396,7 @@ sub ToDSLSyntaxTree(Str $command,
 #= This function uses C<ToDSLCode> with C<ast => True>.
 
 
-#| More general and "robust" DSL translation function to be used in web- and notebook interfraces.
+#| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast = False) is export {
 
     my Str $commands2 = $commands;
@@ -405,7 +405,7 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
     $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
 
     ## Redirecting stderr to a custom $err
-    my $err;
+    my Str $err = '';
 
     my $*ERR = $*ERR but role {
         method print (*@args) {
