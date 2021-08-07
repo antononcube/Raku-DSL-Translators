@@ -397,7 +397,7 @@ sub ToDSLSyntaxTree(Str $command,
 
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfraces.
-sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec, Bool :$ast = False) is export {
+sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast = False) is export {
 
     my Str $commands2 = $commands;
 
@@ -418,7 +418,7 @@ sub dsl-translate(Str:D $commands, Str:D $defaultTargetsSpec, Bool :$ast = False
     if $ast {
 #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
 #        %res = %res , %( CODE => %res{"CODE"}.gist );
-        %res = ToDSLSyntaxTree($commands2, language => 'English', format => 'object', :guessGrammar, defaultTargetsSpec => 'R', degree => 1):as-hash;
+        %res = ToDSLSyntaxTree($commands2, language => 'English', format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
 
     } else {
         %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );

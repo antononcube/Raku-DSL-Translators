@@ -46,21 +46,21 @@ my $application = route {
 
     get -> 'translate', $commands {
 
-        my %res = dsl-translate( $commands, 'WL');
+        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL');
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', $lang, $commands {
 
-        my %res = dsl-translate( $commands, $lang);
+        my %res = dsl-translate( $commands, defaultTargetsSpec => $lang);
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', 'ast', $commands {
 
-        my %res = dsl-translate( $commands, 'WL'):ast;
+        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL'):ast;
 
         content 'text/html', marshal( %res );
     }
