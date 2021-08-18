@@ -76,9 +76,6 @@ sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 
 # Cro application
 my $application = route {
-    get -> {
-        content 'text/html', ToDSLCode(@testCommands[1], language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');
-    }
 
     get -> 'translate', 'qas', $commands {
 
