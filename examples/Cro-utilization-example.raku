@@ -40,9 +40,9 @@ my @testCommands = (
 #   https://cro.services/docs/intro/http-server
 
 my $application = route {
-    get -> {
-        content 'text/html', ToDSLCode(@testCommands[1], language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');
-    }
+#    get -> {
+#        content 'text/html', ToDSLCode(@testCommands[1], language => "English", format => 'json', :guessGrammar, defaultTargetsSpec => 'WL');
+#    }
 
     get -> 'translate', $commands {
 
