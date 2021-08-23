@@ -340,7 +340,7 @@ multi ToDSLCode(Str $command,
 }
 
 #-----------------------------------------------------------
-#| Converst parsed results into JSON-marhable hashes.
+#| Converts parsed results into JSON-marshal-able hashes.
 sub to-pairs( $m ) {
         given $m {
                when Grammar | Match {
@@ -372,6 +372,8 @@ sub ToDSLSyntaxTree(Str $command,
 
     # Call ToDSLCode
     my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
+
+    note %ast.raku;
 
     # Convert to Hash pairs
     if $as-hash {
@@ -425,7 +427,7 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
     }
 
     ## Combine with custom $err with interpretation result
-    %res = %res , %( STDERR => $err );
+    %res = %res , %( STDERR => $err, COMMANDS => $commands );
 
     ## Result
     %res
