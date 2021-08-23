@@ -63,11 +63,26 @@ my Net::ZMQ4::Context $context .= new;
 my Net::ZMQ4::Socket $reciever .= new($context, ZMQ_REQ);
 $reciever.bind("$url:$port");
 
-#| Translate commands by QAS
+#| Translate commands by QAS.
 sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 
     my $spec = 'aRes = ComputationalSpecCompletion[ "' ~ $commands ~ '", "AssociationResult" -> True, "ProgrammingLanguage" -> "' ~ $lang ~ '"];';
     $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON"]';
+    $reciever.send($spec);
+    my $message = $reciever.receive();
+
+    $message.data-str
+}
+
+#| Get answers by WL's FindTextualAnswer.
+sub find-textual-answer( Str $text, Str $question, Str :$nAnswers = '5', Str :$performanceGoal = 'Speed') {
+
+    # Currently I am ignoring $nAnswers -- using it produces the error:
+    #   BinaryWrite::errfile: Could not access file File write failed.
+
+    my $spec = 'lsProps = {"Probability", "String", "Sentence"};';
+    $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", 5, lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
+    $spec ~= 'ExportString[aRes, "JSON"]';
     $reciever.send($spec);
     my $message = $reciever.receive();
 
@@ -122,10 +137,29 @@ my $application = route {
         my Str $commands2 = $commands;
         $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
 
-        my $res =  ($commands2 ~~ / ^ [ ';' | \d ]* $ /) ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
+        my Bool $numberQ = so $commands2 ~~ / ^ [ ';' | \d ]* $ /;
+        my $parserRes = $numberQ ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
 
-        content 'text/html', marshal($res);
+        my %res = %( CODE => $parserRes,
+                     COMMANDS => $commands2,
+                     USERID => '',
+                     DSL => 'Lingua::NumericWordForms',
+                     DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form );
+
+        content 'text/html', marshal(%res);
     }
+
+    get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '5', :$performanceGoal = 'Speed' {
+
+        my Str $performanceGoal2 = $performanceGoal.Str.tclc eq 'Quality' ?? 'Quality' !! 'Speed';
+        my Str $nAnswers2 = $nAnswers.Str;
+        $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '5';
+
+        my Str $res = find-textual-answer( $text, $question, nAnswers => $nAnswers2, performanceGoal => $performanceGoal2 );
+
+        content 'text/html', $res;
+    }
+
 }
 
 my Cro::Service $service = Cro::HTTP::Server.new:
