@@ -75,9 +75,16 @@ my $application = route {
         my Str $commands2 = $commands;
         $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
 
-        my $res =  ($commands2 ~~ / ^ [ ';' | \d ]* $ /) ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
+        my Bool $numberQ = so $commands2 ~~ / ^ [ ';' | \d ]* $ /;
+        my $parserRes = $numberQ ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
 
-        content 'text/html', marshal($res);
+        my %res = %( CODE => $parserRes,
+                     COMMANDS => $commands2,
+                     USERID => '',
+                     DSL => 'Lingua::NumericWordForms',
+                     DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form );
+
+        content 'text/html', marshal(%res);
     }
 }
 
