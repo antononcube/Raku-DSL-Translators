@@ -82,6 +82,7 @@ my $application = route {
                      COMMANDS => $commands2,
                      USERID => '',
                      DSL => 'Lingua::NumericWordForms',
+                     DSLTARGET => 'Lingua::NumericWordForms',
                      DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form );
 
         content 'text/html', marshal(%res);
