@@ -41,7 +41,7 @@ While[True,
  res = ToExpression[message2];
  Print[\"[woflramscirpt] evaluated:\", res];
 
- BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
+ BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
 ]";
 
     if !$proclaim {
@@ -75,13 +75,10 @@ sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 }
 
 #| Get answers by WL's FindTextualAnswer.
-sub find-textual-answer( Str $text, Str $question, Str :$nAnswers = '5', Str :$performanceGoal = 'Speed') {
-
-    # Currently I am ignoring $nAnswers -- using it produces the error:
-    #   BinaryWrite::errfile: Could not access file File write failed.
+sub find-textual-answer( Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed') {
 
     my $spec = 'lsProps = {"Probability", "String", "Sentence"};';
-    $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", 5, lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
+    $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~ $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
     $spec ~= 'ExportString[aRes, "JSON"]';
     $reciever.send($spec);
     my $message = $reciever.receive();
@@ -149,13 +146,13 @@ my $application = route {
         content 'text/html', marshal(%res);
     }
 
-    get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '5', :$performanceGoal = 'Speed' {
+    get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '3', :$performanceGoal = 'Speed' {
 
         my Str $performanceGoal2 = $performanceGoal.Str.tclc eq 'Quality' ?? 'Quality' !! 'Speed';
         my Str $nAnswers2 = $nAnswers.Str;
-        $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '5';
+        $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '3';
 
-        my Str $res = find-textual-answer( $text, $question, nAnswers => $nAnswers2, performanceGoal => $performanceGoal2 );
+        my Str $res = find-textual-answer( $text, $question, nAnswers => $nAnswers2.Int, performanceGoal => $performanceGoal2 );
 
         content 'text/html', $res;
     }
