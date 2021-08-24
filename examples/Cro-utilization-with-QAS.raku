@@ -77,7 +77,7 @@ sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 #| Get answers by WL's FindTextualAnswer.
 sub find-textual-answer( Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed') {
 
-    my $spec = 'lsProps = {"Probability", "String", "Sentence"};';
+    my $spec = 'lsProps = {"Probability", "String", "Position"};';
     $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~ $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
     $spec ~= 'ExportString[aRes, "JSON"]';
     $reciever.send($spec);
@@ -141,6 +141,7 @@ my $application = route {
                      COMMANDS => $commands2,
                      USERID => '',
                      DSL => 'Lingua::NumericWordForms',
+                     DSLTARGET => 'Lingua::NumericWordForms',
                      DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form );
 
         content 'text/html', marshal(%res);
