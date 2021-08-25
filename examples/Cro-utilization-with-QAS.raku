@@ -41,9 +41,9 @@ While[True,
  res = ToExpression[message2];
  Print[\"[woflramscirpt] evaluated:\", res];
 
- BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
+ BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
 ]";
-
+# BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
     if !$proclaim {
         $resCode = $resCode.subst( / ^^ \h* 'Print' .*? $$ /, ''):g
     }
@@ -66,23 +66,52 @@ $reciever.bind("$url:$port");
 #| Translate commands by QAS.
 sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 
+    # Build-up the WL code
     my $spec = 'aRes = ComputationalSpecCompletion[ "' ~ $commands ~ '", "AssociationResult" -> True, "ProgrammingLanguage" -> "' ~ $lang ~ '"];';
-    $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON"]';
+    $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]';
+
+    # Send code through ZMQ
     $reciever.send($spec);
+
+    # Receive result from ZMQ
     my $message = $reciever.receive();
 
+    # Return result
     $message.data-str
 }
 
 #| Get answers by WL's FindTextualAnswer.
-sub find-textual-answer( Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed') {
+sub find-textual-answer(Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed', Str :$properties = '') {
 
-    my $spec = 'lsProps = {"Probability", "String", "Position"};';
+    # Process properties
+    my Str @knownProps = <String Position Probability Sentence Paragraph Line Snippet>;
+    my Str @props;
+
+    if $properties.chars > 0 {
+
+        @props = $properties.split(/',' | \h+ /).map({ $_.trim.tclc });
+
+        @props = (@props (&) @knownProps).keys;
+
+        @props = (@props (-) <Probability Position>).keys.sort;
+
+        if @props.elems > 0 {
+            @props = @props.map({ '"' ~ $_ ~ '"' });
+        }
+    }
+
+    # Build-up the WL code
+    my $spec = 'lsProps = {"Probability", "Position"' ~ ( @props.elems == 0 ?? '' !! ', ' ~ @props.join(', ') ) ~ '};';
     $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~ $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
-    $spec ~= 'ExportString[aRes, "JSON"]';
+    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
+
+    # Send code through ZMQ
     $reciever.send($spec);
+
+    # Receive result from ZMQ
     my $message = $reciever.receive();
 
+    # Return result
     $message.data-str
 }
 
@@ -147,13 +176,13 @@ my $application = route {
         content 'text/html', marshal(%res);
     }
 
-    get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '3', :$performanceGoal = 'Speed' {
+    get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '3', :$performanceGoal = 'Speed', :$properties = '' {
 
         my Str $performanceGoal2 = $performanceGoal.Str.tclc eq 'Quality' ?? 'Quality' !! 'Speed';
         my Str $nAnswers2 = $nAnswers.Str;
         $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '3';
 
-        my Str $res = find-textual-answer( $text, $question, nAnswers => $nAnswers2.Int, performanceGoal => $performanceGoal2 );
+        my Str $res = find-textual-answer( $text, $question, nAnswers => $nAnswers2.Int, performanceGoal => $performanceGoal2, :$properties );
 
         content 'text/html', $res;
     }
