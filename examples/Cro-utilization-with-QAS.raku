@@ -38,7 +38,7 @@ While[True,
  message = SocketReadMessage[socket];
  message2 = ByteArrayToString[message];
  Print[\"[woflramscirpt] got request:\", message2];
- res = ToExpression[message2];
+ res = Check[ToExpression[message2], ExportString[<|\"Error\" -> \"\$Failed\"|>, \"JSON\", \"Compact\" -> True]];
  Print[\"[woflramscirpt] evaluated:\", res];
 
  BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
@@ -68,6 +68,7 @@ sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 
     # Build-up the WL code
     my $spec = 'aRes = ComputationalSpecCompletion[ "' ~ $commands ~ '", "AssociationResult" -> True, "ProgrammingLanguage" -> "' ~ $lang ~ '"];';
+    $spec ~= 'If[ TrueQ[aRes === $Failed], aRes = <|"Error" -> "$Failed"|>];';
     $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]';
 
     # Send code through ZMQ
@@ -102,7 +103,11 @@ sub find-textual-answer(Str $text, Str $question, Int :$nAnswers = 3, Str :$perf
 
     # Build-up the WL code
     my $spec = 'lsProps = {"Probability", "Position"' ~ ( @props.elems == 0 ?? '' !! ', ' ~ @props.join(', ') ) ~ '};';
-    $spec ~= 'aRes = Map[AssociationThread[lsProps, #] &, FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~ $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"]];';
+    $spec ~= 'res = FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~ $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"];';
+    $spec ~= 'If[ TrueQ[res === $Failed],';
+    $spec ~= '  aRes = <|"Error" -> "$Failed"|>,';
+    $spec ~= '  aRes = Map[AssociationThread[lsProps, #] &, res]';
+    $spec ~= '];';
     $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
 
     # Send code through ZMQ
