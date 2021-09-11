@@ -19,6 +19,7 @@ use DSL::English::RecommenderWorkflows;
 use DSL::English::SearchEngineQueries;
 use DSL::English::FoodPreparationWorkflows;
 use DSL::English::DataAcquisitionWorkflows;
+use DSL::English::RecruitingWorkflows;
 
 #-----------------------------------------------------------
 # DSL target to DSL module
@@ -45,7 +46,8 @@ my %moduleToRTarget =
         "DSL::English::RecommenderWorkflows" => "R-SMRMon",
         "DSL::English::SearchEngineQueries" => "R-tidyverse",
         "DSL::English::FoodPreparationWorkflows" => "R-base",
-        "DSL::English::DataAcquisitionWorkflows" => "R-base";
+        "DSL::English::DataAcquisitionWorkflows" => "R-base",
+        "DSL::English::RecruitingWorkflows" => "R-base";
 
 
 my %moduleToWLTarget =
@@ -58,7 +60,8 @@ my %moduleToWLTarget =
         "DSL::English::RecommenderWorkflows" => "WL-SMRMon",
         "DSL::English::SearchEngineQueries" => "WL-SMRMon",
         "DSL::English::FoodPreparationWorkflows" => "WL-System",
-        "DSL::English::DataAcquisitionWorkflows" => "WL-System";
+        "DSL::English::DataAcquisitionWorkflows" => "WL-System",
+        "DSL::English::RecruitingWorkflows" => "WL-System";
 
 
 my %specToModuleToTarget =
@@ -88,7 +91,8 @@ my %moduleToDSLGrammar =
         "DSL::English::RecommenderWorkflows" => DSL::English::RecommenderWorkflows::Grammar,
         "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
         "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar,
-        "DSL::English::DataAcquisitionWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar;
+        "DSL::English::DataAcquisitionWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar,
+        "DSL::English::RecruitingWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar;
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
@@ -103,7 +107,8 @@ my %moduleToDSLFunction =
         "DSL::English::RecommenderWorkflows" => "ToRecommenderWorkflowCode",
         "DSL::English::SearchEngineQueries" => "ToSearchEngineQueryCode",
         "DSL::English::FoodPreparationWorkflows" => "ToFoodPreparationWorkflowCode",
-        "DSL::English::DataAcquisitionWorkflows" => "ToDataAcquisitionWorkflowCode";
+        "DSL::English::DataAcquisitionWorkflows" => "ToDataAcquisitionWorkflowCode",
+        "DSL::English::RecruitingWorkflows" => "ToRecruitingWorkflowCode";
 
 
 #-----------------------------------------------------------
@@ -119,7 +124,8 @@ my %englishModuleFunctions =
         "DSL::English::RecommenderWorkflows" => &ToRecommenderWorkflowCode,
         "DSL::English::SearchEngineQueries" => &ToSearchEngineQueryCode,
         "DSL::English::FoodPreparationWorkflows" => &ToFoodPreparationWorkflowCode,
-        "DSL::English::DataAcquisitionWorkflows" => &ToDataAcquisitionWorkflowCode;
+        "DSL::English::DataAcquisitionWorkflows" => &ToDataAcquisitionWorkflowCode,
+        "DSL::English::RecruitingWorkflows" => &ToRecruitingWorkflowCode;
 
 
 #-----------------------------------------------------------
@@ -129,37 +135,52 @@ my %englishModuleShortcuts =
 
         ClCon => "DSL::English::ClassificationWorkflows",
         ClassificationWorkflows => "DSL::English::ClassificationWorkflows",
+        Classification => "DSL::English::ClassificationWorkflows",
         "DSL::English::ClassificationWorkflows" => "DSL::English::ClassificationWorkflows",
 
         DataQueryWorkflows => "DSL::English::DataQueryWorkflows",
+        DataQuery => "DSL::English::DataQueryWorkflows",
+        DataWrangling => "DSL::English::DataQueryWorkflows",
         "DSL::English::DataQueryWorkflows" => "DSL::English::DataQueryWorkflows",
 
         ECMMon => "DSL::English::EpidemiologyModelingWorkflows",
+        EpidemiologicModeling => "DSL::English::EpidemiologyModelingWorkflows",
+        EpidemiologyModeling => "DSL::English::EpidemiologyModelingWorkflows",
         EpidemiologyModelingWorkflows => "DSL::English::EpidemiologyModelingWorkflows",
         "DSL::English::EpidemiologyModelingWorkflows" => "DSL::English::EpidemiologyModelingWorkflows",
 
         LSAMon => "DSL::English::LatentSemanticAnalysisWorkflows",
+        LatentSemanticAnalysis => "DSL::English::LatentSemanticAnalysisWorkflows",
         LatentSemanticAnalysisWorkflows => "DSL::English::LatentSemanticAnalysisWorkflows",
         "DSL::English::LatentSemanticAnalysisWorkflows" => "DSL::English::LatentSemanticAnalysisWorkflows",
 
         QRMon => "DSL::English::QuantileRegressionWorkflows",
+        QuantileRegression => "DSL::English::QuantileRegressionWorkflows",
         QuantileRegressionWorkflows => "DSL::English::QuantileRegressionWorkflows",
         "DSL::English::QuantileRegressionWorkflows" => "DSL::English::QuantileRegressionWorkflows",
 
         SMRMon => "DSL::English::RecommenderWorkflows",
+        Recommendations => "DSL::English::RecommenderWorkflows",
         RecommenderWorkflows => "DSL::English::RecommenderWorkflows",
         "DSL::English::RecommenderWorkflows" => "DSL::English::RecommenderWorkflows",
 
+        "SearchEngine" => "DSL::English::SearchEngineQueries",
         "SearchEngineQueries" => "DSL::English::SearchEngineQueries",
         "DSL::English::SearchEngineQueries" => "DSL::English::SearchEngineQueries",
 
         "FoodPrep" => "DSL::English::FoodPreparationWorkflows",
         "FoodPreparation" => "DSL::English::FoodPreparationWorkflows",
+        "FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows",
         "DSL::English::FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows",
 
         "DataAcquirer" => "DSL::English::DataAcquisitionWorkflows",
         "DataAcquisition" => "DSL::English::DataAcquisitionWorkflows",
-        "DSL::English::DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows";
+        "DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows",
+        "DSL::English::DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows",
+
+        "Recruiting" => "DSL::English::RecruitingWorkflows",
+        "RecruitingWorkflows" => "DSL::English::RecruitingWorkflows",
+        "DSL::English::RecruitingWorkflows" => "DSL::English::RecruitingWorkflows";
 
 
 #-----------------------------------------------------------
