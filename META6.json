@@ -25,6 +25,7 @@
     "DSL::English::LatentSemanticAnalysisWorkflows",
     "DSL::English::QuantileRegressionWorkflows",
     "DSL::English::RecommenderWorkflows",
+    "DSL::English::RecruitingWorkflows",
     "DSL::English::SearchEngineQueries"
   ],
   "build-depends": [],
