@@ -1,16 +1,16 @@
 
-# Comment out if there is no zef:
-zef nuke home
-
-# Comment out if there is no zef:
-zef nuke site
-
+## Comment out if there is no zef:
+#zef nuke home
+#
+## Comment out if there is no zef:
+#zef nuke site
+#
 # Edit the following line to be the correct directory name of the zef repository:
-cd ~/GitHub/ugexe/zef
-#
-raku -I. bin/zef install .
-#
-cd -
+#cd ~/GitHub/ugexe/zef
+##
+#raku -I. bin/zef install .
+##
+#cd -
 
 ## Install prove6
 zef install App::Prove6
