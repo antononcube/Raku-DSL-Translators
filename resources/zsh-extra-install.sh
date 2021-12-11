@@ -1,5 +1,6 @@
 
 ## Install DSL Raku packages
+zef install Hash::Merge
 zef install https://github.com/drforr/perl6-ANTLR4.git --force-install
 zef install https://github.com/Demayl/raku-Email-Valid.git
 zef install https://gitlab.com/uzluisf/raku-pretty-table.git
