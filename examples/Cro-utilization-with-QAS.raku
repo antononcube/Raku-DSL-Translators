@@ -52,7 +52,7 @@ While[True,
 };
 
 # Prep code when experimenting with DSL translations by QAS.
-my Str $prepCode = 'Import["https://raw.githubusercontent.com/antononcube/MathematicaForPrediction/master/Misc/ComputationalSpecCompletion.m"];';
+my Str $prepCode = 'Import["https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m"];';
 
 # Launch wolframscript with ZMQ socket
 my $proc = Proc::Async.new: 'wolframscript','-code', MakeWLCode(:$url, :$port, :$prepCode):!proclaim;
@@ -67,7 +67,7 @@ $reciever.bind("$url:$port");
 sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
 
     # Build-up the WL code
-    my $spec = 'aRes = ComputationalSpecCompletion[ "' ~ $commands ~ '", "AssociationResult" -> True, "ProgrammingLanguage" -> "' ~ $lang ~ '"];';
+    my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~ '"];';
     $spec ~= 'If[ TrueQ[aRes === $Failed], aRes = <|"Error" -> "$Failed"|>];';
     $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]';
 
@@ -172,7 +172,7 @@ my $application = route {
         my $parserRes = $numberQ ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
 
         my %res = %( CODE => $parserRes,
-                     COMMANDS => $commands2,
+                     COMMAND => $commands2,
                      USERID => '',
                      DSL => 'Lingua::NumericWordForms',
                      DSLTARGET => 'Lingua::NumericWordForms',
