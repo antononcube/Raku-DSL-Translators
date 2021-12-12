@@ -50,6 +50,14 @@ my %moduleToRTarget =
         "DSL::English::RecruitingWorkflows" => "R-base";
 
 
+my %moduleToRakuTarget =
+
+        "DSL::English::DataQueryWorkflows" => "Raku-Reshapers",
+        "DSL::English::RecommenderWorkflows" => "Raku-SBR",
+        "DSL::English::SearchEngineQueries" => "Raku-Ecosystem",
+        "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem",
+        "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
+
 my %moduleToWLTarget =
 
         "DSL::English::ClassificationWorkflows" => "WL-ClCon",
@@ -63,10 +71,10 @@ my %moduleToWLTarget =
         "DSL::English::DataAcquisitionWorkflows" => "WL-System",
         "DSL::English::RecruitingWorkflows" => "WL-System";
 
-
 my %specToModuleToTarget =
         "Python" => %moduleToPythonTarget,
         "R" => %moduleToRTarget,
+        "Raku" => %moduleToRakuTarget,
         "WL" => %moduleToWLTarget;
 
 # Make target-to-module rules by inverting the module-to-target rules
