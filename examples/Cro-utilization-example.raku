@@ -79,7 +79,7 @@ my $application = route {
         my $parserRes = $numberQ ?? to-numeric-word-form($commands2) !! from-numeric-word-form( $commands2, 'automatic', :p);
 
         my %res = %( CODE => $parserRes,
-                     COMMANDS => $commands2,
+                     COMMAND => $commands2,
                      USERID => '',
                      DSL => 'Lingua::NumericWordForms',
                      DSLTARGET => 'Lingua::NumericWordForms',
