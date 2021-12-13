@@ -464,7 +464,7 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
     }
 
     ## Combine with custom $err with interpretation result
-    %res = %res , %( STDERR => $err, COMMANDS => $commands );
+    %res = %res , %( STDERR => $err, COMMAND => $commands );
 
     ## Result
     %res
