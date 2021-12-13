@@ -22,7 +22,7 @@ zef install --/test cro
 ## Install DSL Raku packages
 zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
 zef install https://github.com/antononcube/Raku-Chemistry-Stoichiometry.git --force-install
-zef install https://github.com/antononcube/Raku-Data-DataGenerators.git --force-install
+zef install https://github.com/antononcube/Raku-Data-Generators.git --force-install
 zef install https://github.com/antononcube/Raku-Data-Reshapers.git --force-install
 zef install https://github.com/antononcube/Raku-Data-Summarizers.git --force-install
 zef install https://github.com/antononcube/Raku-Data-ExampleDatasets.git --force-install
