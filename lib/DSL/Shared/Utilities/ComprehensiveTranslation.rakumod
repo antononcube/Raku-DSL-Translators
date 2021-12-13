@@ -410,8 +410,6 @@ sub ToDSLSyntaxTree(Str $command,
     # Call ToDSLCode
     my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
 
-    note %ast.raku;
-
     # Convert to Hash pairs
     if $as-hash {
         %ast<CODE> = to-pairs( %ast<CODE> )
@@ -458,7 +456,6 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
 #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
 #        %res = %res , %( CODE => %res{"CODE"}.gist );
         %res = ToDSLSyntaxTree($commands2, language => 'English', format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
-
     } else {
         %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
     }
