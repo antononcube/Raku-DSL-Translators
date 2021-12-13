@@ -350,18 +350,26 @@ multi ToDSLCode(Str $command,
     }
 
     # DSL translate
-    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget);
+    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget, format => 'hash');
+
+    if $ast {
+        $code = { CODE => $code }
+    }
 
     # Handle failure from the parser-interpreters
     CATCH {
         default {
-            my %rakuRes = Hash.new(%dslSpecs, %userSpecs, { CODE => '', DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku, COMMAND => $command });
+            my %rakuRes = Hash.new(%dslSpecs, %userSpecs, { CODE => '', DSL => $dsl, DSLTARGET => $dslTarget,
+                                                            DSLFUNCTION => &dslFunc.raku, COMMAND => $command,
+                                                            SETUPCODE => '' });
             return post-process-result(%rakuRes, $format)
         }
     }
 
     # Result
-    my %rakuRes = Hash.new(%dslSpecs,  %userSpecs, { CODE => $code, DSL => $dsl, DSLTARGET => $dslTarget, DSLFUNCTION => &dslFunc.raku, COMMAND => $command });
+    my %rakuRes = Hash.new(%dslSpecs, %userSpecs, %($code.pairs), { DSL => $dsl, DSLTARGET => $dslTarget,
+                                                                    DSLFUNCTION => &dslFunc.raku, COMMAND => $command});
+
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
 
