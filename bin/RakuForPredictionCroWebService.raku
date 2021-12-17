@@ -12,118 +12,26 @@ use Net::ZMQ4;
 use Net::ZMQ4::Constants;
 
 
-#| Makes WL's ZeroMQ infinite loop program.
-sub MakeWLCode(Str :$url = 'tcp://127.0.0.1', Str :$port = '5555', Str :$prepCode = '', Bool :$proclaim = False) {
-
-    my Str $resCode =
-            $prepCode ~
-            "socket = SocketConnect[\"$url:$port\", \"ZMQ_REP\"]
-
-While[True,
- message = SocketReadMessage[socket];
- message2 = ByteArrayToString[message];
- Print[\"[woflramscirpt] got request:\", message2];
- res = Check[ToExpression[message2], ExportString[<|\"Error\" -> \"\$Failed\"|>, \"JSON\", \"Compact\" -> True]];
- Print[\"[woflramscirpt] evaluated:\", res];
-
- BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
-]";
-    # BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
-    if !$proclaim {
-        $resCode = $resCode.subst(/ ^^ \h* 'Print' .*? $$ /, ''):g
-    }
-
-    $resCode
-};
-
-#| Translate commands by QAS.
-sub dsl-translate-by-qas($receiver, Str $commands, Str :$lang = 'WL') {
-
-    # Build-up the WL code
-    my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~
-            '"];';
-    $spec ~= 'If[ TrueQ[aRes === $Failed], aRes = <|"Error" -> "$Failed"|>];';
-    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
-
-    # The above line could be the following, but I think it is better to give working WL code.
-    # ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]
-
-    # Send code through ZMQ
-    $receiver.send($spec);
-
-    # Receive result from ZMQ
-    my $message = $receiver.receive();
-
-    # Return result
-    $message.data-str
-}
-
-#| Get answers by WL's FindTextualAnswer.
-sub find-textual-answer($receiver,
-                        Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed',
-                        Str :$properties = '') {
-
-    # Process properties
-    my Str @knownProps = <String Position Probability Sentence Paragraph Line Snippet>;
-    my Str @props;
-
-    if $properties.chars > 0 {
-
-        @props = $properties.split(/',' | \h+ /).map({ $_.trim.tclc });
-
-        @props = (@props (&) @knownProps).keys;
-
-        @props = (@props (-) <Probability Position>).keys.sort;
-
-        if @props.elems > 0 {
-            @props = @props.map({ '"' ~ $_ ~ '"' });
-        }
-    }
-
-    # Build-up the WL code
-    my $spec = 'lsProps = {"Probability", "Position"' ~ (@props.elems == 0 ?? '' !! ', ' ~ @props.join(', ')) ~ '};';
-    $spec ~= 'res = FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~
-            $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"];';
-    $spec ~= 'If[ TrueQ[res === $Failed],';
-    $spec ~= '  aRes = <|"Error" -> "$Failed"|>,';
-    $spec ~= '  aRes = Map[AssociationThread[lsProps, #] &, res]';
-    $spec ~= '];';
-    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
-
-    # Send code through ZMQ
-    $receiver.send($spec);
-
-    # Receive result from ZMQ
-    my $message = $receiver.receive();
-
-    # Return result
-    $message.data-str
-}
-
-#| Empty result hash
-constant %emptyResult = %( CODE => '',
-                           STDERR => '',
-                           COMMAND => '',
-                           USERID => '',
-                           DSL => '',
-                           DSLTARGET => '',
-                           DSLFUNCTION => '');
-
 #============================================================
 # MAIN program
 #============================================================
 #| Start a Cro service for translation of DSLs into executable code.
 sub MAIN(
-#| Host name
-        Str :$host = 'localhost',
-#| Port
-        Str :$port = '10000',
-#| URL for the wolframscript connection
-        Str :$wl-url = 'tcp://127.0.0.1',
-#| Port for the wolframscript connection
-        Str :$wl-port = '5540',
-#| URL for NLP Template Engine package (to be loaded in WL)
-        Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
+        Str :$host = 'localhost', #= Host name
+        Str :$port = '10000', #= Port
+        Str :$wl-url = 'tcp://127.0.0.1', #= URL for the wolframscript connection
+        Str :$wl-port = '5540', #= Port for the wolframscript connection
+        Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m', #| URL for NLP Template Engine package (to be loaded in WL)
+         ) {
+
+    # Empty result hash
+    constant %emptyResult = %( CODE => '',
+                               STDERR => '',
+                               COMMAND => '',
+                               USERID => '',
+                               DSL => '',
+                               DSLTARGET => '',
+                               DSLFUNCTION => '');
 
     # Prep code when experimenting with DSL translations by QAS.
     my Str $prepCode = 'Import["' ~ $wl-nlp-package-url ~ '"];';
@@ -268,3 +176,102 @@ sub MAIN(
     }
 
 }
+
+
+#============================================================
+# MakeWLCode
+#============================================================
+
+#| Makes WL's ZeroMQ infinite loop program.
+sub MakeWLCode(Str :$url = 'tcp://127.0.0.1', Str :$port = '5555', Str :$prepCode = '', Bool :$proclaim = False) {
+
+    my Str $resCode =
+            $prepCode ~
+            "socket = SocketConnect[\"$url:$port\", \"ZMQ_REP\"]
+
+While[True,
+ message = SocketReadMessage[socket];
+ message2 = ByteArrayToString[message];
+ Print[\"[woflramscirpt] got request:\", message2];
+ res = Check[ToExpression[message2], ExportString[<|\"Error\" -> \"\$Failed\"|>, \"JSON\", \"Compact\" -> True]];
+ Print[\"[woflramscirpt] evaluated:\", res];
+
+ BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
+]";
+    # BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
+    if !$proclaim {
+        $resCode = $resCode.subst(/ ^^ \h* 'Print' .*? $$ /, ''):g
+    }
+
+    $resCode
+};
+
+
+#============================================================
+# QAS
+#============================================================
+
+#| Translate commands by QAS.
+sub dsl-translate-by-qas($receiver, Str $commands, Str :$lang = 'WL') {
+
+    # Build-up the WL code
+    my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~
+            '"];';
+    $spec ~= 'If[ TrueQ[aRes === $Failed], aRes = <|"Error" -> "$Failed"|>];';
+    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
+
+    # The above line could be the following, but I think it is better to give working WL code.
+    # ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]
+
+    # Send code through ZMQ
+    $receiver.send($spec);
+
+    # Receive result from ZMQ
+    my $message = $receiver.receive();
+
+    # Return result
+    $message.data-str
+}
+
+#| Get answers by WL's FindTextualAnswer.
+sub find-textual-answer($receiver,
+                        Str $text, Str $question, Int :$nAnswers = 3, Str :$performanceGoal = 'Speed',
+                        Str :$properties = '') {
+
+    # Process properties
+    my Str @knownProps = <String Position Probability Sentence Paragraph Line Snippet>;
+    my Str @props;
+
+    if $properties.chars > 0 {
+
+        @props = $properties.split(/',' | \h+ /).map({ $_.trim.tclc });
+
+        @props = (@props (&) @knownProps).keys;
+
+        @props = (@props (-) <Probability Position>).keys.sort;
+
+        if @props.elems > 0 {
+            @props = @props.map({ '"' ~ $_ ~ '"' });
+        }
+    }
+
+    # Build-up the WL code
+    my $spec = 'lsProps = {"Probability", "Position"' ~ (@props.elems == 0 ?? '' !! ', ' ~ @props.join(', ')) ~ '};';
+    $spec ~= 'res = FindTextualAnswer[ "' ~ $text ~ '", "' ~ $question ~ '", ' ~
+            $nAnswers.Str ~ ', lsProps, "PerformanceGoal" -> "' ~ $performanceGoal ~ '"];';
+    $spec ~= 'If[ TrueQ[res === $Failed],';
+    $spec ~= '  aRes = <|"Error" -> "$Failed"|>,';
+    $spec ~= '  aRes = Map[AssociationThread[lsProps, #] &, res]';
+    $spec ~= '];';
+    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
+
+    # Send code through ZMQ
+    $receiver.send($spec);
+
+    # Receive result from ZMQ
+    my $message = $receiver.receive();
+
+    # Return result
+    $message.data-str
+}
+
