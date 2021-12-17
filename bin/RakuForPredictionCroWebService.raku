@@ -115,7 +115,7 @@ constant %emptyResult = %( CODE => '',
 sub MAIN(Str :$host = 'localhost',
          Str :$port = '10000',
          Str :$wl-url = 'tcp://127.0.0.1',
-         Str :$wl-port = '5555',
+         Str :$wl-port = '5540',
          Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
 
     # Prep code when experimenting with DSL translations by QAS.
