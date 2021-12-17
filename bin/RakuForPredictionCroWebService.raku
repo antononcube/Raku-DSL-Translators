@@ -100,44 +100,86 @@ sub find-textual-answer($receiver,
     $message.data-str
 }
 
+#| Empty result hash
+constant %emptyResult = %( CODE => '',
+                           STDERR => '',
+                           COMMAND => '',
+                           USERID => '',
+                           DSL => '',
+                           DSLTARGET => '',
+                           DSLFUNCTION => '');
 
 #============================================================
 # MAIN program
 #============================================================
-sub MAIN(Str $host = 'localhost',
-         Str $port = '10000',
-         Str $wl-url = 'tcp://127.0.0.1',
-         Str $wl-port = '5555',
-         Str $wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
+sub MAIN(Str :$host = 'localhost',
+         Str :$port = '10000',
+         Str :$wl-url = 'tcp://127.0.0.1',
+         Str :$wl-port = '5555',
+         Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
 
     # Prep code when experimenting with DSL translations by QAS.
     my Str $prepCode = 'Import["' ~ $wl-nlp-package-url ~ '"];';
 
     # Launch wolframscript with ZMQ socket
-    my $proc = Proc::Async.new: 'wolframscript', '-code', MakeWLCode(url => $wl-url, port => $wl-port,
-            :$prepCode):!proclaim;
-    $proc.start;
+    my $proc = Nil;
+    my Net::ZMQ4::Socket $receiver = Nil;
+    if $wl-url and $wl-port {
 
-    # Socket to talk to clients
-    my Net::ZMQ4::Context $context .= new;
-    my Net::ZMQ4::Socket $receiver .= new($context, ZMQ_REQ);
-    $receiver.bind("$wl-url:$wl-port");
+        warn 'Launching wolframscript with ZMQ socket...';
+
+        # Launch wolframscript with ZMQ socket
+        $proc = Proc::Async.new:
+                'wolframscript',
+                '-code',
+                MakeWLCode(url => $wl-url, port => $wl-port, :$prepCode):!proclaim;
+
+        $proc.start;
+
+        # Socket to talk to clients
+        my Net::ZMQ4::Context $context .= new;
+        $receiver .= new($context, ZMQ_REQ);
+        $receiver.bind("$wl-url:$wl-port");
+
+        warn '...DONE';
+    } else {
+        warn 'Not activating QAS.'
+    }
 
     # Cro application
     my $application = route {
 
         get -> 'translate', 'qas', $commands {
 
-            my Str $res = dsl-translate-by-qas($receiver, $commands, lang => 'WL');
+            if $receiver {
 
-            content 'text/html', $res;
+                my Str $res = dsl-translate-by-qas($receiver, $commands, lang => 'WL');
+
+                content 'text/html', $res;
+
+            } else {
+
+                my %res = %emptyResult , { STDERR => 'QAS was not activated.', COMMAND => $commands };
+
+                content 'text/html', marshal(%res);
+            }
         }
 
         get -> 'translate', 'qas', $lang, $commands {
 
-            my Str $res = dsl-translate-by-qas($receiver, $commands, :$lang);
+            if $receiver {
 
-            content 'text/html', $res;
+                my Str $res = dsl-translate-by-qas($receiver, $commands, :$lang);
+
+                content 'text/html', $res;
+
+            } else {
+
+                my %res = %emptyResult , { STDERR => 'QAS was not activated.', COMMAND => $commands };
+
+                content 'text/html', marshal(%res);
+
+            }
         }
 
         get -> 'translate', $commands {
@@ -207,9 +249,13 @@ sub MAIN(Str $host = 'localhost',
 
     $service.start;
 
+    warn 'Started the Cro service.';
+
     react whenever signal(SIGINT) {
-        $proc.kill;
-        $proc.kill: SIGKILL;
+        if $proc {
+            $proc.kill;
+            $proc.kill: SIGKILL;
+        }
         $service.stop;
         exit;
     }
