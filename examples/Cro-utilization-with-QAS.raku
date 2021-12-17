@@ -69,7 +69,10 @@ sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
     # Build-up the WL code
     my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~ '"];';
     $spec ~= 'If[ TrueQ[aRes === $Failed], aRes = <|"Error" -> "$Failed"|>];';
-    $spec ~= 'ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]';
+    $spec ~= 'ExportString[aRes, "JSON", "Compact" -> True]';
+
+    # The above line could be the following, but I think it is better to give working WL code.
+    # ExportString[Map[StringReplace[#, {"\[DoubleLongRightArrow]" -> "==>"}] &, aRes], "JSON", "Compact" -> True]
 
     # Send code through ZMQ
     $reciever.send($spec);
