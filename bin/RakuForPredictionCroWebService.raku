@@ -112,11 +112,18 @@ constant %emptyResult = %( CODE => '',
 #============================================================
 # MAIN program
 #============================================================
-sub MAIN(Str :$host = 'localhost',
-         Str :$port = '10000',
-         Str :$wl-url = 'tcp://127.0.0.1',
-         Str :$wl-port = '5540',
-         Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
+#| Start a Cro service for translation of DSLs into executable code.
+sub MAIN(
+#| Host name
+        Str :$host = 'localhost',
+#| Port
+        Str :$port = '10000',
+#| URL for the wolframscript connection
+        Str :$wl-url = 'tcp://127.0.0.1',
+#| Port for the wolframscript connection
+        Str :$wl-port = '5540',
+#| URL for NLP Template Engine package (to be loaded in WL)
+        Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m') {
 
     # Prep code when experimenting with DSL translations by QAS.
     my Str $prepCode = 'Import["' ~ $wl-nlp-package-url ~ '"];';
@@ -159,7 +166,7 @@ sub MAIN(Str :$host = 'localhost',
 
             } else {
 
-                my %res = %emptyResult , { STDERR => 'QAS was not activated.', COMMAND => $commands };
+                my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $commands };
 
                 content 'text/html', marshal(%res);
             }
@@ -175,7 +182,7 @@ sub MAIN(Str :$host = 'localhost',
 
             } else {
 
-                my %res = %emptyResult , { STDERR => 'QAS was not activated.', COMMAND => $commands };
+                my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $commands };
 
                 content 'text/html', marshal(%res);
 
