@@ -54,9 +54,9 @@ my %moduleToRakuTarget =
 
         "DSL::English::DataQueryWorkflows" => "Raku-Reshapers",
         "DSL::English::RecommenderWorkflows" => "Raku-SBR",
-        "DSL::English::SearchEngineQueries" => "Raku-Ecosystem",
-        "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem",
-        "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
+        "DSL::English::SearchEngineQueries" => "Raku-System",
+        "DSL::English::DataAcquisitionWorkflows" => "Raku-System",
+        "DSL::English::RecruitingWorkflows" => "WL-System";
 
 my %moduleToWLTarget =
 
@@ -330,7 +330,10 @@ multi ToDSLCode(Str $command,
     my Str $dsl = %dslSpecs{'DSL'};
     $dsl = %languageDispatch{$language}{$dsl};
 
-    die "Unknown DSL spec: $dsl." unless  %languageDispatch{$language}{$dsl}:exists;
+    die "Unknown DSL spec: $dsl." unless %languageDispatch{$language}{$dsl}:exists;
+
+    warn "Cannot find interpretation target for DSL spec: $dsl and default target spec $defaultTargetsSpec"
+    unless %specToModuleToTarget{$defaultTargetsSpec}{$dsl}:exists;
 
     # Get DSL target
     my Str $dslTarget = %specToModuleToTarget{$defaultTargetsSpec}{$dsl};
