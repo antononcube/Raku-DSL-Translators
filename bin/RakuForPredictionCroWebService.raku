@@ -64,78 +64,44 @@ sub MAIN(
     # Cro application
     my $application = route {
 
-        get -> 'translate', 'qas', $commands {
+        # DSL translation by QAS
+        get -> 'translate', 'qas', :$lang='WL', :$command! {
 
             if $receiver {
 
-                my Str $res = dsl-translate-by-qas($receiver, $commands, lang => 'WL');
+                my Str $res = dsl-translate-by-qas($receiver, $command, :$lang);
 
                 content 'text/html', $res;
 
             } else {
 
-                my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $commands };
+                my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $command };
 
                 content 'text/html', marshal(%res);
             }
         }
 
-        get -> 'translate', 'qas', $lang, $commands {
+        # DSL translation by grammars
+        get -> 'translate', :$command!, :$lang = 'WL', :$ast=False {
 
-            if $receiver {
-
-                my Str $res = dsl-translate-by-qas($receiver, $commands, :$lang);
-
-                content 'text/html', $res;
-
-            } else {
-
-                my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $commands };
-
-                content 'text/html', marshal(%res);
-
-            }
-        }
-
-        get -> 'translate', $commands {
-
-            my %res = dsl-translate($commands, defaultTargetsSpec => 'WL');
+            my %res = dsl-translate($command, defaultTargetsSpec => $$lang, :$ast);
 
             content 'text/html', marshal(%res);
         }
 
-        get -> 'translate', $lang, $commands {
+        # Numeric word forms
+        get -> 'translate', 'numeric', :$command! {
 
-            my %res = dsl-translate($commands, defaultTargetsSpec => $lang);
+            my Str $command2 = $command;
+            $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
 
-            content 'text/html', marshal(%res);
-        }
-
-        get -> 'translate', 'ast', $commands {
-
-            my %res = dsl-translate($commands, defaultTargetsSpec => 'WL'):ast;
-
-            content 'text/html', marshal(%res);
-        }
-
-        get -> 'translate', 'foodprep', $commands {
-            my Str $commands2 = $commands;
-            $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1, *- 1) !! $commands2;
-            content 'text/html', ToDSLCode($commands2, language => "English", format => 'json', :guessGrammar,
-                    defaultTargetsSpec => 'WL');
-        }
-
-        get -> 'translate', 'numeric', $commands {
-            my Str $commands2 = $commands;
-            $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1, *- 1) !! $commands2;
-
-            my Bool $numberQ = so $commands2 ~~ / ^ [';' | \d]* $ /;
-            my $parserRes = $numberQ ?? to-numeric-word-form($commands2) !! from-numeric-word-form($commands2,
+            my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
+            my $parserRes = $numberQ ?? to-numeric-word-form($command2) !! from-numeric-word-form($command2,
                     'automatic',
                     :p);
 
             my %res = %( CODE => $parserRes,
-                         COMMAND => $commands2,
+                         COMMAND => $command2,
                          USERID => '',
                          DSL => 'Lingua::NumericWordForms',
                          DSLTARGET => 'Lingua::NumericWordForms',
@@ -144,6 +110,7 @@ sub MAIN(
             content 'text/html', marshal(%res);
         }
 
+        # Find textual answer
         get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '3', :$performanceGoal = 'Speed',
                :$properties = '' {
 
