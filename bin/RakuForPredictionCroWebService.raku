@@ -82,9 +82,15 @@ sub MAIN(
         }
 
         # DSL translation by grammars
-        get -> 'translate', :$command!, :$lang = 'WL', :$ast=False {
+        get -> 'translate', :$command!, :$lang = 'WL', :$ast='false' {
 
-            my %res = dsl-translate($command, defaultTargetsSpec => $$lang, :$ast);
+            # I am not sure should we have these logging lines or not -- keeping them commented for now.
+            # say 'translate request at ', DateTime.now.Str;
+            # say (:$lang);
+            # say (:$ast);
+            # say (:$command);
+
+            my %res = dsl-translate($command, defaultTargetsSpec => $lang, ast => $ast.lc eq 'true');
 
             content 'text/html', marshal(%res);
         }
