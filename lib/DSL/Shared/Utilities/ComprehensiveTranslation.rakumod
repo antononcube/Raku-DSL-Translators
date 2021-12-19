@@ -445,7 +445,9 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
     my Str $commands2 = $commands;
 
     ## Remove wrapper quotes
-    $commands2 = ($commands2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $commands2.substr(1,*-1) !! $commands2;
+    if $commands2 ~~ / ^ ['"' | '\''] .* ['"' | '\''] $ / {
+        $commands2 = $commands2.substr(1, *- 1)
+    }
 
     ## Redirecting stderr to a custom $err
     my Str $err = '';
