@@ -440,7 +440,10 @@ sub ToDSLSyntaxTree(Str $command,
 
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
-sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast = False) is export {
+sub dsl-translate(Str:D $commands,
+                  Str:D :$defaultTargetsSpec = 'R',
+                  Bool :$ast = False,
+                  Bool :$prepend-setup-code = True) is export {
 
     my Str $commands2 = $commands;
 
@@ -470,6 +473,10 @@ sub dsl-translate(Str:D $commands, Str:D :$defaultTargetsSpec = 'R', Bool :$ast 
 
     ## Combine with custom $err with interpretation result
     %res = %res , %( STDERR => $err, COMMAND => $commands );
+
+    if %res<SETUPCODE>:exists and $prepend-setup-code {
+        %res<CODE> = %res<SETUPCODE> ~ "\n" ~ %res<CODE>
+    }
 
     ## Result
     %res
