@@ -23,6 +23,20 @@ zef install --/test cro
 zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
 zef install https://github.com/antononcube/Raku-Chemistry-Stoichiometry.git --force-install
 zef install https://github.com/antononcube/Raku-Data-Generators.git --force-install
+
+# This installation line for Text::Wrap is needed by Pretty::Table (used in Data::Reshapers.)
+# For some reason from zef I was getting deficient version on 2021-12-21
+#(base) [18:03]antonov/Raku-DSL-Shared-Utilities-ComprehensiveTranslation> zef install Text::Wrap --force-install
+#===> Searching for: Text::Wrap
+#===> Testing: _:ver<0.0.1>:auth<zef:codesections>
+#===> Testing [OK] for _:ver<0.0.1>:auth<zef:codesections>
+#===> Installing: _:ver<0.0.1>:auth<zef:codesections>
+#(base) [18:03]antonov/Raku-DSL-Shared-Utilities-ComprehensiveTranslation> zef install https://github.com/jkramer/p6-Text-Wrap.git --force-install
+#===> Testing: Text::Wrap:ver<0.0.3>
+#===> Testing [OK] for Text::Wrap:ver<0.0.3>
+#===> Installing: Text::Wrap:ver<0.0.3>
+zef install https://github.com/jkramer/p6-Text-Wrap.git --force-install
+
 zef install https://github.com/antononcube/Raku-Data-Reshapers.git --force-install
 zef install https://github.com/antononcube/Raku-Data-Summarizers.git --force-install
 zef install https://github.com/antononcube/Raku-Data-ExampleDatasets.git --force-install

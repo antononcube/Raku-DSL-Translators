@@ -8,6 +8,9 @@ zef install https://github.com/ugexe/Perl6-Text--Table--Simple.git
 zef install DB::MySQl
 zef install XML
 zef install XML::XPath
+zef install Haikunator
+zef install XDG::BaseDirectory
+zef install Acme::Text::UpsideDown
 zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git
-zef install https://github.com/antononcube/Raku-Data-Sumarizers.git
-zef install https://github.com/antononcube/Raku-Data-Generators.git
+zef install https://github.com/antononcube/Raku-Mathematica-Serializer.git
+zef install https://github.com/antononcube/Raku-Mathematica-Grammar.git
