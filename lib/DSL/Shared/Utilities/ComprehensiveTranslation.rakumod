@@ -293,25 +293,22 @@ sub post-process-result( %rakuRes, Str $format ) {
     * C<$degree> is a positive integer for the degree parallelism.
     * C<$ast> should Match object be returned for the key "CODE"?
 )
-proto ToDSLCode(Str $command,
-                Str :$language = 'English',
-                Str :$format = 'hash',
-                Bool :$guessGrammar = True,
-                Str :$defaultTargetsSpec = 'R',
-                Int :$degree = 1,
-                Bool :$ast = False) is export {*};
+proto ToDSLCode(Str $command, |) is export {*};
 
 multi ToDSLCode(Str $command,
                 Str :$language = 'English',
-                Str :$format = 'hash',
+                Str :$format is copy = 'hash',
                 Bool :$guessGrammar = True,
                 Str :$defaultTargetsSpec = 'R',
                 Int :$degree = 1,
-                Bool :$ast = False) {
+                Bool :$ast = False,
+                Bool :$code = False) {
 
     die "Unknown natural language: $language." unless %languageDispatch{$language}:exists;
 
     die "Unknown default targets spec: $defaultTargetsSpec." unless %specToModuleToTarget{$defaultTargetsSpec}:exists;
+
+    if $code { $format = "code"}
 
     # Get DSL specifications
     my %dslSpecs = get-dsl-spec($command, 'any');
@@ -356,10 +353,10 @@ multi ToDSLCode(Str $command,
     }
 
     # DSL translate
-    my $code = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget, format => 'hash');
+    my $translation = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget, format => 'hash');
 
     if $ast {
-        $code = { CODE => $code }
+        $translation = { CODE => $translation }
     }
 
     # Handle failure from the parser-interpreters
@@ -373,7 +370,7 @@ multi ToDSLCode(Str $command,
     }
 
     # Result
-    my %rakuRes = Hash.new(%dslSpecs, %userSpecs, %($code.pairs), { DSL => $dsl, DSLTARGET => $dslTarget,
+    my %rakuRes = Hash.new(%dslSpecs, %userSpecs, %($translation.pairs), { DSL => $dsl, DSLTARGET => $dslTarget,
                                                                     DSLFUNCTION => &dslFunc.raku, COMMAND => $command});
 
     %rakuRes = %rakuRes, %userSpecs;
