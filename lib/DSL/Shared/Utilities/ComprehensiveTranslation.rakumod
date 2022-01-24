@@ -54,9 +54,9 @@ my %moduleToRakuTarget =
 
         "DSL::English::DataQueryWorkflows" => "Raku-Reshapers",
         "DSL::English::RecommenderWorkflows" => "Raku-SBR",
-        "DSL::English::SearchEngineQueries" => "Raku-System",
-        "DSL::English::DataAcquisitionWorkflows" => "Raku-System",
-        "DSL::English::RecruitingWorkflows" => "WL-System";
+        "DSL::English::SearchEngineQueries" => "Raku-Reshapers",
+        "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem",
+        "DSL::English::RecruitingWorkflows" => "Raku-Ecosystem";
 
 my %moduleToWLTarget =
 
