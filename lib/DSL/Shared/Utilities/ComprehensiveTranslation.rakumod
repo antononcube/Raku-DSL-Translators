@@ -33,7 +33,9 @@ my %moduleToPythonTarget =
         "DSL::English::LatentSemanticAnalysisWorkflows" => "Python-LSAMon",
         "DSL::English::QuantileRegressionWorkflows" => "Python-QRMon",
         "DSL::English::RecommenderWorkflows" => "Python-SMRMon",
-        "DSL::English::SearchEngineQueries" => "Python-pandas";
+        "DSL::English::SearchEngineQueries" => "Python-pandas",
+        "DSL::English::DataAcquisitionWorkflows" => "Python-Ecosystem",
+        "DSL::English::RecruitingWorkflows" => "Python-Ecosystem";
 
 
 my %moduleToRTarget =
