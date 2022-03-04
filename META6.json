@@ -1,17 +1,12 @@
 {
-  "perl": "6.d",
   "name": "DSL::Shared::Utilities::ComprehensiveTranslation",
-  "api": "1",
-  "auth": "github:antononcube",
-  "version": "0.1.0",
   "description": "DSL::Shared::Utilities::ComprehensiveTranslation provides multi-DSL automatic determination and parsing.",
+  "version": "0.1.0",
+  "perl": "6.d",
   "authors": [
     "Anton Antonov"
   ],
-  "license": "Artistic-2.0",
-  "provides": {
-    "DSL::Shared::Utilities::ComprehensiveTranslation": "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod"
-  },
+  "auth": "github:antononcube",
   "depends": [
     "JSON::Marshal",
     "Lingua::NumericWordForms",
@@ -30,7 +25,11 @@
   ],
   "build-depends": [],
   "test-depends": [],
+  "provides": {
+    "DSL::Shared::Utilities::ComprehensiveTranslation": "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod"
+  },
   "resources": [],
+  "license": "Artistic-2.0",
   "tags": [
     "parser",
     "interpreter",
@@ -38,5 +37,6 @@
     "workflow",
     "pipeline"
   ],
+  "api": "1",
   "source-url": "https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation"
 }
