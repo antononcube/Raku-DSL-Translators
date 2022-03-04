@@ -14,3 +14,4 @@ zef install Acme::Text::UpsideDown
 zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git
 zef install https://github.com/antononcube/Raku-Mathematica-Serializer.git
 zef install https://github.com/antononcube/Raku-Mathematica-Grammar.git
+zef install https://github.com/antononcube/Raku-UML-Translators.git
