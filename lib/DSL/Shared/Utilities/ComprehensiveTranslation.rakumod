@@ -289,13 +289,13 @@ sub post-process-result( %rakuRes, Str $format ) {
 #|( Translates natural language commands into programming code.
     * C<$command> is a string with one or many commands (separated by ';').
     * C<$language> is the natural language to translate from.
-    * C<$format> is the format of the output one of 'raku' or 'json'.
+    * C<$format> is the format of the output, one of 'ast', 'code', 'hash', 'json', or 'raku'.
     * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
-    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'WL'.
+    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'Raku', 'WL'.
     * C<$degree> is a positive integer for the degree parallelism.
-    * C<$ast> should Match object be returned for the key "CODE"?
+    * C<$ast> is a Boolean whether a Match object be returned for the key "CODE"?
 )
-proto ToDSLCode(Str $command, |) is export {*};
+our proto ToDSLCode(Str $command, |) is export {*};
 
 multi ToDSLCode(Str $command,
                 Str :$language = 'English',
@@ -348,10 +348,10 @@ multi ToDSLCode(Str $command,
     # Get user specifications
     my %userSpecs = get-user-spec($command);
 
-    if not (%userSpecs and %userSpecs{'USERID'}:exists) {
-        %userSpecs = %userSpecs, 'USERID' => '';
+    if not so (%userSpecs and %userSpecs{'USERID'}:exists) {
+        %userSpecs = %userSpecs, USERID => '';
     } elsif %userSpecs{'USERID'} (elem) <NONE NULL> {
-        %userSpecs = %userSpecs, 'USERID' => '';
+        %userSpecs = %userSpecs, USERID => '';
     }
 
     # DSL translate
@@ -366,14 +366,14 @@ multi ToDSLCode(Str $command,
         default {
             my %rakuRes = Hash.new(%dslSpecs, %userSpecs, { CODE => '', DSL => $dsl, DSLTARGET => $dslTarget,
                                                             DSLFUNCTION => &dslFunc.raku, COMMAND => $command,
-                                                            SETUPCODE => '' });
+                                                            SETUPCODE => ''});
             return post-process-result(%rakuRes, $format)
         }
     }
 
     # Result
     my %rakuRes = Hash.new(%dslSpecs, %userSpecs, %($translation.pairs), { DSL => $dsl, DSLTARGET => $dslTarget,
-                                                                    DSLFUNCTION => &dslFunc.raku, COMMAND => $command});
+                                                                           DSLFUNCTION => &dslFunc.raku, COMMAND => $command});
 
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
