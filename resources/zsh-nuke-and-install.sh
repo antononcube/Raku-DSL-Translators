@@ -19,6 +19,11 @@ zef install Linenoise
 ## Install cro
 zef install --/test cro
 
+## Install utility (required) packages
+zef install Hash::Merge
+zef install silently
+zef install XDG::BaseDirectory
+
 ## Install DSL Raku packages
 zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install
 zef install https://github.com/antononcube/Raku-Chemistry-Stoichiometry.git --force-install
