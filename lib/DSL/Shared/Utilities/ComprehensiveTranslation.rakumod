@@ -174,6 +174,7 @@ my %englishModuleShortcuts =
 
         SMRMon => "DSL::English::RecommenderWorkflows",
         Recommendations => "DSL::English::RecommenderWorkflows",
+        Recommenders => "DSL::English::RecommenderWorkflows",
         RecommenderWorkflows => "DSL::English::RecommenderWorkflows",
         "DSL::English::RecommenderWorkflows" => "DSL::English::RecommenderWorkflows",
 
