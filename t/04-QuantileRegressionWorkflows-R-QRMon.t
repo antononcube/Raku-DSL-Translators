@@ -1,0 +1,77 @@
+use v6.d;
+
+use DSL::Shared::Utilities::ComprehensiveTranslation;
+
+use JSON::Marshal;
+
+use Test;
+
+plan 4;
+
+##-----------------------------------------------------------
+## Setup
+##-----------------------------------------------------------
+
+my %defaultOpts = language => 'English', format => 'hash', :guessGrammar, defaultTargetsSpec => 'R', degree => 1;
+
+my $command0 = '
+create from dfFinance;
+compute quantile regression with 20 knots and interpolation order 2;
+show error plots
+';
+
+##-----------------------------------------------------------
+## 1
+##-----------------------------------------------------------
+
+my $command1 = 'DSL MODULE QuantileRegressionWorkflows;' ~ $command0;
+
+my $expectedRes1 = '
+QRMonUnit( data = dfFinance) %>%
+QRMonQuantileRegression(df = 20, degree = 2) %>%
+QRMonErrorsPlot( relativeErrorsQ = TRUE)
+';
+
+is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Finance-data-command";
+
+##-----------------------------------------------------------
+## 2
+##-----------------------------------------------------------
+
+my $command2 = '
+DSL TARGET R::QRMon;
+USER ID hhdf;
+include setup code;' ~ $command1;
+is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
+        <CODE COMMAND DSL DSLFUNCTION DSLTARGET SETUPCODE USERID>.sort,
+        "simple-Finance-data-command-with-MODULE-TARGET-USERID-SETUP-hash-keys";
+
+##-----------------------------------------------------------
+## 3
+##-----------------------------------------------------------
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Finance-data-command-with-MODULE-TARGET-USERID-SETUP-code";
+
+
+##-----------------------------------------------------------
+## 4
+##-----------------------------------------------------------
+
+my $expectedRes2 = '
+#devtools::install_github(repo = "antononcube/QRMon-R")
+
+library(magrittr)
+library(quantreg)
+library(QRMon)
+';
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
+        $expectedRes2.subst( rx/ \s / , '' ):g,
+        "simple-Finance-data-command-with-MODULE-TARGET-USERID-SETUP-setup-code";
+
+done-testing;
+

@@ -1,0 +1,85 @@
+use v6.d;
+
+use DSL::Shared::Utilities::ComprehensiveTranslation;
+
+use JSON::Marshal;
+
+use Test;
+
+plan 4;
+
+##-----------------------------------------------------------
+## Setup
+##-----------------------------------------------------------
+
+my %defaultOpts = language => 'English', format => 'hash', :guessGrammar, defaultTargetsSpec => 'R', degree => 1;
+
+my $command0 = '
+create from textHamlet;
+make document term matrix with stemming FALSE and automatic stop words;
+apply LSI functions global weight function IDF, local term weight function TermFrequency, normalizer function Cosine;
+extract 12 topics using method NNMF and max steps 12 and 20 min number of documents per term;
+show topics table with 12 terms;
+show thesaurus table for king, castle, denmark;
+';
+
+##-----------------------------------------------------------
+## 1
+##-----------------------------------------------------------
+
+my $command1 = 'DSL MODULE LatentSemanticAnalysisWorkflows;' ~ $command0;
+
+my $expectedRes1 = '
+LSAMonUnit(textHamlet) %>%
+LSAMonMakeDocumentTermMatrix( stemWordsQ = FALSE, stopWords = NULL) %>%
+LSAMonApplyTermWeightFunctions(globalWeightFunction = "IDF", localWeightFunction = "None", normalizerFunction = "Cosine") %>%
+LSAMonExtractTopics( numberOfTopics = 12, method = "NNMF",  maxSteps = 12, minNumberOfDocumentsPerTerm = 20) %>%
+LSAMonEchoTopicsTable(numberOfTerms = 12) %>%
+LSAMonEchoStatisticalThesaurus( words = c("king", "castle", "denmark"))
+';
+
+is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Hamlet-command";
+
+##-----------------------------------------------------------
+## 2
+##-----------------------------------------------------------
+
+my $command2 = '
+DSL TARGET R::LSAMon;
+USER ID hhdf;
+include setup code;' ~ $command1;
+is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
+        <CODE COMMAND DSL DSLFUNCTION DSLTARGET SETUPCODE USERID>.sort,
+        "simple-Hamlet-command-with-MODULE-TARGET-USERID-SETUP-hash-keys";
+
+##-----------------------------------------------------------
+## 3
+##-----------------------------------------------------------
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Hamlet-command-with-MODULE-TARGET-USERID-SETUP-code";
+
+
+##-----------------------------------------------------------
+## 4
+##-----------------------------------------------------------
+
+my $expectedRes2 = '
+#devtools::install_github(repo = "antononcube/R-packages", subdir = "NonNegativeMatrixFactorization")
+#devtools::install_github(repo = "antononcube/R-packages", subdir = "LSAMon-R")
+
+library(magrittr)
+library(irlba)
+library(NonNegativeMatrixFactorization)
+library(LSAMon)
+';
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
+        $expectedRes2.subst( rx/ \s / , '' ):g,
+        "simple-Hamlet-command-with-MODULE-TARGET-USERID-SETUP-setup-code";
+
+done-testing;
+

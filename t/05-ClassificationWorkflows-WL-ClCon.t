@@ -1,0 +1,75 @@
+use v6.d;
+
+use DSL::Shared::Utilities::ComprehensiveTranslation;
+
+use JSON::Marshal;
+
+use Test;
+
+plan 4;
+
+##-----------------------------------------------------------
+## Setup
+##-----------------------------------------------------------
+
+my %defaultOpts = language => 'English', format => 'hash', :guessGrammar, defaultTargetsSpec => 'WL', degree => 1;
+
+my $command0 = '
+use dfTitanic;
+split data with ratio 0.8;
+make a logistic regression classifier;
+show rocs plots
+';
+
+##-----------------------------------------------------------
+## 1
+##-----------------------------------------------------------
+
+my $command1 = 'DSL MODULE ClassificationWorkflows;' ~ $command0;
+
+my $expectedRes1 = '
+ClConUnit[ dfTitanic ] \[DoubleLongRightArrow]
+ClConSplitData[ "TrainingFraction" -> 0.8 ] \[DoubleLongRightArrow]
+ClConMakeClassifier[ "LogisticRegression" ] \[DoubleLongRightArrow]
+ClConROCPlot[]
+';
+
+is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Titanic-data-command";
+
+##-----------------------------------------------------------
+## 2
+##-----------------------------------------------------------
+
+my $command2 = '
+DSL TARGET WL::ClCon;
+USER ID hhdf;
+include setup code;' ~ $command1;
+is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
+        <CODE COMMAND DSL DSLFUNCTION DSLTARGET SETUPCODE USERID>.sort,
+        "simple-Titanic-data-command-with-MODULE-TARGET-USERID-SETUP-hash-keys";
+
+##-----------------------------------------------------------
+## 3
+##-----------------------------------------------------------
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-Titanic-data-command-with-MODULE-TARGET-USERID-SETUP-code";
+
+
+##-----------------------------------------------------------
+## 4
+##-----------------------------------------------------------
+
+my $expectedRes2 = '
+Import["https://raw.githubusercontent.com/antononcube/MathematicaForPrediction/master/MonadicProgramming/MonadicContextualClassification.m"];
+';
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
+        $expectedRes2.subst( rx/ \s / , '' ):g,
+        "simple-Titanic-data-command-with-MODULE-TARGET-USERID-SETUP-setup-code";
+
+done-testing;
+
