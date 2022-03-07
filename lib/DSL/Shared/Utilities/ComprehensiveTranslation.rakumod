@@ -71,7 +71,7 @@ my %moduleToWLTarget =
         "DSL::English::SearchEngineQueries" => "WL-SMRMon",
         "DSL::English::FoodPreparationWorkflows" => "WL-System",
         "DSL::English::DataAcquisitionWorkflows" => "WL-System",
-        "DSL::English::RecruitingWorkflows" => "WL-System";
+        "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
 
 my %specToModuleToTarget =
         "Python" => %moduleToPythonTarget,
@@ -170,6 +170,7 @@ my %englishModuleShortcuts =
         QRMon => "DSL::English::QuantileRegressionWorkflows",
         QuantileRegression => "DSL::English::QuantileRegressionWorkflows",
         QuantileRegressionWorkflows => "DSL::English::QuantileRegressionWorkflows",
+        RegressionWorkflows => "DSL::English::QuantileRegressionWorkflows",
         "DSL::English::QuantileRegressionWorkflows" => "DSL::English::QuantileRegressionWorkflows",
 
         SMRMon => "DSL::English::RecommenderWorkflows",
