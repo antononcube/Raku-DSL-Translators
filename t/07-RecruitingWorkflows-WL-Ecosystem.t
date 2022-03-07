@@ -1,0 +1,70 @@
+use v6.d;
+
+use DSL::Shared::Utilities::ComprehensiveTranslation;
+
+use JSON::Marshal;
+
+use Test;
+
+plan 4;
+
+##-----------------------------------------------------------
+## Setup
+##-----------------------------------------------------------
+
+my %defaultOpts = language => 'English', format => 'hash', :guessGrammar, defaultTargetsSpec => 'WL', degree => 1;
+
+my $command0 = '
+recommend top 20 job descriptions for java development, software architect, agile, and agile coach;
+';
+
+##-----------------------------------------------------------
+## 1
+##-----------------------------------------------------------
+
+my $command1 = 'DSL MODULE Recruiting;' ~ $command0;
+
+my $expectedRes1 = '
+smrHHGJobs \[DoubleLongRightArrow]
+SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach"}, 20] \[DoubleLongRightArrow]
+SMRMonJoinAcross["Warning"->False] \[DoubleLongRightArrow]
+SMRMonTakeValue[]
+';
+
+is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-jobs-command";
+
+##-----------------------------------------------------------
+## 2
+##-----------------------------------------------------------
+
+my $command2 = '
+DSL TARGET WL-Ecosystem;
+USER ID hhdf;
+include setup code;' ~ $command1;
+is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
+        <CODE COMMAND DSL DSLFUNCTION DSLTARGET SETUPCODE USERID>.sort,
+        "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-hash-keys";
+
+##-----------------------------------------------------------
+## 3
+##-----------------------------------------------------------
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
+        $expectedRes1.subst( rx/ \s / , '' ):g,
+        "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-code";
+
+
+##-----------------------------------------------------------
+## 4
+##-----------------------------------------------------------
+
+my $expectedRes2 = '';
+
+is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
+        $expectedRes2.subst( rx/ \s / , '' ):g,
+        "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-setup-code";
+
+done-testing;
+
