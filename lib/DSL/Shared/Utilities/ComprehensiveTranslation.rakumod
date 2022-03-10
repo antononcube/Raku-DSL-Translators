@@ -47,9 +47,9 @@ my %moduleToRTarget =
         "DSL::English::QuantileRegressionWorkflows" => "R-QRMon",
         "DSL::English::RecommenderWorkflows" => "R-SMRMon",
         "DSL::English::SearchEngineQueries" => "R-tidyverse",
-        "DSL::English::FoodPreparationWorkflows" => "R-base",
-        "DSL::English::DataAcquisitionWorkflows" => "R-base",
-        "DSL::English::RecruitingWorkflows" => "R-base";
+        "DSL::English::FoodPreparationWorkflows" => "R-Ecosystem",
+        "DSL::English::DataAcquisitionWorkflows" => "R-Ecosystem",
+        "DSL::English::RecruitingWorkflows" => "R-Ecosystem";
 
 
 my %moduleToRakuTarget =
@@ -57,6 +57,7 @@ my %moduleToRakuTarget =
         "DSL::English::DataQueryWorkflows" => "Raku-Reshapers",
         "DSL::English::RecommenderWorkflows" => "Raku-SBR",
         "DSL::English::SearchEngineQueries" => "Raku-Reshapers",
+        "DSL::English::FoodPreparationWorkflows" => "Raku-Ecosystem",
         "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem",
         "DSL::English::RecruitingWorkflows" => "Raku-Ecosystem";
 
@@ -69,8 +70,8 @@ my %moduleToWLTarget =
         "DSL::English::QuantileRegressionWorkflows" => "WL-QRMon",
         "DSL::English::RecommenderWorkflows" => "WL-SMRMon",
         "DSL::English::SearchEngineQueries" => "WL-SMRMon",
-        "DSL::English::FoodPreparationWorkflows" => "WL-System",
-        "DSL::English::DataAcquisitionWorkflows" => "WL-System",
+        "DSL::English::FoodPreparationWorkflows" => "WL-Ecosystem",
+        "DSL::English::DataAcquisitionWorkflows" => "WL-Ecosystem",
         "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
 
 my %specToModuleToTarget =
