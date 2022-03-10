@@ -3,14 +3,28 @@
 use DSL::Shared::Utilities::ComprehensiveTranslation;
 
 #| Translates natural language commands into programming code.
-sub MAIN(Str $command,                   #= A string with one or many commands (separated by ';').
-         Str :$language = 'English',     #= The natural language to translate from.
-         Str :$format = 'json',          #= The format of the output, one of 'ast', 'code', 'hash', 'json', or 'raku'.
-         Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-         Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
-         UInt :$degree,                  #= Positive integer for the degree parallelism.
-         Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
-         ) {
+multi sub MAIN(Str $command,                   #= A string with one or many commands (separated by ';').
+               Str :$language = 'English',     #= The natural language to translate from.
+               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
+               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
+               Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
+               UInt :$degree,                  #= Positive integer for the degree parallelism.
+               Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
+               ) {
 
-    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode( $command, :$language, :$format, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+    my $formatSpec = ($ast and $format.isa(Whatever)) ?? 'code' !! $format;
+    $formatSpec = 'code' when $formatSpec.lc (elem) <auto automatic whatever>;
+
+    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, :$language, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+}
+
+multi sub MAIN(Str $progLang,                  #= Programming language.
+               Str $command,                   #= A string with one or many commands (separated by ';').
+               Str :$language = 'English',     #= The natural language to translate from.
+               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
+               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
+               UInt :$degree,                  #= Positive integer for the degree parallelism.
+               Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
+               ) {
+    MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast);
 }
