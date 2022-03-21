@@ -12,7 +12,7 @@ multi sub MAIN(Str $command,                   #= A string with one or many comm
                Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
                ) {
 
-    my $formatSpec = ($ast and $format.isa(Whatever)) ?? 'code' !! $format;
+    my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
     $formatSpec = 'code' when $formatSpec.lc (elem) <auto automatic whatever>;
 
     say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, :$language, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
