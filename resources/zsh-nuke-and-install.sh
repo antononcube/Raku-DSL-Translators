@@ -1,3 +1,4 @@
+#! /bin/zsh
 
 ## Comment out if there is no zef:
 #zef nuke home
