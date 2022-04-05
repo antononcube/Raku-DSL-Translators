@@ -74,11 +74,27 @@ my %moduleToWLTarget =
         "DSL::English::DataAcquisitionWorkflows" => "WL-Ecosystem",
         "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
 
+my %moduleToBulgarianTarget =
+        ('DSL::English::ClassificationWorkflows',
+        'DSL::English::DataQueryWorkflows',
+        'DSL::English::EpidemiologyModelingWorkflows',
+        'DSL::English::LatentSemanticAnalysisWorkflows',
+        'DSL::English::QuantileRegressionWorkflows',
+        'DSL::English::RecommenderWorkflows',
+        'DSL::English::SearchEngineQueries') X=> 'Bulgarian';
+
+my %moduleToEnglishTarget = %moduleToBulgarianTarget.keys X=> 'English';
+
+my %moduleToRussianTarget = %moduleToBulgarianTarget.keys X=> 'Russian';
+
 my %specToModuleToTarget =
-        "Python" => %moduleToPythonTarget,
-        "R" => %moduleToRTarget,
-        "Raku" => %moduleToRakuTarget,
-        "WL" => %moduleToWLTarget;
+        'Bulgarian' => %moduleToBulgarianTarget,
+        'English' => %moduleToEnglishTarget,
+        'Python' => %moduleToPythonTarget,
+        'R' => %moduleToRTarget,
+        'Raku' => %moduleToRakuTarget,
+        'Russian' => %moduleToRussianTarget,
+        'WL' => %moduleToWLTarget;
 
 # Make target-to-module rules by inverting the module-to-target rules
 my %targetToModule = reduce( { $^a.push( $^b.invert ) }, {}, |%specToModuleToTarget.values );
@@ -145,63 +161,27 @@ my %englishModuleFunctions =
 #-----------------------------------------------------------
 # Module shortcut rules
 #-----------------------------------------------------------
-my %englishModuleShortcuts =
 
-        ClCon => "DSL::English::ClassificationWorkflows",
-        ClassificationWorkflows => "DSL::English::ClassificationWorkflows",
-        Classification => "DSL::English::ClassificationWorkflows",
-        "DSL::English::ClassificationWorkflows" => "DSL::English::ClassificationWorkflows",
+my %moduleToShortcuts =
+    "DSL::English::ClassificationWorkflows" => $["ClCon", "DSL::English::ClassificationWorkflows", "ClassificationWorkflows", "Classification"],
+    "DSL::English::DataAcquisitionWorkflows" => $["DSL::English::DataAcquisitionWorkflows", "DataAcquisition", "DataAcquisitionWorkflows", "DataAcquirer"],
+    "DSL::English::DataQueryWorkflows" => $["DataQuery", "DSL::English::DataQueryWorkflows", "DataWrangling", "DataQueryWorkflows"],
+    "DSL::English::EpidemiologyModelingWorkflows" => $["EpidemiologicModeling", "EpidemiologyModeling", "EpidemiologyModelingWorkflows", "DSL::English::EpidemiologyModelingWorkflows", "ECMMon"],
+    "DSL::English::FoodPreparationWorkflows" => $["FoodPreparationWorkflows", "FoodPrep", "FoodPreparation", "DSL::English::FoodPreparationWorkflows"],
+    "DSL::English::LatentSemanticAnalysisWorkflows" => $["LSAMon", "DSL::English::LatentSemanticAnalysisWorkflows", "LatentSemanticAnalysis", "LatentSemanticAnalysisWorkflows"],
+    "DSL::English::QuantileRegressionWorkflows" => $["RegressionWorkflows", "QuantileRegressionWorkflows", "QuantileRegression", "QRMon", "DSL::English::QuantileRegressionWorkflows"],
+    "DSL::English::RecommenderWorkflows" => $["Recommenders", "RecommenderWorkflows", "SMRMon", "Recommendations", "DSL::English::RecommenderWorkflows"],
+    "DSL::English::RecruitingWorkflows" => $["RecruitingWorkflows", "DSL::English::RecruitingWorkflows", "Recruiting"],
+    "DSL::English::SearchEngineQueries" => $["SearchEngineQueries", "DSL::English::SearchEngineQueries", "SearchEngine"];
 
-        DataQueryWorkflows => "DSL::English::DataQueryWorkflows",
-        DataQuery => "DSL::English::DataQueryWorkflows",
-        DataWrangling => "DSL::English::DataQueryWorkflows",
-        "DSL::English::DataQueryWorkflows" => "DSL::English::DataQueryWorkflows",
+my %englishModuleShortcuts = %moduleToShortcuts.map({ $_.value.map( -> $x { $x => $_.key }) }).flat;
 
-        ECMMon => "DSL::English::EpidemiologyModelingWorkflows",
-        EpidemiologicModeling => "DSL::English::EpidemiologyModelingWorkflows",
-        EpidemiologyModeling => "DSL::English::EpidemiologyModelingWorkflows",
-        EpidemiologyModelingWorkflows => "DSL::English::EpidemiologyModelingWorkflows",
-        "DSL::English::EpidemiologyModelingWorkflows" => "DSL::English::EpidemiologyModelingWorkflows",
-
-        LSAMon => "DSL::English::LatentSemanticAnalysisWorkflows",
-        LatentSemanticAnalysis => "DSL::English::LatentSemanticAnalysisWorkflows",
-        LatentSemanticAnalysisWorkflows => "DSL::English::LatentSemanticAnalysisWorkflows",
-        "DSL::English::LatentSemanticAnalysisWorkflows" => "DSL::English::LatentSemanticAnalysisWorkflows",
-
-        QRMon => "DSL::English::QuantileRegressionWorkflows",
-        QuantileRegression => "DSL::English::QuantileRegressionWorkflows",
-        QuantileRegressionWorkflows => "DSL::English::QuantileRegressionWorkflows",
-        RegressionWorkflows => "DSL::English::QuantileRegressionWorkflows",
-        "DSL::English::QuantileRegressionWorkflows" => "DSL::English::QuantileRegressionWorkflows",
-
-        SMRMon => "DSL::English::RecommenderWorkflows",
-        Recommendations => "DSL::English::RecommenderWorkflows",
-        Recommenders => "DSL::English::RecommenderWorkflows",
-        RecommenderWorkflows => "DSL::English::RecommenderWorkflows",
-        "DSL::English::RecommenderWorkflows" => "DSL::English::RecommenderWorkflows",
-
-        "SearchEngine" => "DSL::English::SearchEngineQueries",
-        "SearchEngineQueries" => "DSL::English::SearchEngineQueries",
-        "DSL::English::SearchEngineQueries" => "DSL::English::SearchEngineQueries",
-
-        "FoodPrep" => "DSL::English::FoodPreparationWorkflows",
-        "FoodPreparation" => "DSL::English::FoodPreparationWorkflows",
-        "FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows",
-        "DSL::English::FoodPreparationWorkflows" => "DSL::English::FoodPreparationWorkflows",
-
-        "DataAcquirer" => "DSL::English::DataAcquisitionWorkflows",
-        "DataAcquisition" => "DSL::English::DataAcquisitionWorkflows",
-        "DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows",
-        "DSL::English::DataAcquisitionWorkflows" => "DSL::English::DataAcquisitionWorkflows",
-
-        "Recruiting" => "DSL::English::RecruitingWorkflows",
-        "RecruitingWorkflows" => "DSL::English::RecruitingWorkflows",
-        "DSL::English::RecruitingWorkflows" => "DSL::English::RecruitingWorkflows";
-
+my %bulgarianModuleShortcuts = %englishModuleShortcuts;
 
 #-----------------------------------------------------------
 my %languageDispatch =
-        English => %englishModuleShortcuts;
+        English => %englishModuleShortcuts,
+        Bulgarian => %bulgarianModuleShortcuts;
 
 #-----------------------------------------------------------
 #| Finds most applicable DSL grammar.
@@ -358,7 +338,7 @@ multi ToDSLCode(Str $command,
     }
 
     # DSL translate
-    my $translation = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget, format => 'hash');
+    my $translation = $ast ?? get-ast($command, $dsl) !! &dslFunc($command, $dslTarget, :$language, format => 'hash');
 
     if $ast {
         $translation = { CODE => $translation }
@@ -443,6 +423,7 @@ sub ToDSLSyntaxTree(Str $command,
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 sub dsl-translate(Str:D $commands,
+                  Str:D :$language,
                   Str:D :$defaultTargetsSpec = 'R',
                   Bool :$ast = False,
                   Bool :$prepend-setup-code = True) is export {
@@ -468,9 +449,9 @@ sub dsl-translate(Str:D $commands,
     if $ast {
 #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
 #        %res = %res , %( CODE => %res{"CODE"}.gist );
-        %res = ToDSLSyntaxTree($commands2, language => 'English', format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
+        %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
     } else {
-        %res = ToDSLCode( $commands2, language => "English", format => 'object', :guessGrammar, :$defaultTargetsSpec );
+        %res = ToDSLCode( $commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec );
     }
 
     ## Combine with custom $err with interpretation result
