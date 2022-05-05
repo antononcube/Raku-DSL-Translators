@@ -63,6 +63,7 @@ zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkf
 zef install https://github.com/antononcube/Raku-DSL-English-RecruitingWorkflows.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation.git --force-install --force-test
 zef install https://github.com/antononcube/Raku-ML-StreamsBlendingRecommender.git --force-install --force-test
+zef install https://github.com/antononcube/Raku-DSL-Bulgarian.git --force-install --force-test
 
 ## Install packages used to invoke DSL::Shared::Utilities::ComprehensiveTranslation
 ## in R, WL, Jupyter notebooks and Markdown, Org-mode, Pod6 files.
