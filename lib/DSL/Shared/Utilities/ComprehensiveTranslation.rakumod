@@ -5,6 +5,7 @@
 use v6;
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
+use Test::Output;
 use JSON::Marshal;
 
 unit module DSL::Shared::Utilities::ComprehensiveTranslation;
@@ -435,27 +436,21 @@ sub dsl-translate(Str:D $commands,
         $commands2 = $commands2.substr(1, *- 1)
     }
 
-    ## Redirecting stderr to a custom $err
-    my Str $err = '';
-
-    my $*ERR = $*ERR but role {
-        method print (*@args) {
-            $err ~= @args
-        }
-    }
-
     ## Interpret
     my %res;
-    if $ast {
-#        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
-#        %res = %res , %( CODE => %res{"CODE"}.gist );
-        %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
-    } else {
-        %res = ToDSLCode( $commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec );
-    }
+    my $err = stderr-from( {
+                            if $ast {
+                                #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
+                                #        %res = %res , %( CODE => %res{"CODE"}.gist );
+                                %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
+                            } else {
+                                %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec);
+                            }
+                        }
+              );
 
     ## Combine with custom $err with interpretation result
-    %res = %res , %( STDERR => $err, COMMAND => $commands );
+    %res = %res, %( STDERR => $err, COMMAND => $commands);
 
     if %res<SETUPCODE>:exists and $prepend-setup-code {
         %res<CODE> = %res<SETUPCODE> ~ "\n" ~ %res<CODE>
