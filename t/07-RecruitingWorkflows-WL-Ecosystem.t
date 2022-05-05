@@ -43,6 +43,14 @@ my $command2 = '
 DSL TARGET WL-Ecosystem;
 USER ID hhdf;
 include setup code;' ~ $command1;
+
+my $expectedRes2 = '
+smrHHGJobs \[DoubleLongRightArrow]
+SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach", "UserID:hhdf"}, 20] \[DoubleLongRightArrow]
+SMRMonJoinAcross["Warning"->False] \[DoubleLongRightArrow]
+SMRMonTakeValue[]
+';
+
 is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
         <CODE COMMAND DSL DSLFUNCTION DSLTARGET SETUPCODE USERID>.sort,
         "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-hash-keys";
@@ -52,7 +60,7 @@ is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
 ##-----------------------------------------------------------
 
 is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
-        $expectedRes1.subst( rx/ \s / , '' ):g,
+        $expectedRes2.subst( rx/ \s / , '' ):g,
         "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-code";
 
 
@@ -60,10 +68,10 @@ is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
 ## 4
 ##-----------------------------------------------------------
 
-my $expectedRes2 = '';
+my $expectedRes4 = '';
 
 is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
-        $expectedRes2.subst( rx/ \s / , '' ):g,
+        $expectedRes4.subst( rx/ \s / , '' ):g,
         "simple-jobs-command-with-MODULE-TARGET-USERID-SETUP-setup-code";
 
 done-testing;
