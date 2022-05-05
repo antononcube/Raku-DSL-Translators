@@ -13,3 +13,5 @@ zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git
 zef install https://github.com/antononcube/Raku-Mathematica-Serializer.git
 zef install https://github.com/antononcube/Raku-Mathematica-Grammar.git
 zef install https://github.com/antononcube/Raku-UML-Translators.git
+zef install https://github.com/antononcube/Raku-Lingua-Stem-Bulgarian.git
+zef install https://github.com/antononcube/Raku-Lingua-StopwordsISO.git
