@@ -11,6 +11,7 @@
     "JSON::Marshal",
     "Lingua::NumericWordForms",
     "Chemistry::Stoichiometry",
+    "Test::Output",
     "DSL::Shared",
     "DSL::English::ClassificationWorkflows",
     "DSL::English::DataAcquisitionWorkflows",
@@ -21,7 +22,8 @@
     "DSL::English::QuantileRegressionWorkflows",
     "DSL::English::RecommenderWorkflows",
     "DSL::English::RecruitingWorkflows",
-    "DSL::English::SearchEngineQueries"
+    "DSL::English::SearchEngineQueries",
+    "DSL::Bulgarian"
   ],
   "build-depends": [],
   "test-depends": [],
