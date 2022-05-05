@@ -82,15 +82,16 @@ sub MAIN(
         }
 
         # DSL translation by grammars
-        get -> 'translate', :$command!, :$lang = 'WL', :$ast='false' {
+        get -> 'translate', :$command!, :$lang = 'WL', :$from-lang = 'English', :$ast='false' {
 
             # I am not sure should we have these logging lines or not -- keeping them commented for now.
             # say 'translate request at ', DateTime.now.Str;
             # say (:$lang);
+            # say (:$from-lang);
             # say (:$ast);
             # say (:$command);
 
-            my %res = dsl-translate($command, defaultTargetsSpec => $lang, ast => $ast.lc eq 'true');
+            my %res = dsl-translate($command, defaultTargetsSpec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
 
             content 'text/html', marshal(%res);
         }
@@ -102,9 +103,7 @@ sub MAIN(
             $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
 
             my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
-            my $parserRes = $numberQ ?? to-numeric-word-form($command2) !! from-numeric-word-form($command2,
-                    'automatic',
-                    :p);
+            my $parserRes = $numberQ ?? to-numeric-word-form($command2) !! from-numeric-word-form($command2, 'automatic', :p);
 
             my %res = %( CODE => $parserRes,
                          COMMAND => $command2,
