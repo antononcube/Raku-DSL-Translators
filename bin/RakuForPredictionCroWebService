@@ -92,12 +92,12 @@ sub MAIN(
             # say (:$command);
 
             my $from-lang-msg = '';
-            if $from-lang ∈ (Whatever, 'Whatever', 'Automatic') {
+            if $from-lang.isa(Whatever) || $from-lang ~~ Str && $from-lang.lc ∈ ('whatever', 'automatic') {
                 my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
                 my $total = [+] %counts.values;
                 my %freqs = %counts.deepmap({ $_ / $total });
                 $from-lang = %freqs{'True'} ≥ 0.45 ?? 'Bulgarian' !! 'English';
-                $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang";
+                $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang.";
             }
 
             my %res = dsl-translate($command, defaultTargetsSpec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
