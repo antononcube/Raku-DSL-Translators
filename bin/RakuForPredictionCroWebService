@@ -82,7 +82,7 @@ sub MAIN(
         }
 
         # DSL translation by grammars
-        get -> 'translate', :$command!, :$lang = 'WL', :$from-lang = 'English', :$ast='false' {
+        get -> 'translate', :$command!, :$lang = 'WL', :$from-lang is copy = 'English', :$ast = 'false' {
 
             # I am not sure should we have these logging lines or not -- keeping them commented for now.
             # say 'translate request at ', DateTime.now.Str;
@@ -91,7 +91,20 @@ sub MAIN(
             # say (:$ast);
             # say (:$command);
 
+            my $from-lang-msg = '';
+            if $from-lang ∈ (Whatever, 'Whatever', 'Automatic') {
+                my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
+                my $total = [+] %counts.values;
+                my %freqs = %counts.deepmap({ $_ / $total });
+                $from-lang = %freqs{'True'} ≥ 0.45 ?? 'Bulgarian' !! 'English';
+                $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang";
+            }
+
             my %res = dsl-translate($command, defaultTargetsSpec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
+
+            if $from-lang-msg {
+                %res<STDERR> = %res<STDERR> ~ "\n" ~ $from-lang-msg;
+            }
 
             content 'text/html', marshal(%res);
         }
