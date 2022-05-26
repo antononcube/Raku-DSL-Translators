@@ -4,7 +4,7 @@ use DSL::Shared::Utilities::ComprehensiveTranslation;
 
 #| Translates natural language commands into programming code.
 multi sub MAIN(Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'English',     #= The natural language to translate from.
+               Str :$language = 'Whatever',    #= The natural language to translate from.
                Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
                Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
                Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
@@ -15,12 +15,22 @@ multi sub MAIN(Str $command,                   #= A string with one or many comm
     my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
     $formatSpec = 'code' when $formatSpec.lc (elem) <auto automatic whatever>;
 
-    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, :$language, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+    my $from-lang = $language;
+
+    if $from-lang.lc ∈ <Whatever Automatic Nil>>>.lc {
+        my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
+        my $total = [+] %counts.values;
+        my %freqs = %counts.deepmap({ $_ / $total });
+        $from-lang = %freqs{'True'} ≥ 0.45 ?? 'Bulgarian' !! 'English';
+        warn "Heuristic determination of the command (from-)language to be $from-lang.";
+    }
+
+    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
 }
 
 multi sub MAIN(Str $progLang,                  #= Programming language.
                Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'English',     #= The natural language to translate from.
+               Str :$language = 'Whatever',    #= The natural language to translate from.
                Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
                Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
                UInt :$degree,                  #= Positive integer for the degree parallelism.
