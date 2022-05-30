@@ -21,8 +21,12 @@ multi sub MAIN(Str $command,                   #= A string with one or many comm
         my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
         my $total = [+] %counts.values;
         my %freqs = %counts.deepmap({ $_ / $total });
-        $from-lang = %freqs{'True'} ≥ 0.45 ?? 'Bulgarian' !! 'English';
-        warn "Heuristic determination of the command (from-)language to be $from-lang.";
+        if %freqs<True>:exists {
+            $from-lang = %freqs<True> ≥ 0.40 ?? 'Bulgarian' !! 'English';
+            warn "Heuristic determination of the command (from-)language to be $from-lang.";
+        } else {
+            $from-lang = 'English';
+        }
     }
 
     say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);

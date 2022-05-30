@@ -96,7 +96,7 @@ sub MAIN(
                 my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
                 my $total = [+] %counts.values;
                 my %freqs = %counts.deepmap({ $_ / $total });
-                $from-lang = %freqs{'True'} ≥ 0.45 ?? 'Bulgarian' !! 'English';
+                $from-lang = ( %freqs<True>:exists && %freqs<True> ≥ 0.40 ) ?? 'Bulgarian' !! 'English';
                 $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang.";
             }
 
