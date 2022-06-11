@@ -123,7 +123,7 @@ my %moduleToDSLGrammar =
         "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
         "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar,
         "DSL::English::DataAcquisitionWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar,
-        "DSL::English::RecruitingWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar;
+        "DSL::English::RecruitingWorkflows" => DSL::English::RecruitingWorkflows::Grammar;
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
