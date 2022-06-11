@@ -26,7 +26,7 @@ my $command1 = 'DSL MODULE Recruiting;' ~ $command0;
 
 my $expectedRes1 = '
 smrHHGJobs \[DoubleLongRightArrow]
-SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach"}, 20] \[DoubleLongRightArrow]
+SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:ONET:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach"}, 20] \[DoubleLongRightArrow]
 SMRMonJoinAcross["Warning"->False] \[DoubleLongRightArrow]
 SMRMonTakeValue[]
 ';
@@ -46,7 +46,7 @@ include setup code;' ~ $command1;
 
 my $expectedRes2 = '
 smrHHGJobs \[DoubleLongRightArrow]
-SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach", "UserID:hhdf"}, 20] \[DoubleLongRightArrow]
+SMRMonRecommendByProfile[ {"Skill:JavaDevelopment", "Title:ONET:SoftwareArchitect", "Skill:Agile", "Title:AgileCoach", "UserID:hhdf"}, 20] \[DoubleLongRightArrow]
 SMRMonJoinAcross["Warning"->False] \[DoubleLongRightArrow]
 SMRMonTakeValue[]
 ';
