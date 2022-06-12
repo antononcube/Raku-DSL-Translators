@@ -427,7 +427,8 @@ sub dsl-translate(Str:D $commands,
                   Str:D :$language,
                   Str:D :$defaultTargetsSpec = 'R',
                   Bool :$ast = False,
-                  Bool :$prepend-setup-code = True) is export {
+                  Bool :$prepend-setup-code = True,
+                  Int :$degree = 1) is export {
 
     my Str $commands2 = $commands;
 
@@ -442,9 +443,9 @@ sub dsl-translate(Str:D $commands,
                             if $ast {
                                 #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
                                 #        %res = %res , %( CODE => %res{"CODE"}.gist );
-                                %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, degree => 1):as-hash;
+                                %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, :$degree):as-hash;
                             } else {
-                                %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec);
+                                %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, :$degree);
                             }
                         }
               );
