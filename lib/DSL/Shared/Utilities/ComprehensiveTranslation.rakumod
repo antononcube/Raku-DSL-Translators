@@ -121,9 +121,9 @@ my %moduleToDSLGrammar =
         "DSL::English::QuantileRegressionWorkflows" => DSL::English::QuantileRegressionWorkflows::Grammar,
         "DSL::English::RecommenderWorkflows" => DSL::English::RecommenderWorkflows::Grammar,
         "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
-        "DSL::English::FoodPreparationWorkflows" => DSL::English::FoodPreparationWorkflows::Grammar,
-        "DSL::English::DataAcquisitionWorkflows" => DSL::English::DataAcquisitionWorkflows::Grammar,
-        "DSL::English::RecruitingWorkflows" => DSL::English::RecruitingWorkflows::Grammar;
+        "DSL::English::FoodPreparationWorkflows" => FoodPreparationWorkflowsGrammar(),
+        "DSL::English::DataAcquisitionWorkflows" => DataAcquisitionWorkflowsGrammar(),
+        "DSL::English::RecruitingWorkflows" => RecruitingWorkflowsGrammar();
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
