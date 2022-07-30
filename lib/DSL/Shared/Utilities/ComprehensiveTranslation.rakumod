@@ -209,8 +209,9 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
         # Using the "elegant" version for parallel execution.
         # @pairs = race %dslToGrammar.pairs.race(:$batch, :$degree).map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) });
 
-        @pairs = race for %dslToGrammar.list.race( :$batch, :$degree ) -> $p {
+        @pairs = do race for %dslToGrammar.list.race( :$batch, :$degree ) -> $p {
             my $pres = get-dsl-parser-residual($p.value, $command, :$norm);
+            #say "From thread {$*THREAD.id} : {$p.key} => $pres";
             $p.key => $pres
         }
     }
