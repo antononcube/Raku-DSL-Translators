@@ -8,8 +8,8 @@ multi sub MAIN(Str $command,                   #= A string with one or many comm
                Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
                Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
                Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
-               UInt :$degree,                  #= Positive integer for the degree parallelism.
-               Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
+               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
+               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
                ) {
 
     my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
@@ -37,8 +37,8 @@ multi sub MAIN(Str $progLang,                  #= Programming language.
                Str :$language = 'Whatever',    #= The natural language to translate from.
                Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
                Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-               UInt :$degree,                  #= Positive integer for the degree parallelism.
-               Bool :$ast                      #= Should Match object be returned for the key "CODE" or not?
+               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
+               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
                ) {
     MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast);
 }
