@@ -7,6 +7,9 @@ use v6;
 use DSL::Shared::Utilities::MetaSpecsProcessing;
 use Test::Output;
 use JSON::Marshal;
+use JSON::Fast;
+use ML::TriesWithFrequencies;
+use ML::TriesWithFrequencies::Trie;
 
 unit module DSL::Shared::Utilities::ComprehensiveTranslation;
 
@@ -185,6 +188,37 @@ my %languageDispatch =
         Bulgarian => %bulgarianModuleShortcuts;
 
 #-----------------------------------------------------------
+# DSL classifier
+#-----------------------------------------------------------
+
+# See the BEGIN block at the bottom of the file.
+
+my ML::TriesWithFrequencies::Trie $trDSL .= new;
+my %knownWords;
+my @dslLabels;
+
+sub get-dsl-trie-classifier() is export {
+
+    my $fileName = %?RESOURCES<dsl-trie-classifier.json>;
+
+    my ML::TriesWithFrequencies::Trie $trDSL .= new;
+
+    my Str $dslClassifierMapFormatCode = slurp($fileName.IO);
+
+    my %trieMap = from-json($dslClassifierMapFormatCode);
+
+    $trDSL.from-json-map-format(%trieMap);
+
+    return $trDSL;
+}
+
+my %dslLabelToModule =
+        <Recommendations Classification NeuralNetworkCreation LatentSemanticAnalysis RandomTabularDataset QuantileRegression> Z=>
+        <DSL::English::RecommenderWorkflows DSL::English::ClassificationWorkflows
+         DSL::English::ClassificationWorkflows DSL::English::LatentSemanticAnalysisWorkflows
+         DSL::English::DataQueryWorkflows DSL::English::QuantileRegressionWorkflows>;
+
+#-----------------------------------------------------------
 #| Finds most applicable DSL grammar.
 proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum', Int :$batch = 64, Int :$degree = 1) is export {*};
 #= Uses parsing residuals -- the DSL grammar with the smallest count of un-parsed characters is the most applicable.
@@ -200,10 +234,21 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
     # the residual is 0 and the attempted grammar is not 'DSL::English::SearchEngineQueries'.
     my @pairs;
     if $degree <= 1 {
-        for %dslToGrammar.kv -> $k, $v {
-            my $pres = get-dsl-parser-residual($v, $command, :$norm);
-            @pairs = @pairs.append( $k => $pres);
-            last if $pres == 0 and $k ne 'DSL::English::SearchEngineQueries';
+
+        # Classification of the command into a DSL label
+        my %clRes = $trDSL.classify($command.lc.words.grep({ $_ ∈ %knownWords }).sort, prop=>'Probabilities'):!verify-key-existence;
+
+        # Replace DSL labels with module names
+        %clRes = %clRes.map({ (%dslLabelToModule{$_.key}:exists ?? %dslLabelToModule{$_.key} !! $_.key) => $_.value });
+
+        # Make module-name-to-probability hash
+        %clRes = %clRes , %( %dslToGrammar.grep({ $_.key ∉ %clRes })>>.key X=> 0e0);
+
+        # Try out the parsers with starting in the highest probability modules first
+        for %clRes.pairs.sort(-*.value) -> $p {
+            my $pres = get-dsl-parser-residual(%dslToGrammar{$p.key}, $command, :$norm);
+            @pairs = @pairs.append($p.key => $pres);
+            last if $pres == 0 and $p.key ne 'DSL::English::SearchEngineQueries';
         }
     } else {
         # Using the "elegant" version for parallel execution.
@@ -460,4 +505,15 @@ sub dsl-translate(Str:D $commands,
 
     ## Result
     %res
+}
+
+#===========================================================
+# Optimization
+#===========================================================
+
+($trDSL, %knownWords, @dslLabels) = BEGIN {
+    my ML::TriesWithFrequencies::Trie $tr .= new;
+    $tr = get-dsl-trie-classifier();
+    my %words = Set(unique($tr.words.flat>>.lc));
+    ($tr, %words, |$tr.leaf-probabilities.keys.Array)
 }
