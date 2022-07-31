@@ -9,9 +9,11 @@
   "auth": "github:antononcube",
   "depends": [
     "JSON::Marshal",
+    "JSON::Fast",
     "Lingua::NumericWordForms",
     "Chemistry::Stoichiometry",
     "Test::Output",
+    "ML::TriesWithFrequencies",
     "DSL::Shared",
     "DSL::English::ClassificationWorkflows",
     "DSL::English::DataAcquisitionWorkflows",
@@ -30,14 +32,18 @@
   "provides": {
     "DSL::Shared::Utilities::ComprehensiveTranslation": "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod"
   },
-  "resources": [],
+  "resources": [
+    "dsl-trie-classifier.json"
+  ],
   "license": "Artistic-2.0",
   "tags": [
-    "parser",
+    "DSL",
+    "grammar",
     "interpreter",
     "monad",
-    "workflow",
-    "pipeline"
+    "parser",
+    "pipeline",
+    "workflow"
   ],
   "api": "1",
   "source-url": "https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation"
