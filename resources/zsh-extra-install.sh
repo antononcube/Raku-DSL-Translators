@@ -18,3 +18,4 @@ zef install https://github.com/antononcube/Raku-UML-Translators.git
 zef install https://github.com/antononcube/Raku-Lingua-Stem-Bulgarian.git
 zef install https://github.com/antononcube/Raku-Lingua-StopwordsISO.git
 zef install https://github.com/antononcube/Raku-Statistics-OutlierIdentifiers.git
+zef install https://github.com/antononcube/Raku-Grammar-TokenProcessing
