@@ -1,4 +1,3 @@
-
 # Most likely a better place for this file is a separate GitHub/Raku repository/package.
 # The functionality here is not "shared" -- it is "overall."
 
@@ -80,12 +79,12 @@ my %moduleToWLTarget =
 
 my %moduleToBulgarianTarget =
         ('DSL::English::ClassificationWorkflows',
-        'DSL::English::DataQueryWorkflows',
-        'DSL::English::EpidemiologyModelingWorkflows',
-        'DSL::English::LatentSemanticAnalysisWorkflows',
-        'DSL::English::QuantileRegressionWorkflows',
-        'DSL::English::RecommenderWorkflows',
-        'DSL::English::SearchEngineQueries') X=> 'Bulgarian';
+         'DSL::English::DataQueryWorkflows',
+         'DSL::English::EpidemiologyModelingWorkflows',
+         'DSL::English::LatentSemanticAnalysisWorkflows',
+         'DSL::English::QuantileRegressionWorkflows',
+         'DSL::English::RecommenderWorkflows',
+         'DSL::English::SearchEngineQueries') X=> 'Bulgarian';
 
 my %moduleToEnglishTarget = %moduleToBulgarianTarget.keys X=> 'English';
 
@@ -101,16 +100,16 @@ my %specToModuleToTarget =
         'WL' => %moduleToWLTarget;
 
 # Make target-to-module rules by inverting the module-to-target rules
-my %targetToModule = reduce( { $^a.push( $^b.invert ) }, {}, |%specToModuleToTarget.values );
+my %targetToModule = reduce({ $^a.push($^b.invert) }, {}, |%specToModuleToTarget.values);
 
 # Make target-to-module rules by inverting the module-to-target rules and modifying the targets, e.g. "R-LSAMon" to "R::LSAMon"
-my %targetToModule2 = reduce( { $^a.push( $^b.deepmap({ $_.subst( '-', '::' ):g }).invert ) }, {}, |%specToModuleToTarget.values );
+my %targetToModule2 = reduce({ $^a.push($^b.deepmap({ $_.subst('-', '::'):g }).invert) }, {}, |%specToModuleToTarget.values);
 
 # Make target-to-module rules by inverting the module-to-target rules and reversing the targets components int "LSAMon::R" to "ClCon::WL"
-my %targetToModule3 = reduce( { $^a.push( $^b.deepmap({ $_.split('-').reverse.join('::') }).invert ) }, {}, |%specToModuleToTarget.values );
+my %targetToModule3 = reduce({ $^a.push($^b.deepmap({ $_.split('-').reverse.join('::') }).invert) }, {}, |%specToModuleToTarget.values);
 
 # Join the two target-to-module dictionaries
-%targetToModule = %targetToModule , %targetToModule2 , %targetToModule3;
+%targetToModule = %targetToModule, %targetToModule2, %targetToModule3;
 
 #-----------------------------------------------------------
 # DSL module to DSL grammar
@@ -167,18 +166,28 @@ my %englishModuleFunctions =
 #-----------------------------------------------------------
 
 my %moduleToShortcuts =
-    "DSL::English::ClassificationWorkflows" => $["ClCon", "DSL::English::ClassificationWorkflows", "ClassificationWorkflows", "Classification"],
-    "DSL::English::DataAcquisitionWorkflows" => $["DSL::English::DataAcquisitionWorkflows", "DataAcquisition", "DataAcquisitionWorkflows", "DataAcquirer"],
-    "DSL::English::DataQueryWorkflows" => $["DataQuery", "DSL::English::DataQueryWorkflows", "DataWrangling", "DataQueryWorkflows"],
-    "DSL::English::EpidemiologyModelingWorkflows" => $["EpidemiologicModeling", "EpidemiologyModeling", "EpidemiologyModelingWorkflows", "DSL::English::EpidemiologyModelingWorkflows", "ECMMon"],
-    "DSL::English::FoodPreparationWorkflows" => $["FoodPreparationWorkflows", "FoodPrep", "FoodPreparation", "DSL::English::FoodPreparationWorkflows"],
-    "DSL::English::LatentSemanticAnalysisWorkflows" => $["LSAMon", "DSL::English::LatentSemanticAnalysisWorkflows", "LatentSemanticAnalysis", "LatentSemanticAnalysisWorkflows"],
-    "DSL::English::QuantileRegressionWorkflows" => $["RegressionWorkflows", "QuantileRegressionWorkflows", "QuantileRegression", "QRMon", "DSL::English::QuantileRegressionWorkflows"],
-    "DSL::English::RecommenderWorkflows" => $["Recommenders", "RecommenderWorkflows", "SMRMon", "Recommendations", "DSL::English::RecommenderWorkflows"],
-    "DSL::English::RecruitingWorkflows" => $["RecruitingWorkflows", "DSL::English::RecruitingWorkflows", "Recruiting"],
-    "DSL::English::SearchEngineQueries" => $["SearchEngineQueries", "DSL::English::SearchEngineQueries", "SearchEngine"];
+        "DSL::English::ClassificationWorkflows" =>
+                $["ClCon", "DSL::English::ClassificationWorkflows", "ClassificationWorkflows", "Classification"],
+        "DSL::English::DataAcquisitionWorkflows" =>
+                $["DSL::English::DataAcquisitionWorkflows", "DataAcquisition", "DataAcquisitionWorkflows", "DataAcquirer"],
+        "DSL::English::DataQueryWorkflows" =>
+                $["DataQuery", "DSL::English::DataQueryWorkflows", "DataWrangling", "DataQueryWorkflows"],
+        "DSL::English::EpidemiologyModelingWorkflows" =>
+                $["EpidemiologicModeling", "EpidemiologyModeling", "EpidemiologyModelingWorkflows", "DSL::English::EpidemiologyModelingWorkflows", "ECMMon"],
+        "DSL::English::FoodPreparationWorkflows" =>
+                $["FoodPreparationWorkflows", "FoodPrep", "FoodPreparation", "DSL::English::FoodPreparationWorkflows"],
+        "DSL::English::LatentSemanticAnalysisWorkflows" =>
+                $["LSAMon", "DSL::English::LatentSemanticAnalysisWorkflows", "LatentSemanticAnalysis", "LatentSemanticAnalysisWorkflows"],
+        "DSL::English::QuantileRegressionWorkflows" =>
+                $["RegressionWorkflows", "QuantileRegressionWorkflows", "QuantileRegression", "QRMon", "DSL::English::QuantileRegressionWorkflows"],
+        "DSL::English::RecommenderWorkflows" =>
+                $["Recommenders", "RecommenderWorkflows", "SMRMon", "Recommendations", "DSL::English::RecommenderWorkflows"],
+        "DSL::English::RecruitingWorkflows" =>
+                $["RecruitingWorkflows", "DSL::English::RecruitingWorkflows", "Recruiting"],
+        "DSL::English::SearchEngineQueries" =>
+                $["SearchEngineQueries", "DSL::English::SearchEngineQueries", "SearchEngine"];
 
-my %englishModuleShortcuts = %moduleToShortcuts.map({ $_.value.map( -> $x { $x => $_.key }) }).flat;
+my %englishModuleShortcuts = %moduleToShortcuts.map({ $_.value.map(-> $x { $x => $_.key }) }).flat;
 
 my %bulgarianModuleShortcuts = %englishModuleShortcuts;
 
@@ -213,17 +222,20 @@ sub get-dsl-trie-classifier() is export {
 }
 
 my %dslLabelToModule =
-        <Recommendations Classification NeuralNetworkCreation LatentSemanticAnalysis RandomTabularDataset QuantileRegression> Z=>
+        <Recommendations Classification NeuralNetworkCreation LatentSemanticAnalysis RandomTabularDataset QuantileRegression>
+        Z=>
         <DSL::English::RecommenderWorkflows DSL::English::ClassificationWorkflows
          DSL::English::ClassificationWorkflows DSL::English::LatentSemanticAnalysisWorkflows
          DSL::English::DataQueryWorkflows DSL::English::QuantileRegressionWorkflows>;
 
 #-----------------------------------------------------------
 #| Finds most applicable DSL grammar.
-proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum', Int :$batch = 64, Int :$degree = 1) is export {*};
+proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum',
+                          Int :$batch = 64, Int :$degree = 1) is export {*};
 #= Uses parsing residuals -- the DSL grammar with the smallest count of un-parsed characters is the most applicable.
 
-multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum', Int :$batch = 64, Int :$degree = 1) {
+multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum',
+                          Int :$batch = 64, Int :$degree = 1) {
 
     die "The argument \$n is expected to be a postive integer." unless $n > 0;
 
@@ -236,13 +248,13 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
     if $degree <= 1 {
 
         # Classification of the command into a DSL label
-        my %clRes = $trDSL.classify($command.lc.words.grep({ $_ ∈ %knownWords }).sort, prop=>'Probabilities'):!verify-key-existence;
+        my %clRes = $trDSL.classify($command.lc.words.grep({ $_ ∈ %knownWords }).sort, prop => 'Probabilities'):!verify-key-existence;
 
         # Replace DSL labels with module names
         %clRes = %clRes.map({ (%dslLabelToModule{$_.key}:exists ?? %dslLabelToModule{$_.key} !! $_.key) => $_.value });
 
         # Make module-name-to-probability hash
-        %clRes = %clRes , %( %dslToGrammar.grep({ $_.key ∉ %clRes })>>.key X=> 0e0);
+        %clRes = %clRes, %( %dslToGrammar.grep({ $_.key ∉ %clRes })>>.key X=> 0e0);
 
         # Try out the parsers with starting in the highest probability modules first
         for %clRes.pairs.sort(-*.value) -> $p {
@@ -254,7 +266,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
         # Using the "elegant" version for parallel execution.
         # @pairs = race %dslToGrammar.pairs.race(:$batch, :$degree).map({ $_.key => get-dsl-parser-residual($_.value, $command, :$norm) });
 
-        @pairs = do race for %dslToGrammar.list.race( :$batch, :$degree ) -> $p {
+        @pairs = do race for %dslToGrammar.list.race(:$batch, :$degree) -> $p {
             my $pres = get-dsl-parser-residual($p.value, $command, :$norm);
             #say "From thread {$*THREAD.id} : {$p.key} => $pres";
             $p.key => $pres
@@ -271,15 +283,16 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) is export {*};
 
 multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) {
-    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm, :$degree, batch => max( floor(%dslToGrammar.elems / $degree), 1));
+    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm, :$degree, batch => max(floor(%dslToGrammar
+            .elems / $degree), 1));
 
-    my @pairs2 = grep( { not( $_.key eq "DSL::English::SearchEngineQueries" ) }, @pairs );
+    my @pairs2 = grep({ not($_.key eq "DSL::English::SearchEngineQueries") }, @pairs);
 
     if @pairs.elems == @pairs2.elems {
         return @pairs.min({ $_.value }).key;
     }
 
-    my %res = Hash.new( @pairs );
+    my %res = Hash.new(@pairs);
     my Int $minVal2 = @pairs.min({ $_.value }).value;
 
     if %res{"DSL::English::SearchEngineQueries"} == 0 and $minVal2 > 15 {
@@ -299,8 +312,7 @@ sub get-ast(Str:D $command, Str:D $dsl) {
 
 #-----------------------------------------------------------
 #| Post process interpretation results.
-sub post-process-result( %rakuRes, Str $format ) {
-
+sub post-process-result(%rakuRes, Str $format) {
     if $format.lc (elem) <object hash> {
         return %rakuRes;
     } elsif $format.lc eq 'raku' {
@@ -320,8 +332,8 @@ sub post-process-result( %rakuRes, Str $format ) {
     * C<$command> is a string with one or many commands (separated by ';').
     * C<$language> is the natural language to translate from.
     * C<$format> is the format of the output, one of 'ast', 'code', 'hash', 'json', or 'raku'.
-    * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
-    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'Raku', 'WL'.
+    * C<$guess-grammar> is a Boolean whether to guess the DSL grammar of C<$command>.
+    * C<$default-targets-spec> is a programming language name, one of 'Python', 'R', 'Raku', 'WL'.
     * C<$degree> is a positive integer for the degree parallelism.
     * C<$ast> is a Boolean whether a Match object be returned for the key "CODE"?
 )
@@ -330,17 +342,17 @@ our proto ToDSLCode(Str $command, |) is export {*};
 multi ToDSLCode(Str $command,
                 Str :$language = 'English',
                 Str :$format is copy = 'hash',
-                Bool :$guessGrammar = True,
-                Str :$defaultTargetsSpec = 'R',
+                Bool :guessGrammar(:$guess-grammar) = True,
+                Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
                 Int :$degree = 1,
                 Bool :$ast = False,
                 Bool :$code = False) {
 
     die "Unknown natural language: $language." unless %languageDispatch{$language}:exists;
 
-    die "Unknown default targets spec: $defaultTargetsSpec." unless %specToModuleToTarget{$defaultTargetsSpec}:exists;
+    die "Unknown default targets spec: $default-targets-spec." unless %specToModuleToTarget{$default-targets-spec}:exists;
 
-    if $code { $format = "code"}
+    if $code { $format = "code" }
 
     # Get DSL specifications
     my %dslSpecs = get-dsl-spec($command, 'any');
@@ -348,14 +360,14 @@ multi ToDSLCode(Str $command,
     # Get DSL module
     if not (%dslSpecs and %dslSpecs{'DSL'}:exists) {
 
-        die "No DSL module specification command." unless $guessGrammar;
+        die "No DSL module specification command." unless $guess-grammar;
 
         if %dslSpecs{'DSLTARGET'}:exists and %targetToModule{%dslSpecs{'DSLTARGET'}}:exists {
             # Restrict the DSL guessing to the specified target DSLs
-            my %small = %moduleToDSLGrammar{ |%targetToModule{%dslSpecs{'DSLTARGET'}} }:p;
-            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %small);
+            my %small = %moduleToDSLGrammar{|%targetToModule{%dslSpecs{'DSLTARGET'}}}:p;
+            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick($command, %small);
         } else {
-            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick( $command, %moduleToDSLGrammar, :$degree );
+            %dslSpecs = %dslSpecs, 'DSL' => dsl-pick($command, %moduleToDSLGrammar, :$degree);
         }
     }
 
@@ -364,11 +376,11 @@ multi ToDSLCode(Str $command,
 
     die "Unknown DSL spec: $dsl." unless %languageDispatch{$language}{$dsl}:exists;
 
-    warn "Cannot find interpretation target for DSL spec: $dsl and default target spec $defaultTargetsSpec"
-    unless %specToModuleToTarget{$defaultTargetsSpec}{$dsl}:exists;
+    warn "Cannot find interpretation target for DSL spec: $dsl and default target spec $default-targets-spec"
+    unless %specToModuleToTarget{$default-targets-spec}{$dsl}:exists;
 
     # Get DSL target
-    my Str $dslTarget = %specToModuleToTarget{$defaultTargetsSpec}{$dsl};
+    my Str $dslTarget = %specToModuleToTarget{$default-targets-spec}{$dsl};
 
     $dslTarget = %dslSpecs{'DSLTARGET'}:exists ?? %dslSpecs{'DSLTARGET'} !! $dslTarget;
 
@@ -396,14 +408,15 @@ multi ToDSLCode(Str $command,
         default {
             my %rakuRes = Hash.new(%dslSpecs, %userSpecs, { CODE => '', DSL => $dsl, DSLTARGET => $dslTarget,
                                                             DSLFUNCTION => &dslFunc.raku, COMMAND => $command,
-                                                            SETUPCODE => ''});
+                                                            SETUPCODE => '' });
             return post-process-result(%rakuRes, $format)
         }
     }
 
     # Result
     my %rakuRes = Hash.new(%dslSpecs, %userSpecs, %($translation.pairs), { DSL => $dsl, DSLTARGET => $dslTarget,
-                                                                           DSLFUNCTION => &dslFunc.raku, COMMAND => $command});
+                                                                           DSLFUNCTION => &dslFunc.raku,
+                                                                           COMMAND => $command });
 
     %rakuRes = %rakuRes, %userSpecs;
     %rakuRes = %rakuRes.sort({ $^a.key });
@@ -413,15 +426,16 @@ multi ToDSLCode(Str $command,
 
 #-----------------------------------------------------------
 #| Converts parsed results into JSON-marshal-able hashes.
-sub to-pairs( $m ) {
-        given $m {
-               when Grammar | Match {
-                   my $k = $_.orig.substr($_.from .. $_.to-1).trim;
-                   $k => to-pairs( $_.hash ) }
-               when Hash | Map { $_.pairs.map({ $_.key => to-pairs( $_.value ) }).hash }
-               when Array | List { $_.map({ to-pairs($_) }) }
-               default { $_ }
+sub to-pairs($m) {
+    given $m {
+        when Grammar | Match {
+            my $k = $_.orig.substr($_.from .. $_.to - 1).trim;
+            $k => to-pairs($_.hash)
         }
+        when Hash | Map { $_.pairs.map({ $_.key => to-pairs($_.value) }).hash }
+        when Array | List { $_.map({ to-pairs($_) }) }
+        default { $_ }
+    }
 }
 
 #-----------------------------------------------------------
@@ -430,24 +444,24 @@ sub to-pairs( $m ) {
     * C<$language> is the natural language to translate from.
     * C<$format> is the format of the output one of 'raku' or 'json'.
     * C<$guessGrammar> is a Boolean whether to guess the DSL grammar of C<$command>.
-    * C<$defaultTargetsSpec> is a programming language name, one of 'Python', 'R', 'WL'.
+    * C<$default-targets-spec> is a programming language name, one of 'Python', 'R', 'WL'.
     * C<$as-hash> is a Boolean whether to return the AST as Hash.
     * C<$degree> is a positive integer for the degree parallelism.
 )
 sub ToDSLSyntaxTree(Str $command,
-                Str :$language = 'English',
-                Str :$format = 'hash',
-                Bool :$guessGrammar = True,
-                Str :$defaultTargetsSpec = 'R',
-                Bool :$as-hash = True,
-                Int :$degree = 1) is export {
+                    Str :$language = 'English',
+                    Str :$format = 'hash',
+                    Bool :$guessGrammar = True,
+                    Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                    Bool :$as-hash = True,
+                    Int :$degree = 1) is export {
 
     # Call ToDSLCode
-    my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$defaultTargetsSpec, :$degree):ast;
+    my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$default-targets-spec, :$degree):ast;
 
     # Convert to Hash pairs
     if $as-hash {
-        %ast<CODE> = to-pairs( %ast<CODE> )
+        %ast<CODE> = to-pairs(%ast<CODE>)
     }
 
     # Result
@@ -456,7 +470,7 @@ sub ToDSLSyntaxTree(Str $command,
     } elsif $format.lc eq 'raku' {
         return %ast.raku;
     } elsif $format.lc eq 'json' {
-        %ast<CODE> = to-pairs( %ast<CODE> );
+        %ast<CODE> = to-pairs(%ast<CODE>);
         return marshal(%ast);
     } elsif $format.lc eq 'code' {
         return %ast<CODE>;
@@ -471,7 +485,7 @@ sub ToDSLSyntaxTree(Str $command,
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 sub dsl-translate(Str:D $commands,
                   Str:D :$language,
-                  Str:D :$defaultTargetsSpec = 'R',
+                  Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
                   Bool :$ast = False,
                   Bool :$prepend-setup-code = True,
                   Int :$degree = 1) is export {
@@ -485,16 +499,16 @@ sub dsl-translate(Str:D $commands,
 
     ## Interpret
     my %res;
-    my $err = stderr-from( {
-                            if $ast {
-                                #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$defaultTargetsSpec, :$ast );
-                                #        %res = %res , %( CODE => %res{"CODE"}.gist );
-                                %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, :$degree):as-hash;
-                            } else {
-                                %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$defaultTargetsSpec, :$degree);
-                            }
-                        }
-              );
+    my $err =
+            stderr-from({
+                if $ast {
+                    #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$default-targets-spec, :$ast );
+                    #        %res = %res , %( CODE => %res{"CODE"}.gist );
+                    %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$default-targets-spec, :$degree):as-hash;
+                } else {
+                    %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$default-targets-spec, :$degree);
+                }
+            });
 
     ## Combine with custom $err with interpretation result
     %res = %res, %( STDERR => $err, COMMAND => $commands);
