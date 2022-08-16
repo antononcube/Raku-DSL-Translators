@@ -72,6 +72,11 @@ ToDSLCode('
 (2020),
 Wolfram Technology Conference 2020.
 
+[AAv2] Anton Antonov,
+["Raku for Prediction](https://www.youtube.com/watch?v=frpCBjbQtnA),
+(2021),
+The Raku Conference 2021.
+
 ### Repositories
 
 [AAr1] Anton Antonov,

@@ -44,11 +44,11 @@ ToDSLCode('
 ```
 ```
 # {
-#   "USERID": "",
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
+#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
 #   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
 #   "DSL": "DSL::English::DataQueryWorkflows",
-#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
+#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
+#   "USERID": "",
 #   "DSLTARGET": "R-tidyverse"
 # }
 ```
@@ -80,19 +80,6 @@ ToDSLCode('
 
 ------
 
-## Arguments
-
-```perl6
-
-```
-```
-# ()
-```
-
-
-
-------
-
 ## References
 
 ### Videos
@@ -101,6 +88,11 @@ ToDSLCode('
 ["Multi-language Data-Wrangling Conversational Agent"](https://www.youtube.com/watch?v=pQk5jwoMSxs),
 (2020),
 Wolfram Technology Conference 2020.
+
+[AAv2] Anton Antonov,
+["Raku for Prediction](https://www.youtube.com/watch?v=frpCBjbQtnA),
+(2021),
+The Raku Conference 2021.
 
 ### Repositories
 
