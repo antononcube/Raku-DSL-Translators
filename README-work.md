@@ -25,9 +25,6 @@ Here we load the package:
 ```perl6
 use DSL::Shared::Utilities::ComprehensiveTranslation;
 ```
-```
-# (Any)
-```
 
 Here is an example that shows:
 
@@ -41,16 +38,6 @@ ToDSLCode('
     select the columns name, species, mass and height;
     cross tabulate species over mass', 
         format => 'JSON');
-```
-```
-# {
-#   "USERID": "",
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
-#   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
-#   "DSL": "DSL::English::DataQueryWorkflows",
-#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
-#   "DSLTARGET": "R-tidyverse"
-# }
 ```
 
 In the example above the function `ToDSLCode` figured out that the sequence of commands (separated by semicolon)
@@ -73,23 +60,6 @@ ToDSLCode('
         default-targets-spec => 'WL',
         format => 'Code');
 ```
-```
-# obj = dfStarWars;
-# obj = Map[ KeyTake[ #, {"name", "species", "mass", "height"} ]&, obj]
-```
-
-------
-
-## Arguments
-
-```perl6
-
-```
-```
-# ()
-```
-
-
 
 ------
 
