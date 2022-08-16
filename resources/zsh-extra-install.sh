@@ -9,6 +9,8 @@ zef install XML
 zef install XML::XPath
 zef install Haikunator
 zef install Acme::Text::UpsideDown
+zef install https://github.com/antononcube/Raku-ML-AssociationRuleLearning.git
+zef install https://github.com/antononcube/Raku-ML-Clustering.git
 zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git
 zef install https://github.com/antononcube/Raku-Mathematica-Serializer.git
 zef install https://github.com/antononcube/Raku-Mathematica-Grammar.git
