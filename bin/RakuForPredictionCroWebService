@@ -100,7 +100,7 @@ sub MAIN(
                 $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang.";
             }
 
-            my %res = dsl-translate($command, defaultTargetsSpec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
+            my %res = dsl-translate($command, default-targets-spec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
 
             if $from-lang-msg {
                 %res<STDERR> = %res<STDERR> ~ "\n" ~ $from-lang-msg;
