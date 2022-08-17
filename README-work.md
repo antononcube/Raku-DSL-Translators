@@ -49,16 +49,30 @@ Here is an example using Bulgarian data transformation spec that explicitly spec
 
 - DSL parser to use (with the first command)
 - Language (Bulgarian)
-- Default targets spec that is usually a programming language name ('WL') 
+- Default targets spec that is usually a programming language name ('Python') 
 
 ```perl6
 ToDSLCode('
     DSL module DataQueryWorkflows;
     използвай dfStarWars;
-    избери колоните name, species, mass и height', 
+    избери колоните name, species, mass и height;
+    крос табулация на species върху mass', 
         language => 'Bulgarian',
-        default-targets-spec => 'WL',
+        default-targets-spec => 'Python',
         format => 'Code');
+```
+
+The function `dsl-translate` is a version of `ToDSLCode` that intended to be used in 
+command line and web interfaces. It returns a `Hash` object. Here is an example:
+
+```perl6
+my %res = dsl-translate('
+    USER ID dd7833sa;
+    DSL MODULE DataQueryWorkflows;
+    use dfStarWars;
+    select the columns name, species, mass and height;
+    cross tabulate species over mass');
+.say for %res;
 ```
 
 ------

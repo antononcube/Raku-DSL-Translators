@@ -45,11 +45,11 @@ ToDSLCode('
 ```
 # {
 #   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
+#   "USERID": "",
 #   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
 #   "DSL": "DSL::English::DataQueryWorkflows",
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
-#   "USERID": "",
-#   "DSLTARGET": "R-tidyverse"
+#   "DSLTARGET": "R-tidyverse",
+#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))"
 # }
 ```
 
@@ -62,20 +62,51 @@ Here is an example using Bulgarian data transformation spec that explicitly spec
 
 - DSL parser to use (with the first command)
 - Language (Bulgarian)
-- Default targets spec that is usually a programming language name ('WL') 
+- Default targets spec that is usually a programming language name ('Python') 
 
 ```perl6
 ToDSLCode('
     DSL module DataQueryWorkflows;
     използвай dfStarWars;
-    избери колоните name, species, mass и height', 
+    избери колоните name, species, mass и height;
+    крос табулация на species върху mass', 
         language => 'Bulgarian',
-        default-targets-spec => 'WL',
+        default-targets-spec => 'Python',
         format => 'Code');
 ```
 ```
-# obj = dfStarWars;
-# obj = Map[ KeyTake[ #, {"name", "species", "mass", "height"} ]&, obj]
+# obj = dfStarWars.copy()
+# obj = obj[["name", "species", "mass", "height"]]
+# obj = pandas.crosstab( index = obj.species, values = obj.mass, aggfunc = "sum" )
+```
+
+The function `dsl-translate` is a version of `ToDSLCode` that intended to be used in 
+command line and web interfaces. It returns a `Hash` object. Here is an example:
+
+```perl6
+my %res = dsl-translate('
+    USER ID dd7833sa;
+    DSL MODULE DataQueryWorkflows;
+    use dfStarWars;
+    select the columns name, species, mass and height;
+    cross tabulate species over mass');
+.say for %res;
+```
+```
+# COMMAND => 
+#     USER ID dd7833sa;
+#     DSL MODULE DataQueryWorkflows;
+#     use dfStarWars;
+#     select the columns name, species, mass and height;
+#     cross tabulate species over mass
+# DSLFUNCTION => proto sub ToDataQueryWorkflowCode (Str $command, |) {*}
+# DSLTARGET => R-tidyverse
+# DSL => DSL::English::DataQueryWorkflows
+# CODE => dfStarWars %>%
+# dplyr::select(name, species, mass, height) %>%
+# (function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))
+# USERID => dd7833sa
+# STDERR =>
 ```
 
 ------
