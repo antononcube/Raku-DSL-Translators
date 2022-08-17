@@ -487,7 +487,7 @@ sub dsl-translate(Str:D $commands,
                   Str:D :$language = 'English',
                   Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
                   Bool :$ast = False,
-                  Bool :$prepend-setup-code = True,
+                  Bool :$prepend-setup-code = False,
                   Int :$degree = 1) is export {
 
     my Str $commands2 = $commands;
