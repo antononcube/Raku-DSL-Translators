@@ -451,13 +451,13 @@ sub to-pairs($m) {
 sub ToDSLSyntaxTree(Str $command,
                     Str :$language = 'English',
                     Str :$format = 'hash',
-                    Bool :$guessGrammar = True,
+                    Bool :guessGrammar(:$guess-grammar) = True,
                     Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
                     Bool :$as-hash = True,
                     Int :$degree = 1) is export {
 
     # Call ToDSLCode
-    my %ast = ToDSLCode($command, :$language, format => 'hash', :$guessGrammar, :$default-targets-spec, :$degree):ast;
+    my %ast = ToDSLCode($command, :$language, format => 'hash', :$guess-grammar, :$default-targets-spec, :$degree):ast;
 
     # Convert to Hash pairs
     if $as-hash {
@@ -484,7 +484,7 @@ sub ToDSLSyntaxTree(Str $command,
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 sub dsl-translate(Str:D $commands,
-                  Str:D :$language,
+                  Str:D :$language = 'English',
                   Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
                   Bool :$ast = False,
                   Bool :$prepend-setup-code = True,
@@ -497,6 +497,11 @@ sub dsl-translate(Str:D $commands,
         $commands2 = $commands2.substr(1, *- 1)
     }
 
+    ## I am not sure is this hack or nice "eat your own dog food" application.
+    if $commands2 && $prepend-setup-code {
+        $commands2 ~= ";\n" ~ 'include setup code';
+    }
+
     ## Interpret
     my %res;
     my $err =
@@ -504,14 +509,14 @@ sub dsl-translate(Str:D $commands,
                 if $ast {
                     #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$default-targets-spec, :$ast );
                     #        %res = %res , %( CODE => %res{"CODE"}.gist );
-                    %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guessGrammar, :$default-targets-spec, :$degree):as-hash;
+                    %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guess-grammar, :$default-targets-spec, :$degree):as-hash;
                 } else {
-                    %res = ToDSLCode($commands2, :$language, format => 'object', :guessGrammar, :$default-targets-spec, :$degree);
+                    %res = ToDSLCode($commands2, :$language, format => 'object', :guess-grammar, :$default-targets-spec, :$degree);
                 }
             });
 
     ## Combine with custom $err with interpretation result
-    %res = %res, %( STDERR => $err, COMMAND => $commands);
+    %res = %res, %(STDERR => $err, COMMAND => $commands);
 
     if %res<SETUPCODE>:exists and $prepend-setup-code {
         %res<CODE> = %res<SETUPCODE> ~ "\n" ~ %res<CODE>
