@@ -44,12 +44,12 @@ ToDSLCode('
 ```
 ```
 # {
-#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
 #   "USERID": "",
 #   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
 #   "DSL": "DSL::English::DataQueryWorkflows",
+#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
 #   "DSLTARGET": "R-tidyverse",
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))"
+#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}"
 # }
 ```
 
@@ -62,7 +62,7 @@ Here is an example using Bulgarian data transformation spec that explicitly spec
 
 - DSL parser to use (with the first command)
 - Language (Bulgarian)
-- Default targets spec that is usually a programming language name ('Python') 
+- Default targets spec that is usually a programming language name ("Python") 
 
 ```perl6
 ToDSLCode('
@@ -99,14 +99,14 @@ my %res = dsl-translate('
 #     use dfStarWars;
 #     select the columns name, species, mass and height;
 #     cross tabulate species over mass
+# STDERR => 
 # DSLFUNCTION => proto sub ToDataQueryWorkflowCode (Str $command, |) {*}
-# DSLTARGET => R-tidyverse
-# DSL => DSL::English::DataQueryWorkflows
+# USERID => dd7833sa
 # CODE => dfStarWars %>%
 # dplyr::select(name, species, mass, height) %>%
 # (function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))
-# USERID => dd7833sa
-# STDERR =>
+# DSLTARGET => R-tidyverse
+# DSL => DSL::English::DataQueryWorkflows
 ```
 
 ------

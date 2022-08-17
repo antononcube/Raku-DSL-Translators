@@ -49,7 +49,7 @@ Here is an example using Bulgarian data transformation spec that explicitly spec
 
 - DSL parser to use (with the first command)
 - Language (Bulgarian)
-- Default targets spec that is usually a programming language name ('Python') 
+- Default targets spec that is usually a programming language name ("Python") 
 
 ```perl6
 ToDSLCode('
