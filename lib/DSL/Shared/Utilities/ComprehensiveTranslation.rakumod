@@ -88,15 +88,21 @@ my %moduleToBulgarianTarget =
 
 my %moduleToEnglishTarget = %moduleToBulgarianTarget.keys X=> 'English';
 
+my %moduleToKoreanTarget = %moduleToBulgarianTarget.keys X=> 'Korean';
+
 my %moduleToRussianTarget = %moduleToBulgarianTarget.keys X=> 'Russian';
+
+my %moduleToSpanishTarget = %moduleToBulgarianTarget.keys X=> 'Spanish';
 
 my %specToModuleToTarget =
         'Bulgarian' => %moduleToBulgarianTarget,
         'English' => %moduleToEnglishTarget,
+        'Korean' => %moduleToKoreanTarget,
         'Python' => %moduleToPythonTarget,
         'R' => %moduleToRTarget,
         'Raku' => %moduleToRakuTarget,
         'Russian' => %moduleToRussianTarget,
+        'Spanish' => %moduleToSpanishTarget,
         'WL' => %moduleToWLTarget;
 
 # Make target-to-module rules by inverting the module-to-target rules
