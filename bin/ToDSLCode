@@ -1,44 +1,10 @@
 #!/usr/bin/env perl6
 
-use DSL::Shared::Utilities::ComprehensiveTranslation;
-
-#| Translates natural language commands into programming code.
-multi sub MAIN(Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'Whatever',    #= The natural language to translate from.
-               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
-               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-               Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
-               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
-               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
-               ) {
-
-    my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
-    $formatSpec = 'code' when $formatSpec.lc (elem) <auto automatic whatever>;
-
-    my $from-lang = $language;
-
-    if $from-lang.lc ∈ <Whatever Automatic Nil>>>.lc {
-        my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
-        my $total = [+] %counts.values;
-        my %freqs = %counts.deepmap({ $_ / $total });
-        if %freqs<True>:exists {
-            $from-lang = %freqs<True> ≥ 0.40 ?? 'Bulgarian' !! 'English';
-            warn "Heuristic determination of the command (from-)language to be $from-lang.";
-        } else {
-            $from-lang = 'English';
-        }
-    }
-
-    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
-}
-
-multi sub MAIN(Str $progLang,                  #= Programming language.
-               Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'Whatever',    #= The natural language to translate from.
-               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
-               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
-               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
-               ) {
-    MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast);
+#| Translates natural language commands into programming code. Redirects to dsl-translation.
+multi sub MAIN(*@args, *%args) {
+    note 'WARNING: The CLI script ToDSLCode is obsolete; please use dsl-translation .';
+    my @cmd = ('dsl-translation', |@*ARGS);
+    my $proc = run(@cmd):out:err;
+    note $proc.err.slurp(:close);
+    $proc.out.slurp(:close).say;
 }
