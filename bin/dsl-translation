@@ -1,19 +1,21 @@
 #!/usr/bin/env perl6
 
 use DSL::Shared::Utilities::ComprehensiveTranslation;
+use DSL::Shared::Utilities::CopyToClipboard;
 
 my %*SUB-MAIN-OPTS =
         :named-anywhere,    # allow named variables at any location
         ;
 
 #| Translates natural language commands into programming code.
-multi sub MAIN(Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'Whatever',    #= The natural language to translate from.
-               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
-               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-               Str :$defaultTargetsSpec = 'R', #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
-               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
-               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
+multi sub MAIN(Str $command,                                      #= A string with one or many commands (separated by ';').
+               Str :$language = 'Whatever',                       #= The natural language to translate from.
+               Str :$format = 'automatic',                        #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
+               Bool :$guessGrammar = True,                        #= Should the DSL grammar of $command of be guessed or not?
+               Str :$defaultTargetsSpec = 'R',                    #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
+               UInt :$degree = 1,                                 #= Positive integer for the degree parallelism.
+               Bool :$ast = False,                                #= Should Match object be returned for the key "CODE" or not?,
+               Str :c(:$clipboard-command) is copy = 'Whatever'   #= Clipboard command to use.
                ) {
 
     my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
@@ -33,7 +35,11 @@ multi sub MAIN(Str $command,                   #= A string with one or many comm
         }
     }
 
-    say DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+    my $res = DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+
+    say $res;
+
+    copy-to-clipboard($res, :$clipboard-command);
 }
 
 multi sub MAIN(Str $progLang,                  #= Programming language.
@@ -45,4 +51,18 @@ multi sub MAIN(Str $progLang,                  #= Programming language.
                Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
                ) {
     MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast);
+}
+
+sub USAGE() {
+    say "Translates natural language commands into programming code.";
+    say $*USAGE;
+    say "\n";
+    my $usage = Q:c:to/EOH/;
+    Details:
+        If --language is 'Whatever' then:
+            1. If at least 40% of the letters are Cyrillic then Bulgarian is used.
+            2. Otherwise English is used.
+    EOH
+
+    say $usage ~ copy-to-clipboard(:usage-message);
 }
