@@ -23,7 +23,7 @@ sub get-url-data(Str $url, UInt :$timeout = 10) {
 }
 
 #| Translates natural language commands into programming code using web (dedicated) service.
-multi sub MAIN(Str $command is copy,                                 #= Command to translate.
+multi sub MAIN(Str $command,                                         #= Command to translate.
                Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
                Str :$sub = '',                                       #= Sub for given URL.
                Str :$to-language is copy = 'R',                      #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
@@ -34,10 +34,10 @@ multi sub MAIN(Str $command is copy,                                 #= Command 
                Str :$clipboard-command = 'Whatever'                  #= Copy to clipboard command.
                ) {
 
-    $command = $command.subst(/<-alnum>/, *.ord.fmt("%%%02X"), :g);
+    my $command2 = $command.subst(/<-alnum>/, *.ord.fmt("%%%02X"), :g);
 
     my $urlQuery = $sub ?? "$url/$sub" !! $url;
-    $urlQuery = "$urlQuery?command=$command&lang=$to-language&from-lang=$from-language";
+    $urlQuery = "$urlQuery?command=$command2&lang=$to-language&from-lang=$from-language";
 
     #$url-query = "http://accendodata.net:5040/translate?command='make%20a%20document%20term%20matrix'&lang=WL&from-lang=Automatic";
 
@@ -50,7 +50,7 @@ multi sub MAIN(Str $command is copy,                                 #= Command 
 
     my $res = do given $format.lc {
         when 'code' { $resJSON<CODE> }
-        when $ ∈ <raku hash> { $resJSON.raku }
+        when $_ ∈ <raku hash> { $resJSON.raku }
         default { $urlResult }
     }
 
