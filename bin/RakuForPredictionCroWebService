@@ -69,7 +69,7 @@ sub MAIN(
 
             if $receiver {
 
-                my Str $res = dsl-translate-by-qas($receiver, $command, :$lang);
+                my Str $res = dsl-qas-translation($receiver, $command, :$lang);
 
                 content 'text/html', $res;
 
@@ -100,7 +100,7 @@ sub MAIN(
                 $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang.";
             }
 
-            my %res = dsl-translate($command, default-targets-spec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
+            my %res = dsl-translation($command, default-targets-spec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
 
             if $from-lang-msg {
                 %res<STDERR> = %res<STDERR> ~ "\n" ~ $from-lang-msg;
@@ -197,7 +197,7 @@ While[True,
 #============================================================
 
 #| Translate commands by QAS.
-sub dsl-translate-by-qas($receiver, Str $commands, Str :$lang = 'WL') {
+sub dsl-qas-translation($receiver, Str $commands, Str :$lang = 'WL') {
 
     # Build-up the WL code
     my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~

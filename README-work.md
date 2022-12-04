@@ -62,11 +62,11 @@ ToDSLCode('
         format => 'Code');
 ```
 
-The function `dsl-translate` is a version of `ToDSLCode` that intended to be used in 
+The function `dsl-translation` is a version of `ToDSLCode` that intended to be used in 
 command line and web interfaces. It returns a `Hash` object. Here is an example:
 
 ```perl6
-my %res = dsl-translate('
+my %res = dsl-translation('
     USER ID dd7833sa;
     DSL MODULE DataQueryWorkflows;
     use dfStarWars;

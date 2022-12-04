@@ -489,12 +489,12 @@ sub ToDSLSyntaxTree(Str $command,
 
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
-sub dsl-translate(Str:D $commands,
-                  Str:D :$language = 'English',
-                  Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
-                  Bool :$ast = False,
-                  Bool :$prepend-setup-code = False,
-                  Int :$degree = 1) is export {
+sub dsl-translation(Str:D $commands,
+                    Str:D :$language = 'English',
+                    Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                    Bool :$ast = False,
+                    Bool :$prepend-setup-code = False,
+                    Int :$degree = 1) is export {
 
     my Str $commands2 = $commands;
 

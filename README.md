@@ -44,12 +44,12 @@ ToDSLCode('
 ```
 ```
 # {
+#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
 #   "USERID": "",
-#   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
 #   "DSL": "DSL::English::DataQueryWorkflows",
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
 #   "DSLTARGET": "R-tidyverse",
-#   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}"
+#   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass",
+#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))"
 # }
 ```
 
@@ -75,16 +75,14 @@ ToDSLCode('
         format => 'Code');
 ```
 ```
-# obj = dfStarWars.copy()
-# obj = obj[["name", "species", "mass", "height"]]
-# obj = pandas.crosstab( index = obj.species, values = obj.mass, aggfunc = "sum" )
+# 
 ```
 
-The function `dsl-translate` is a version of `ToDSLCode` that intended to be used in 
+The function `dsl-translation` is a version of `ToDSLCode` that intended to be used in 
 command line and web interfaces. It returns a `Hash` object. Here is an example:
 
 ```perl6
-my %res = dsl-translate('
+my %res = dsl-translation('
     USER ID dd7833sa;
     DSL MODULE DataQueryWorkflows;
     use dfStarWars;
@@ -93,20 +91,20 @@ my %res = dsl-translate('
 .say for %res;
 ```
 ```
+# DSL => DSL::English::DataQueryWorkflows
+# STDERR => 
 # COMMAND => 
 #     USER ID dd7833sa;
 #     DSL MODULE DataQueryWorkflows;
 #     use dfStarWars;
 #     select the columns name, species, mass and height;
 #     cross tabulate species over mass
-# STDERR => 
-# DSLFUNCTION => proto sub ToDataQueryWorkflowCode (Str $command, |) {*}
-# USERID => dd7833sa
 # CODE => dfStarWars %>%
 # dplyr::select(name, species, mass, height) %>%
 # (function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))
+# USERID => dd7833sa
+# DSLFUNCTION => proto sub ToDataQueryWorkflowCode (Str $command, |) {*}
 # DSLTARGET => R-tidyverse
-# DSL => DSL::English::DataQueryWorkflows
 ```
 
 ------
