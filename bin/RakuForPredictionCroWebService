@@ -21,7 +21,7 @@ sub MAIN(
         Str :$port = '10000', #= Port
         Str :$wl-url = 'tcp://127.0.0.1', #= URL for the wolframscript connection
         Str :$wl-port = '5540', #= Port for the wolframscript connection
-        Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m', #| URL for NLP Template Engine package (to be loaded in WL)
+        Str :$wl-nlp-package-url = 'https://raw.githubusercontent.com/antononcube/NLP-Template-Engine/main/Packages/WL/NLPTemplateEngine.m', #= URL for NLP Template Engine package (to be loaded in WL)
          ) {
 
     # Empty result hash
@@ -167,22 +167,24 @@ sub MAIN(
 # MakeWLCode
 #============================================================
 
-#| Makes WL's ZeroMQ infinite loop program.
-sub MakeWLCode(Str :$url = 'tcp://127.0.0.1', Str :$port = '5555', Str :$prepCode = '', Bool :$proclaim = False) {
-
-    my Str $resCode =
-            $prepCode ~
-            "socket = SocketConnect[\"$url:$port\", \"ZMQ_REP\"]
-
+my $wlSocketCode = q:to/END/;
+socket = SocketConnect["$URL:$PORT", "ZMQ_REP"];
+Off[FrontEndObject::notavail];
 While[True,
  message = SocketReadMessage[socket];
  message2 = ByteArrayToString[message];
- Print[\"[woflramscirpt] got request:\", message2];
- res = Check[ToExpression[message2], ExportString[<|\"Error\" -> \"\$Failed\"|>, \"JSON\", \"Compact\" -> True]];
- Print[\"[woflramscirpt] evaluated:\", res];
+ Print["[woflramscirpt] got request : ", message2];
+ res = Check[ToExpression[message2], ExportString[<|"Error" -> "$Failed"|>, "JSON", "Compact" -> True]];
+ Print["[woflramscirpt] evaluated   : ", res];
+ BinaryWrite[socket, StringToByteArray[ToString[res], "UTF-8"]]
+];
+END
 
- BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"]]
-]";
+#| Makes WL's ZeroMQ infinite loop program.
+sub MakeWLCode(Str :$url = 'tcp://127.0.0.1', Str :$port = '5555', Str :$prepCode = '', Bool :$proclaim = False) {
+
+    my Str $resCode = $prepCode ~ "\n" ~ $wlSocketCode.subst('$URL', $url).subst('$PORT', $port);
+
     # BinaryWrite[socket, StringToByteArray[ToString[res], \"UTF-8\"], \"Character32\"]
     if !$proclaim {
         $resCode = $resCode.subst(/ ^^ \h* 'Print' .*? $$ /, ''):g
