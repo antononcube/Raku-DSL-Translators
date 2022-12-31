@@ -39,7 +39,9 @@ multi sub MAIN(Str $command,                                      #= A string wi
 
     say $res;
 
-    copy-to-clipboard($res, :$clipboard-command);
+    if $clipboard-command.lc ne 'none' {
+        copy-to-clipboard($res, :$clipboard-command);
+    }
 }
 
 multi sub MAIN(Str $progLang,                  #= Programming language.
@@ -48,9 +50,10 @@ multi sub MAIN(Str $progLang,                  #= Programming language.
                Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
                Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
                UInt :$degree = 1,              #= Positive integer for the degree parallelism.
-               Bool :$ast = False              #= Should Match object be returned for the key "CODE" or not?
+               Bool :$ast = False,             #= Should Match object be returned for the key "CODE" or not?
+               Str :c(:$clipboard-command) is copy = 'Whatever'   #= Clipboard command to use.
                ) {
-    MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast);
+    MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast, :$clipboard-command);
 }
 
 sub USAGE() {
