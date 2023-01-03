@@ -200,7 +200,8 @@ my %bulgarianModuleShortcuts = %englishModuleShortcuts;
 #-----------------------------------------------------------
 my %languageDispatch =
         English => %englishModuleShortcuts,
-        Bulgarian => %bulgarianModuleShortcuts;
+        Bulgarian => %bulgarianModuleShortcuts,
+        Russian => %bulgarianModuleShortcuts;
 
 #-----------------------------------------------------------
 # DSL classifier
