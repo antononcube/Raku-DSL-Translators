@@ -27,7 +27,7 @@ multi sub MAIN(Str $command,                                         #= Command 
                Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
                Str :$sub = '',                                       #= Sub for given URL.
                Str :t(:$to-language) is copy = 'R',                  #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
-               Str :f(:$from-language) is copy= 'English',           #= Language to translate from; one of 'Bulgarian', 'English', or 'Whatever'.
+               Str :f(:$from-language) is copy= 'English',           #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
                Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
                Bool :$fallback = True,                               #= Should fallback parsing be done or not?
                UInt :$timeout= 10,                                   #= Timeout in seconds.

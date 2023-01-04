@@ -3,16 +3,14 @@
 use DSL::Shared::Utilities::ComprehensiveTranslation;
 use DSL::Shared::Utilities::CopyToClipboard;
 
-my %*SUB-MAIN-OPTS =
-        :named-anywhere,    # allow named variables at any location
-        ;
+my %*SUB-MAIN-OPTS = :named-anywhere;
 
 #| Translates natural language commands into programming code.
 multi sub MAIN(Str $command,                                      #= A string with one or many commands (separated by ';').
-               Str :$language = 'Whatever',                       #= The natural language to translate from.
+               Str :f(:$from-language) is copy= 'Whatever',       #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
+               Str :t(:$to-language) is copy = 'R',               #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
                Str :$format = 'automatic',                        #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
-               Bool :$guessGrammar = True,                        #= Should the DSL grammar of $command of be guessed or not?
-               Str :$defaultTargetsSpec = 'R',                    #= Programming language name, one of 'Python', 'R', 'Raku', 'WL'.
+               Bool :$guess-grammar = True,                       #= Should the DSL grammar of $command of be guessed or not?
                UInt :$degree = 1,                                 #= Positive integer for the degree parallelism.
                Bool :$ast = False,                                #= Should Match object be returned for the key "CODE" or not?,
                Str :c(:$clipboard-command) is copy = 'Whatever'   #= Clipboard command to use.
@@ -21,21 +19,24 @@ multi sub MAIN(Str $command,                                      #= A string wi
     my $formatSpec = ($ast and $format.lc (elem) <auto automatic whatever> ) ?? 'code' !! $format;
     $formatSpec = 'code' when $formatSpec.lc (elem) <auto automatic whatever>;
 
-    my $from-lang = $language;
-
-    if $from-lang.lc ∈ <Whatever Automatic Nil>>>.lc {
+    if $from-language.lc ∈ <Whatever Automatic Nil>>>.lc {
         my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
         my $total = [+] %counts.values;
         my %freqs = %counts.deepmap({ $_ / $total });
         if %freqs<True>:exists {
-            $from-lang = %freqs<True> ≥ 0.40 ?? 'Bulgarian' !! 'English';
-            warn "Heuristic determination of the command (from-)language to be $from-lang.";
+            $from-language = %freqs<True> ≥ 0.40 ?? 'Bulgarian' !! 'English';
+            warn "Heuristic determination of the command (from-)language to be $from-language.";
         } else {
-            $from-lang = 'English';
+            $from-language = 'English';
         }
     }
 
-    my $res = DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command, language => $from-lang, format => $formatSpec, :$guessGrammar, :$defaultTargetsSpec, :$degree, :$ast);
+    my $res = DSL::Shared::Utilities::ComprehensiveTranslation::ToDSLCode($command,
+                                                                          language => $from-language,
+                                                                          format => $formatSpec,
+                                                                          defaultTargetsSpec => $to-language,
+                                                                          guessGrammar => $guess-grammar,
+                                                                          :$degree, :$ast);
 
     say $res;
 
@@ -44,16 +45,16 @@ multi sub MAIN(Str $command,                                      #= A string wi
     }
 }
 
-multi sub MAIN(Str $progLang,                  #= Programming language.
-               Str $command,                   #= A string with one or many commands (separated by ';').
-               Str :$language = 'Whatever',    #= The natural language to translate from.
-               Str :$format = 'automatic',     #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
-               Bool :$guessGrammar = True,     #= Should the DSL grammar of $command of be guessed or not?
-               UInt :$degree = 1,              #= Positive integer for the degree parallelism.
-               Bool :$ast = False,             #= Should Match object be returned for the key "CODE" or not?
+multi sub MAIN(Str $progLang,                         #= Programming language.
+               Str $command,                          #= A string with one or many commands (separated by ';').
+               Str :f(:$from-language) = 'Whatever',  #= The natural language to translate from.
+               Str :$format = 'automatic',            #= The format of the output, one of 'automatic', 'ast', 'code', 'hash', 'json', or 'raku'.
+               Bool :$guess-grammar = True,           #= Should the DSL grammar of $command of be guessed or not?
+               UInt :$degree = 1,                     #= Positive integer for the degree parallelism.
+               Bool :$ast = False,                    #= Should Match object be returned for the key "CODE" or not?
                Str :c(:$clipboard-command) is copy = 'Whatever'   #= Clipboard command to use.
                ) {
-    MAIN($command, :$language, :$format, :$guessGrammar, defaultTargetsSpec => $progLang, :$degree, :$ast, :$clipboard-command);
+    MAIN($command, :$from-language, to-language => $progLang, :$format, :$guess-grammar, :$degree, :$ast, :$clipboard-command);
 }
 
 sub USAGE() {
