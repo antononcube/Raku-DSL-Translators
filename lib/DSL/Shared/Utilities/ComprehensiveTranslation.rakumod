@@ -201,6 +201,7 @@ my %bulgarianModuleShortcuts = %englishModuleShortcuts;
 my %languageDispatch =
         English => %englishModuleShortcuts,
         Bulgarian => %bulgarianModuleShortcuts,
+        Portuguese => %bulgarianModuleShortcuts,
         Russian => %bulgarianModuleShortcuts;
 
 #-----------------------------------------------------------
