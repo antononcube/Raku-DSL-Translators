@@ -6,7 +6,7 @@ use Cro::HTTP::Server;
 use DSL::Shared::Utilities::MetaSpecsProcessing;
 use DSL::Shared::Utilities::ComprehensiveTranslation;
 use Lingua::NumericWordForms;
-use JSON::Marshal;
+use JSON::Fast;
 
 use Net::ZMQ4;
 use Net::ZMQ4::Constants;
@@ -39,7 +39,7 @@ sub MAIN(
     # Launch wolframscript with ZMQ socket
     my $proc = Nil;
     my Net::ZMQ4::Socket $receiver = Nil;
-    if $wl-url and $wl-port {
+    if $wl-url.chars > 0 && $wl-port ~~ / \d+ / {
 
         warn 'Launching wolframscript with ZMQ socket...';
 
@@ -77,7 +77,7 @@ sub MAIN(
 
                 my %res = %emptyResult, { STDERR => 'QAS was not activated.', COMMAND => $command };
 
-                content 'text/html', marshal(%res);
+                content 'text/html', to-json(%res);
             }
         }
 
@@ -106,7 +106,7 @@ sub MAIN(
                 %res<STDERR> = %res<STDERR> ~ "\n" ~ $from-lang-msg;
             }
 
-            content 'text/html', marshal(%res);
+            content 'text/html', to-json(%res);
         }
 
         # Numeric word forms
@@ -125,20 +125,24 @@ sub MAIN(
                          DSLTARGET => 'Lingua::NumericWordForms',
                          DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form);
 
-            content 'text/html', marshal(%res);
+            content 'text/html', to-json(%res);
         }
 
         # Find textual answer
         get -> 'find-textual-answer', :$text!, :$question!, :$nAnswers = '3', :$performanceGoal = 'Speed',
                :$properties = '' {
 
-            my Str $performanceGoal2 = $performanceGoal.Str.tclc eq 'Quality' ?? 'Quality' !! 'Speed';
-            my Str $nAnswers2 = $nAnswers.Str;
-            $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '3';
+            my Str $res;
+            if $proc {
+                my Str $performanceGoal2 = $performanceGoal.Str.tclc eq 'Quality' ?? 'Quality' !! 'Speed';
+                my Str $nAnswers2 = $nAnswers.Str;
+                $nAnswers2 = ($nAnswers2 ~~ / \d+ /) ?? $nAnswers2 !! '3';
 
-            my Str $res = find-textual-answer($receiver, $text, $question, nAnswers => $nAnswers2.Int,
-                    performanceGoal => $performanceGoal2, :$properties);
-
+                $res = find-textual-answer($receiver, $text, $question, nAnswers => $nAnswers2.Int,
+                        performanceGoal => $performanceGoal2, :$properties);
+            } else {
+                $res = 'QAS is not activated.'
+            }
             content 'text/html', $res;
         }
 
