@@ -14,14 +14,14 @@
 #cd -
 
 ## Install prove6
-zef install App::Prove6
+#zef install App::Prove6
 #zef install Linenoise
 
 ## Install cro
-zef install --/test cro
+#zef install --/test cro
 
 ## Install utility (required) packages
-zef install Hash::Merge
+zef install 'Hash::Merge:ver<2.0.0>'
 zef install silently
 zef install XDG::BaseDirectory
 

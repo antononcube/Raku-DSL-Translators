@@ -8,7 +8,9 @@ zef uninstall DSL::English::LatentSemanticAnalysisWorkflows
 zef uninstall DSL::English::QuantileRegressionWorkflows
 zef uninstall DSL::English::RecommenderWorkflows
 zef uninstall DSL::Shared
+zef uninstall Lingua::NumericWordForms
 
+zef install https://github.com/antononcube/Raku-Lingua-NumericWordForms.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-English-ClassificationWorkflows.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows.git --force-install --/test
