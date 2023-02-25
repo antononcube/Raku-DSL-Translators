@@ -12,6 +12,7 @@ zef install Haikunator
 zef install Acme::Text::UpsideDown
 zef install https://github.com/antononcube/Raku-Grammar-TokenProcessing.git
 zef install https://github.com/antononcube/Raku-DateTime-Grammar.git
+zef install https://github.com/antononcube/Raku-Gherkin-Grammar.git
 zef install https://github.com/antononcube/Raku-JavaScript-D3.git
 zef install https://github.com/antononcube/Raku-Lingua-Stem-Bulgarian.git
 zef install https://github.com/antononcube/Raku-Lingua-Stem-Portuguese.git
@@ -27,3 +28,4 @@ zef install https://github.com/antononcube/Raku-Mathematica-Serializer.git
 zef install https://github.com/antononcube/Raku-Statistics-OutlierIdentifiers.git
 zef install https://github.com/antononcube/Raku-Text-Plot.git
 zef install https://github.com/antononcube/Raku-UML-Translators.git
+zef install https://github.com/antononcube/Raku-Data-Cryptocurrencies.git
