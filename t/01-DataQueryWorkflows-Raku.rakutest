@@ -27,7 +27,7 @@ show counts
 my $command1 = 'DSL MODULE DataQuery;' ~ $command0;
 
 my $expectedRes1 = '
-my $obj = example-dataset(rx/ iris $ /) ;
+$obj = example-dataset(rx/ iris $ /) ;
 $obj = group-by( $obj, "Species") ;
 say "counts: ", $obj>>.elems';
 
@@ -64,6 +64,8 @@ my $expectedRes2 = '
 use Data::Reshapers;
 use Data::Summarizers;
 use Data::ExampleDatasets;
+
+my $obj;
 ';
 
 is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
