@@ -347,14 +347,18 @@ sub post-process-result(%rakuRes, Str $format) {
 )
 our proto ToDSLCode(Str $command, |) is export {*};
 
-multi ToDSLCode(Str $command,
-                Str :$language = 'English',
-                Str :$format is copy = 'hash',
-                Bool :guessGrammar(:$guess-grammar) = True,
-                Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
-                Int :$degree = 1,
-                Bool :$ast = False,
-                Bool :$code = False) {
+multi sub ToDSLCode(@commands, *%args) {
+    return ToDSLCode(@commands.join("\n;"), |%args);
+}
+
+multi sub ToDSLCode(Str $command,
+                    Str :$language = 'English',
+                    Str :$format is copy = 'hash',
+                    Bool :guessGrammar(:$guess-grammar) = True,
+                    Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                    Int :$degree = 1,
+                    Bool :$ast = False,
+                    Bool :$code = False) {
 
     die "Unknown natural language: $language." unless %languageDispatch{$language}:exists;
 
@@ -491,12 +495,23 @@ sub ToDSLSyntaxTree(Str $command,
 
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
-sub dsl-translation(Str:D $commands,
-                    Str:D :$language = 'English',
-                    Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
-                    Bool :$ast = False,
-                    Bool :$prepend-setup-code = False,
-                    Int :$degree = 1) is export {
+proto sub dsl-translation(Str:D $commands,
+                          Str:D :$language = 'English',
+                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                          Bool :$ast = False,
+                          Bool :$prepend-setup-code = False,
+                          Int :$degree = 1) is export {*}
+
+multi sub dsl-translation(@commands, *%args) {
+    return dsl-translation(@commands.join(";\n"), |%args);
+}
+
+multi sub dsl-translation(Str:D $commands,
+                          Str:D :$language = 'English',
+                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                          Bool :$ast = False,
+                          Bool :$prepend-setup-code = False,
+                          Int :$degree = 1) {
 
     my Str $commands2 = $commands;
 
@@ -531,7 +546,7 @@ sub dsl-translation(Str:D $commands,
     }
 
     ## Result
-    %res
+    return %res;
 }
 
 #===========================================================
