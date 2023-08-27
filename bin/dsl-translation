@@ -1,7 +1,7 @@
 #!/usr/bin/env perl6
 
 use DSL::Shared::Utilities::ComprehensiveTranslation;
-use DSL::Shared::Utilities::CopyToClipboard;
+use Clipboard;
 
 my %*SUB-MAIN-OPTS = :named-anywhere;
 

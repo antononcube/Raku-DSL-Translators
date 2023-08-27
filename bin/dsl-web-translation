@@ -1,7 +1,7 @@
 #!/usr/bin/env perl6
 
 use HTTP::UserAgent;
-use DSL::Shared::Utilities::CopyToClipboard;
+use Clipboard;
 use JSON::Fast;
 
 my %*SUB-MAIN-OPTS =
