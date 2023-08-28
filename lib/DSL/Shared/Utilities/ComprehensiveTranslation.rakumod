@@ -211,7 +211,7 @@ my %languageDispatch =
 # See the BEGIN block at the bottom of the file.
 
 my ML::TriesWithFrequencies::Trie $trDSL .= new;
-my %knownWords;
+my $knownWords;
 my @dslLabels;
 
 sub get-dsl-trie-classifier() is export {
@@ -236,7 +236,27 @@ my %dslLabelToModule =
          DSL::English::ClassificationWorkflows DSL::English::LatentSemanticAnalysisWorkflows
          DSL::English::DataQueryWorkflows DSL::English::QuantileRegressionWorkflows>;
 
+my %dslLabelToModule2 =
+        ["RecommenderWorkflows",
+         "ClassificationWorkflows",
+         "LatentSemanticAnalysisWorkflows",
+         "DataQueryWorkflows", "QuantileRegressionWorkflows"].map({ $_ => "DSL::English::$_" });
+
+%dslLabelToModule = %dslLabelToModule , %dslLabelToModule2;
+
 #-----------------------------------------------------------
+#| Classifies commands to DSL workflow labels.
+proto sub dsl-classify($command) is export {*}
+
+multi sub dsl-classify(@commands) {
+    return dsl-classify(@commands.join("\n"));
+}
+
+multi sub dsl-classify(Str $command) {
+    return $trDSL.classify($command.lc.words.grep({ $_ ∈ $knownWords }).sort, prop => 'Probabilities'):!verify-key-existence;
+}
+
+#| #-----------------------------------------------------------
 #| Finds most applicable DSL grammar.
 proto dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int :$n = 10, Str :$norm = 'sum',
                           Int :$batch = 64, Int :$degree = 1) is export {*};
@@ -256,7 +276,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
     if $degree <= 1 {
 
         # Classification of the command into a DSL label
-        my %clRes = $trDSL.classify($command.lc.words.grep({ $_ ∈ %knownWords }).sort, prop => 'Probabilities'):!verify-key-existence;
+        my %clRes = $trDSL.classify($command.lc.words.grep({ $_ ∈ $knownWords }).sort, prop => 'Probabilities'):!verify-key-existence;
 
         # Replace DSL labels with module names
         %clRes = %clRes.map({ (%dslLabelToModule{$_.key}:exists ?? %dslLabelToModule{$_.key} !! $_.key) => $_.value });
@@ -553,9 +573,9 @@ multi sub dsl-translation(Str:D $commands,
 # Optimization
 #===========================================================
 
-($trDSL, %knownWords, @dslLabels) = BEGIN {
+($trDSL, $knownWords, @dslLabels) = BEGIN {
     my ML::TriesWithFrequencies::Trie $tr .= new;
     $tr = get-dsl-trie-classifier();
-    my %words = Set(unique($tr.words.flat>>.lc));
-    ($tr, %words, |$tr.leaf-probabilities.keys.Array)
+    my $words = Set(unique($tr.words.flat>>.lc));
+    ($tr, $words, |$tr.leaf-probabilities.keys.Array)
 }
