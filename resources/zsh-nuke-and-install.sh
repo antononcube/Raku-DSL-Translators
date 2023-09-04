@@ -63,11 +63,11 @@ zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.
 zef install https://github.com/antononcube/Raku-DSL-English-DataAcquisitionWorkflows.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-DSL-English-RecruitingWorkflows.git --force-install --/test 
-zef install https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation.git --force-install --/test 
+zef install https://github.com/antononcube/Raku-DSL-Translators.git --force-install --/test
 zef install https://github.com/antononcube/Raku-ML-StreamsBlendingRecommender.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-DSL-Bulgarian.git --force-install --/test 
 
-## Install packages used to invoke DSL::Shared::Utilities::ComprehensiveTranslation
+## Install packages used to invoke DSL::Translators
 ## in R, WL, Jupyter notebooks and Markdown, Org-mode, Pod6 files.
 zef install Net::ZMQ --force-install --/test
 zef install Text::CodeProcessing --force-install --/test
