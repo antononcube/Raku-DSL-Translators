@@ -4,11 +4,9 @@ use lib './lib';
 use lib '.';
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use DSL::Shared::Utilities::ComprehensiveTranslation;
+use DSL::Translators::ComprehensiveTranslation;
 
-use JSON::Marshal;
-
-my Str $format = 'Hash';
+use JSON::Fast;
 
 say "=" x 30;
 
@@ -71,47 +69,141 @@ show topics table with 10 terms;
 show thesaurus table for king, castle, denmark;"
 );
 
+#@testCommands = (
+#"DSL TARGET WL-LSAMon;
+#USER ID dfdfd;
+#create textHamplet;
+#make document term matrix;
+#extract 12 topics using non ngative matrix factorization;
+#echo topics table;
+#echo statistical thesaurus for queen, king, and grave");
+
+#@testCommands = (
+#"DSL MODULE ClCon;
+#DSL TARGET WL::ClCon;
+#use dfTitanic;
+#split data with fraction 0.8;
+#make gradient boosted trees classifier;
+#show classifier training time;
+#show classifier measurements;
+#show classifier confusion matrix plot, ROCCurve;
+#show top confusions, misclassified examples, least certain examples;"
+#);
+
+#@testCommands = (
+#"DSL MODULE Recruiting;
+#recommend job descriptions for java"
+#);
+
 @testCommands = (
-"DSL TARGET WL-LSAMon;
-USER ID dfdfd;
-create textHamplet;
-make document term matrix;
-extract 12 topics using non ngative matrix factorization;
+'DSL MODULE DataQueryWorkflows;
+include setup code;
+use $dfTitanic;
+group by "passengerSex";
+summarize',
+
+'inner join with dfFinelyFoodName over FOODID',
+
+'DSL MODULE Recruiting;
+recommend jobs that have java development, software architect, agile, and agile coach',
+
+'DSL MODULE LSAMon;
+DSL TARGET LSAMon::Python;
+create from textHamlet;
+make document term matrix with stemming FALSE and automatic stop words;
+apply LSI functions global weight function IDF, local term weight function TermFrequency, normalizer function Cosine;
+extract 12 topics using method NNMF and max steps 12 and 20 min number of documents per term;
+show topics table with 12 terms;
+show thesaurus table for king, castle, denmark;',
+
+'DSL MODULE DataQuery;
+DSL TARGET Raku;
+USER ID hjhdj22;
+include setup code;
+load dataset / iris $ /; group by Species; show counts',
+
+'DSL MODULE DataQuery;
+зареди таблицата "iris"; групирай с колоната Species; покажи размерите',
+
+"DSL MODULE LSAMon;
+създай със textHamlet;
+направи документ-термин матрица със автоматични стоп думи;
+приложи LSI функците IDF, TermFrequency, и Cosine;
+извади 12 теми чрез NNMF и максимален брой стъпки 12;
+покажи таблица  на темите с 12 термина;
+покажи текущата лентова стойност",
+
+"DSL MODULE LSAMon;
+create from aDocs;
+create document term matrix with stemming;
+show document term matrix statistics;
+apply the term weight functions IDF, None, Cosine;
+extract 60 topics with the method NNMF;
 echo topics table;
-echo statistical thesaurus for queen, king, and grave"
+show statistical thesaurus for interested, likely, want",
+
+'DSL MODULE ClassificationWorkflows;
+DSL TARGET WL::ClCon;
+make a logistic regression classifier'
 );
 
-my $res = ToDSLCode(@testCommands[0], language => 'English', format => 'json', :guessGrammar, defaultTargetsSpec => 'R', degree => 1);
-say $res;
+#@testCommands = (
+#"filter with Package is 'Statistics' and Title starts with 'air'"
+#);
+
+say "=" x 30;
+say 'ToDSLCode';
 say "-" x 30;
-say marshal($res).raku;
+my $res = ToDSLCode(@testCommands[*- 1], language => 'English', format => 'code', :guessGrammar,
+        defaultTargetsSpec => 'R', degree => 1);
+say $res;
+say "=" x 30;
+say 'dsl-translation';
+say "-" x 30;
+my $res2 = dsl-translation(@testCommands[*- 1], language => 'English'):ast;
+say to-json($res2);
+say '-' x 30;
+
+#say marshal($res).raku;
 
 #my $ast = ToDSLCode(@testCommands[0], language => 'English', format => 'object', :guessGrammar, defaultTargetsSpec => 'R', degree => 1):ast;
 #say $ast<CODE>.WHAT;
 
-say "=" x 30;
-my $ast = ToDSLSyntaxTree(@testCommands[0], language => 'English', format => 'object', :guessGrammar, defaultTargetsSpec => 'R', degree => 1):as-hash;
-say $ast;
-say "-" x 30;
-say marshal($ast).raku;
+#say "=" x 30;
+#my $ast = ToDSLSyntaxTree(@testCommands[0], language => 'English', format => 'object', :guessGrammar, defaultTargetsSpec => 'R', degree => 1):as-hash;
+#say $ast;
+#say "-" x 30;
+#say marshal($ast).raku;
 
-say "=" x 60;
-say dsl-translate("
-use finData;
-echo data summary;
-compute quantile regression with 20 knots and probabilities 0.5 and 0.7;
-show date list plots;
-show error plots
-", defaultTargetsSpec => "WL").raku;
+#say "=" x 60;
+#say dsl-translation("
+#use finData;
+#echo data summary;
+#compute quantile regression with 20 knots and probabilities 0.5 and 0.7;
+#show date list plots;
+#show error plots
+#", defaultTargetsSpec => "WL").raku;
 
 #use MONKEY-SEE-NO-EVAL;
 #my $gram = EVAL($res<DSL> ~ '::Grammar');
 #
 #say $gram.parse(@testCommands[0], rule => 'workflow-commands-list');
 
+my $format = 'code';
+my $degree = 1;
+for @testCommands -> $c {
+    say "=" x 30;
+    say $c;
+    say '-' x 30;
+    my $start = now;
+    my $res = ToDSLCode($c, language => "English", :$format, :guessGrammar, defaultTargetsSpec => 'WL', :$degree);
+    say "degree: $degree, time: ", now - $start;
+    say $res;
+}
+
 #
 #for (1..6) -> $degree {
-#    for @testCommand s -> $c {
+#    for @testCommands -> $c {
 #        say "=" x 30;
 #        say $c;
 #        say '-' x 30;

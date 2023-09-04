@@ -15,9 +15,9 @@ use lib './lib';
 use lib '.';
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use DSL::Shared::Utilities::ComprehensiveTranslation;
+use DSL::Translators::ComprehensiveTranslation;
 use Lingua::NumericWordForms;
-use JSON::Marshal;
+use JSON::Fast;
 
 use Net::ZMQ4;
 use Net::ZMQ4::Constants;
@@ -64,7 +64,7 @@ my Net::ZMQ4::Socket $reciever .= new($context, ZMQ_REQ);
 $reciever.bind("$url:$port");
 
 #| Translate commands by QAS.
-sub dsl-translate-by-qas( Str $commands, Str :$lang = 'WL') {
+sub dsl-translation-by-qas( Str $commands, Str :$lang = 'WL') {
 
     # Build-up the WL code
     my $spec = 'aRes = Concretize[ "' ~ $commands ~ '", "AssociationResult" -> True, "TargetLanguage" -> "' ~ $lang ~ '"];';
@@ -128,35 +128,35 @@ my $application = route {
 
     get -> 'translate', 'qas', $commands {
 
-        my Str $res = dsl-translate-by-qas( $commands, lang => 'WL' );
+        my Str $res = dsl-translation-by-qas( $commands, lang => 'WL' );
 
         content 'text/html', $res;
     }
 
     get -> 'translate', 'qas', $lang, $commands {
 
-        my Str $res = dsl-translate-by-qas( $commands, :$lang );
+        my Str $res = dsl-translation-by-qas( $commands, :$lang );
 
         content 'text/html', $res;
     }
 
     get -> 'translate', $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL');
+        my %res = dsl-translation( $commands, defaultTargetsSpec => 'WL');
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', $lang, $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => $lang);
+        my %res = dsl-translation( $commands, defaultTargetsSpec => $lang);
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', 'ast', $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL'):ast;
+        my %res = dsl-translation( $commands, defaultTargetsSpec => 'WL'):ast;
 
         content 'text/html', marshal( %res );
     }

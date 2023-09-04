@@ -7,9 +7,9 @@ use lib './lib';
 use lib '.';
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use DSL::Shared::Utilities::ComprehensiveTranslation;
+use DSL::Translators::ComprehensiveTranslation;
 use Lingua::NumericWordForms;
-use JSON::Marshal;
+use JSON::Fast;
 
 my @testCommands = (
 'create recommender with dfTitanic; recommend by profile male; echo value',
@@ -46,21 +46,21 @@ my $application = route {
 
     get -> 'translate', $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL');
+        my %res = dsl-translation( $commands, defaultTargetsSpec => 'WL');
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', $lang, $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => $lang);
+        my %res = dsl-translation( $commands, defaultTargetsSpec => $lang);
 
         content 'text/html', marshal( %res );
     }
 
     get -> 'translate', 'ast', $commands {
 
-        my %res = dsl-translate( $commands, defaultTargetsSpec => 'WL'):ast;
+        my %res = dsl-translation( $commands, defaultTargetsSpec => 'WL'):ast;
 
         content 'text/html', marshal( %res );
     }

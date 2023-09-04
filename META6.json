@@ -1,6 +1,6 @@
 {
-  "name": "DSL::Shared::Utilities::ComprehensiveTranslation",
-  "description": "DSL::Shared::Utilities::ComprehensiveTranslation provides multi-DSL automatic determination and parsing.",
+  "name": "DSL::Translators",
+  "description": "DSL-to-DSL translation with multiple DSLs.",
   "version": "0.1.0",
   "perl": "6.d",
   "authors": [
@@ -31,7 +31,7 @@
   "build-depends": [],
   "test-depends": [],
   "provides": {
-    "DSL::Shared::Utilities::ComprehensiveTranslation": "lib/DSL/Shared/Utilities/ComprehensiveTranslation.rakumod"
+    "DSL::Translators::ComprehensiveTranslation": "lib/DSL/Translators/ComprehensiveTranslation.rakumod"
   },
   "resources": [
     "dsl-trie-classifier.json"
