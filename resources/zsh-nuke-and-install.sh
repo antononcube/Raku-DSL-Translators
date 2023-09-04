@@ -44,6 +44,7 @@ zef install https://github.com/antononcube/Raku-Data-Generators.git --force-inst
 #zef install https://github.com/jkramer/p6-Text-Wrap.git --force-install --/test
 zef install Text::Wrap --force-install --/test
 
+zef install https://github.com/antononcube/Raku-Data-TypeSystem.git --force-install --/test
 zef install https://github.com/antononcube/Raku-Data-Reshapers.git --force-install --/test
 zef install https://github.com/antononcube/Raku-Data-Summarizers.git --force-install --/test
 zef install https://github.com/antononcube/Raku-Data-ExampleDatasets.git --force-install --/test

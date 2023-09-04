@@ -29,3 +29,8 @@ zef install https://github.com/antononcube/Raku-Statistics-OutlierIdentifiers.gi
 zef install https://github.com/antononcube/Raku-Text-Plot.git
 zef install https://github.com/antononcube/Raku-UML-Translators.git
 zef install https://github.com/antononcube/Raku-Data-Cryptocurrencies.git
+zef install https://github.com/antononcube/Raku-Data-Translators.git
+zef install https://github.com/antononcube/Raku-Clipboard.git
+zef install https://github.com/antononcube/Raku-Text-SubParsers.git
+zef install https://github.com/antononcube/Raku-JavaScripb-D3.git
+zef install https://github.com/antononcube/Raku-Jupyter-Chatbook.git
