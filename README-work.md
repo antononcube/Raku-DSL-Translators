@@ -23,7 +23,7 @@ See the installation code in the resource file ["zsh-nuke-and-install.sh"](./res
 Here we load the package:
 
 ```perl6
-use DSL::Shared::Utilities::ComprehensiveTranslation;
+use DSL::Translators::ComprehensiveTranslation;
 ```
 
 Here is an example that shows:
