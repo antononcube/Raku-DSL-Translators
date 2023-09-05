@@ -8,7 +8,7 @@
   ],
   "auth": "zef:antononcube",
   "depends": [
-    "Clipboard:ver<0.1.1+>",
+    "Clipboard::ver<0.1.1+>",
     "HTTP::UserAgent",
     "JSON::Fast",
     "Lingua::NumericWordForms",
