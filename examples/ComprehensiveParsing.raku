@@ -4,7 +4,7 @@ use lib './lib';
 use lib '.';
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use DSL::Translators::ComprehensiveTranslation;
+use DSL::Translators;
 
 use JSON::Fast;
 
