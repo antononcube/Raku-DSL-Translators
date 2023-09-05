@@ -1,11 +1,14 @@
 use v6.d;
 
+unit module DSL::Translators::ComprehensiveTranslation;
+
+#-----------------------------------------------------------
 use DSL::Shared::Utilities::MetaSpecsProcessing;
+
+#-----------------------------------------------------------
 use JSON::Fast;
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
-
-unit module DSL::Translators::ComprehensiveTranslation;
 
 #-----------------------------------------------------------
 use DSL::English::ClassificationWorkflows;
