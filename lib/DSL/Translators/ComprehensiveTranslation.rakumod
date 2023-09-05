@@ -1,7 +1,4 @@
-# Most likely a better place for this file is a separate GitHub/Raku repository/package.
-# The functionality here is not "shared" -- it is "overall."
-
-use v6;
+use v6.d;
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
 use JSON::Fast;
