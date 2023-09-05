@@ -9,11 +9,10 @@
   "auth": "github:antononcube",
   "depends": [
     "Clipboard:ver<0.1.1+>",
-    "JSON::Marshal",
+    "HTTP::UserAgent",
     "JSON::Fast",
     "Lingua::NumericWordForms",
     "Chemistry::Stoichiometry",
-    "Test::Output",
     "ML::TriesWithFrequencies",
     "DSL::Shared:ver<0.2.1+>",
     "DSL::English::ClassificationWorkflows",
@@ -26,11 +25,13 @@
     "DSL::English::RecommenderWorkflows",
     "DSL::English::RecruitingWorkflows",
     "DSL::English::SearchEngineQueries",
-    "DSL::Bulgarian"
+    "DSL::Bulgarian",
+    "Test::Output"
   ],
   "build-depends": [],
   "test-depends": [],
   "provides": {
+    "DSL::Translators": "lib/DSL/Translators.rakumod",
     "DSL::Translators::ComprehensiveTranslation": "lib/DSL/Translators/ComprehensiveTranslation.rakumod"
   },
   "resources": [
