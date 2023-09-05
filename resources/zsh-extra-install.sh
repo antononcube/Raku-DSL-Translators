@@ -32,5 +32,8 @@ zef install https://github.com/antononcube/Raku-Data-Cryptocurrencies.git
 zef install https://github.com/antononcube/Raku-Data-Translators.git
 zef install https://github.com/antononcube/Raku-Clipboard.git
 zef install https://github.com/antononcube/Raku-Text-SubParsers.git
-zef install https://github.com/antononcube/Raku-JavaScripb-D3.git
-zef install https://github.com/antononcube/Raku-Jupyter-Chatbook.git
+
+zef install https://github.com/antononcube/Raku-LLM-Functions.git
+zef install https://github.com/antononcube/Raku-WWW-OpenAI.git
+zef install https://github.com/antononcube/Raku-WWW-PaLM.git
+zef install https://github.com/antononcube/Raku-WWW-MermaidInk.git
