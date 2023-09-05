@@ -48,5 +48,5 @@
     "workflow"
   ],
   "api": "1",
-  "source-url": "https://github.com/antononcube/Raku-DSL-Shared-Utilities-ComprehensiveTranslation"
+  "source-url": "https://github.com/antononcube/Raku-DSL-Translators"
 }
