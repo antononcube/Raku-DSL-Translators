@@ -4,13 +4,11 @@
 use v6;
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use Test::Output;
-use JSON::Marshal;
 use JSON::Fast;
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-unit module DSL::Shared::Utilities::ComprehensiveTranslation;
+unit module DSL::Translators::ComprehensiveTranslation;
 
 #-----------------------------------------------------------
 use DSL::English::ClassificationWorkflows;
@@ -346,7 +344,7 @@ sub post-process-result(%rakuRes, Str $format) {
     } elsif $format.lc eq 'raku' {
         return %rakuRes.raku;
     } elsif $format.lc eq 'json' {
-        return marshal(%rakuRes);
+        return to-json(%rakuRes);
     } elsif $format.lc eq 'code' {
         return %rakuRes<CODE>;
     } else {
@@ -503,7 +501,7 @@ sub ToDSLSyntaxTree(Str $command,
         return %ast.raku;
     } elsif $format.lc eq 'json' {
         %ast<CODE> = to-pairs(%ast<CODE>);
-        return marshal(%ast);
+        return to-json(%ast);
     } elsif $format.lc eq 'code' {
         return %ast<CODE>;
     } else {
@@ -512,62 +510,6 @@ sub ToDSLSyntaxTree(Str $command,
     }
 }
 #= This function uses C<ToDSLCode> with C<ast => True>.
-
-
-#| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
-proto sub dsl-translation(Str:D $commands,
-                          Str:D :$language = 'English',
-                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
-                          Bool :$ast = False,
-                          Bool :$prepend-setup-code = False,
-                          Int :$degree = 1) is export {*}
-
-multi sub dsl-translation(@commands, *%args) {
-    return dsl-translation(@commands.join(";\n"), |%args);
-}
-
-multi sub dsl-translation(Str:D $commands,
-                          Str:D :$language = 'English',
-                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
-                          Bool :$ast = False,
-                          Bool :$prepend-setup-code = False,
-                          Int :$degree = 1) {
-
-    my Str $commands2 = $commands;
-
-    ## Remove wrapper quotes
-    if $commands2 ~~ / ^ ['"' | '\''] .* ['"' | '\''] $ / {
-        $commands2 = $commands2.substr(1, *- 1)
-    }
-
-    ## I am not sure is this hack or nice "eat your own dog food" application.
-    if $commands2 && $prepend-setup-code {
-        $commands2 ~= ";\n" ~ 'include setup code';
-    }
-
-    ## Interpret
-    my %res;
-    my $err =
-            stderr-from({
-                if $ast {
-                    #        %res = ToDSLCode( $commands2, language => "English", format => 'json', :guessGrammar, :$default-targets-spec, :$ast );
-                    #        %res = %res , %( CODE => %res{"CODE"}.gist );
-                    %res = ToDSLSyntaxTree($commands2, :$language, format => 'object', :guess-grammar, :$default-targets-spec, :$degree):as-hash;
-                } else {
-                    %res = ToDSLCode($commands2, :$language, format => 'object', :guess-grammar, :$default-targets-spec, :$degree);
-                }
-            });
-
-    ## Combine with custom $err with interpretation result
-    %res = %res, %(STDERR => $err, COMMAND => $commands);
-
-    if %res<SETUPCODE>:exists and $prepend-setup-code {
-        %res<CODE> = %res<SETUPCODE> ~ "\n" ~ %res<CODE>
-    }
-
-    ## Result
-    return %res;
-}
 
 #===========================================================
 # Optimization
