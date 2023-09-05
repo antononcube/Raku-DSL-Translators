@@ -1,6 +1,6 @@
 use v6.d;
 
-use DSL::Translators::ComprehensiveTranslation;
+use DSL::Translators;
 
 use JSON::Marshal;
 

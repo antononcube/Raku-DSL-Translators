@@ -31,8 +31,7 @@
   "build-depends": [],
   "test-depends": [],
   "provides": {
-    "DSL::Translators": "lib/DSL/Translators.rakumod",
-    "DSL::Translators::ComprehensiveTranslation": "lib/DSL/Translators/ComprehensiveTranslation.rakumod"
+    "DSL::Translators": "lib/DSL/Translators.rakumod"
   },
   "resources": [
     "dsl-trie-classifier.json"
