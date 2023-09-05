@@ -1,26 +1,12 @@
 #!/usr/bin/env perl6
 
-use HTTP::UserAgent;
+use DSL::Translators;
 use Clipboard;
 use JSON::Fast;
 
 my %*SUB-MAIN-OPTS =
         :named-anywhere,    # allow named variables at any location
         ;
-
-#| Gets the data from a specified URL.
-sub get-url-data(Str $url, UInt :$timeout = 10) {
-    my $ua = HTTP::UserAgent.new;
-    $ua.timeout = $timeout;
-
-    my $response = $ua.get($url);
-
-    if not $response.is-success {
-        # say $response.content.WHAT;
-        die $response.status-line;
-    }
-    return  $response.content
-}
 
 #| Translates natural language commands into programming code using web (dedicated) service.
 multi sub MAIN(Str $command,                                         #= Command to translate.
@@ -34,25 +20,8 @@ multi sub MAIN(Str $command,                                         #= Command 
                Str :$clipboard-command = 'Whatever'                  #= Copy to clipboard command.
                ) {
 
-    my $command2 = $command.subst(/<-alnum>/, *.ord.fmt("%%%02X"), :g);
 
-    my $urlQuery = $sub ?? "$url/$sub" !! $url;
-    $urlQuery = "$urlQuery?command=$command2&lang=$to-language&from-lang=$from-language";
-
-    #$url-query = "http://accendodata.net:5040/translate?command='make%20a%20document%20term%20matrix'&lang=WL&from-lang=Automatic";
-
-    my $urlResult = get-url-data($urlQuery, :$timeout);
-    my $resJSON = from-json($urlResult);
-
-    if !$resJSON<CODE> && $fallback {
-        return MAIN($command, :$url, sub => 'qas', :$to-language, :$from-language, :$format, :!fallback, :$timeout, :$clipboard-command);
-    }
-
-    my $res = do given $format.lc {
-        when 'code' { $resJSON<CODE> }
-        when $_ ∈ <raku hash> { $resJSON.raku }
-        default { $urlResult }
-    }
+    my $res= dsl-web-translation($command, :$url, :$sub, :$to-language, :$from-language, :$format, :$fallback, :$timeout);
 
     say $res;
 
