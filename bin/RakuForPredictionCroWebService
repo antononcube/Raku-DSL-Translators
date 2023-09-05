@@ -4,7 +4,7 @@ use Cro::HTTP::Router;
 use Cro::HTTP::Server;
 
 use DSL::Shared::Utilities::MetaSpecsProcessing;
-use DSL::Translators::ComprehensiveTranslation;
+use DSL::Translators;
 use Lingua::NumericWordForms;
 use JSON::Fast;
 
