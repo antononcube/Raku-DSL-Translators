@@ -1,11 +1,12 @@
 use v6.d;
 
+unit module DSL::Translators;
+
+#-----------------------------------------------------------
 use DSL::Translators::ComprehensiveTranslation;
 use JSON::Fast;
 use HTTP::UserAgent;
 use Test::Output;
-
-unit module DSL::Translators;
 
 #===========================================================
 # DSL translation
@@ -97,8 +98,6 @@ proto sub dsl-web-translation(
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
                              ) is export {*}
-
-# return dsl-web-translation($command, :$url, :$sub, :$to-language, :$from-language, :$format, :$fallback, :$timeout);
 
 multi sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
