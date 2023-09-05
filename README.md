@@ -9,7 +9,7 @@ This Raku package provides comprehensive multi-DSL translations.
 ## Installation
 
 To install 
-`DSL::Shared::Utilities::ComprehensiveTranslation` 
+`DSL::Translators` 
 certain DSL Raku modules have to be installed.
 
 See the installation code in the resource file ["zsh-nuke-and-install.sh"](./resources/zsh-nuke-and-install.sh). 
@@ -23,7 +23,7 @@ See the installation code in the resource file ["zsh-nuke-and-install.sh"](./res
 Here we load the package:
 
 ```perl6
-use DSL::Translators::ComprehensiveTranslation;
+use DSL::Translators;
 ```
 ```
 # (Any)
@@ -44,11 +44,11 @@ ToDSLCode('
 ```
 ```
 # {
-#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
 #   "DSL": "DSL::English::DataQueryWorkflows",
+#   "DSLTARGET": "R-tidyverse",
 #   "DSLFUNCTION": "proto sub ToDataQueryWorkflowCode (Str $command, |) {*}",
 #   "USERID": "",
-#   "DSLTARGET": "R-tidyverse",
+#   "CODE": "dfStarWars %>%\ndplyr::select(name, species, mass, height) %>%\n(function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))",
 #   "COMMAND": "\n    use dfStarWars;\n    select the columns name, species, mass and height;\n    cross tabulate species over mass"
 # }
 ```
@@ -93,20 +93,20 @@ my %res = dsl-translation('
 .say for %res;
 ```
 ```
-# STDERR => 
-# CODE => dfStarWars %>%
-# dplyr::select(name, species, mass, height) %>%
-# (function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))
-# DSLTARGET => R-tidyverse
-# USERID => dd7833sa
 # DSLFUNCTION => proto sub ToDataQueryWorkflowCode (Str $command, |) {*}
+# DSL => DSL::English::DataQueryWorkflows
+# STDERR => 
 # COMMAND => 
 #     USER ID dd7833sa;
 #     DSL MODULE DataQueryWorkflows;
 #     use dfStarWars;
 #     select the columns name, species, mass and height;
 #     cross tabulate species over mass
-# DSL => DSL::English::DataQueryWorkflows
+# DSLTARGET => R-tidyverse
+# USERID => dd7833sa
+# CODE => dfStarWars %>%
+# dplyr::select(name, species, mass, height) %>%
+# (function(x) as.data.frame(xtabs( formula = mass ~ species, data = x ), stringsAsFactors=FALSE ))
 ```
 
 ------

@@ -9,7 +9,7 @@ This Raku package provides comprehensive multi-DSL translations.
 ## Installation
 
 To install 
-`DSL::Shared::Utilities::ComprehensiveTranslation` 
+`DSL::Translators` 
 certain DSL Raku modules have to be installed.
 
 See the installation code in the resource file ["zsh-nuke-and-install.sh"](./resources/zsh-nuke-and-install.sh). 
@@ -23,7 +23,7 @@ See the installation code in the resource file ["zsh-nuke-and-install.sh"](./res
 Here we load the package:
 
 ```perl6
-use DSL::Translators::ComprehensiveTranslation;
+use DSL::Translators;
 ```
 
 Here is an example that shows:
