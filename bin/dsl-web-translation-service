@@ -1,0 +1,157 @@
+#!/usr/bin/env perl6
+
+use Cro::HTTP::Router;
+use Cro::HTTP::Server;
+
+use DSL::Shared::Utilities::MetaSpecsProcessing;
+use DSL::Translators;
+use Lingua::NumericWordForms;
+use JSON::Fast;
+
+use LLM::Functions;
+use ML::FindTextualAnswer;
+use ML::NLPTemplateEngine;
+
+
+my %*SUB-MAIN-OPTS = :named-anywhere;
+
+#============================================================
+# MAIN program
+#============================================================
+#| Start a Cro service for translation of DSLs into executable code.
+sub MAIN(
+        Str :$host = 'localhost', #= Host name.
+        Str :$port = '10000', #= Port.
+        Str :$llm = 'ChatGPT', #= LLM service to use.
+        Str :$llm-model = 'gpt-3.5', #= LLM model to use.
+        Str :$llm-api-token = '', #= LLM API token; if an empty string the corresponding env variable is used.
+         ) {
+
+    # Empty result hash
+    constant %emptyResult = %( CODE => '',
+                               STDERR => '',
+                               COMMAND => '',
+                               USERID => '',
+                               DSL => '',
+                               DSLTARGET => '',
+                               DSLFUNCTION => '');
+
+    # Check LLM configuration
+    my $conf;
+    if $llm {
+       $conf = llm-configuration($llm, model => $llm-model);
+    } else {
+        warn 'Not activating LLM.'
+    }
+
+    # Cro application
+    my $application = route {
+
+        # DSL translation by QAS
+        get -> 'translate', 'qas', :$lang='WL', :$command! {
+
+            if $conf {
+
+                my Str $res = dsl-qas-translation($conf, $command, :$lang);
+
+                content 'text/html', $res;
+
+            } else {
+
+                my %res = %emptyResult, { STDERR => 'LL QAS was not activated.', COMMAND => $command };
+
+                content 'text/html', to-json(%res);
+            }
+        }
+
+        # DSL translation by grammars
+        get -> 'translate', :$command!, :$lang = 'WL', :$from-lang is copy = 'English', :$ast = 'false' {
+
+            # I am not sure should we have these logging lines or not -- keeping them commented for now.
+            # say 'translate request at ', DateTime.now.Str;
+            # say (:$lang);
+            # say (:$from-lang);
+            # say (:$ast);
+            # say (:$command);
+
+            my $from-lang-msg = '';
+            if $from-lang.isa(Whatever) || $from-lang ~~ Str && $from-lang.lc ∈ ('whatever', 'automatic') {
+                my %counts = $command.subst(/\s/,'').comb.map({ $_ ∈ ('А'..'я')}).classify({$_}).map({$_.key=>$_.value.elems});
+                my $total = [+] %counts.values;
+                my %freqs = %counts.deepmap({ $_ / $total });
+                $from-lang = ( %freqs<True>:exists && %freqs<True> ≥ 0.40 ) ?? 'Bulgarian' !! 'English';
+                $from-lang-msg = "Heuristic determination of the command (from-)language to be $from-lang.";
+            }
+
+            my %res = dsl-translation($command, default-targets-spec => $lang, language => $from-lang, ast => $ast.lc eq 'true');
+
+            if $from-lang-msg {
+                %res<STDERR> = %res<STDERR> ~ "\n" ~ $from-lang-msg;
+            }
+
+            content 'text/html', to-json(%res);
+        }
+
+        # Numeric word forms
+        get -> 'translate', 'numeric', :$command! {
+
+            my Str $command2 = $command;
+            $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
+
+            my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
+            my $parserRes = $numberQ ?? to-numeric-word-form($command2) !! from-numeric-word-form($command2, 'automatic', :p);
+
+            my %res = %( CODE => $parserRes,
+                         COMMAND => $command2,
+                         USERID => '',
+                         DSL => 'Lingua::NumericWordForms',
+                         DSLTARGET => 'Lingua::NumericWordForms',
+                         DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form);
+
+            content 'text/html', to-json(%res);
+        }
+
+        # Find textual answer
+        get -> 'find-textual-answer', :$text!, :$question!, :$pairs = 'false' {
+
+            my Str $res;
+            if $conf {
+                my Bool $pairs2 = $pairs.Str.lc ∈ <true yes 1> ?? True !! False;
+
+                $res = find-textual-answer($text, $question, pairs => $pairs2);
+            } else {
+                $res = 'LLM QAS is not activated.'
+            }
+            content 'text/html', $res;
+        }
+
+    }
+
+    # The Cro service
+    my Cro::Service $service = Cro::HTTP::Server.new(:$host, port => $port.Int, :$application);
+
+    $service.start;
+
+    warn 'Started the Cro service.';
+
+    react whenever signal(SIGINT) {
+        $service.stop;
+        exit;
+    }
+
+}
+
+
+#============================================================
+# QAS
+#============================================================
+
+#| Translate commands by QAS.
+sub dsl-qas-translation($conf, Str $commands, Str :$lang = 'WL') {
+
+    my $message = concretize($commands, finder => $conf, :$lang);
+
+    # Return result
+    return $message;
+}
+
