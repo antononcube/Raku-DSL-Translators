@@ -2,8 +2,6 @@ use v6.d;
 
 use DSL::Translators;
 
-use JSON::Marshal;
-
 use Test;
 
 plan 4;
