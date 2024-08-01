@@ -374,10 +374,10 @@ multi sub ToDSLCode(@commands, *%args) {
 }
 
 multi sub ToDSLCode(Str $command,
-                    Str :$language = 'English',
+                    Str :from(:lang(:$language)) = 'English',
                     Str :$format is copy = 'hash',
                     Bool :guessGrammar(:$guess-grammar) = True,
-                    Str :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                    Str :to(:target(:defaultTargetsSpec(:$default-targets-spec))) = 'R',
                     Int :$degree = 1,
                     Bool :$ast = False,
                     Bool :$code = False) {
@@ -522,22 +522,24 @@ sub ToDSLSyntaxTree(Str $command,
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 proto sub dsl-translation(Str:D $commands,
-                          Str:D :$language = 'English',
-                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                          Str:D :f(:from(:lang(:$language))) = 'English',
+                          Str:D :t(:to(:target(:defaultTargetsSpec(:$default-targets-spec)))) = 'R',
                           Bool :$ast = False,
-                          Bool :$prepend-setup-code = False,
-                          Int :$degree = 1) is export {*}
+                          Bool :setup(:$prepend-setup-code) = False,
+                          Int :$degree = 1
+                          ) is export {*}
 
 multi sub dsl-translation(@commands, *%args) {
     return dsl-translation(@commands.join(";\n"), |%args);
 }
 
 multi sub dsl-translation(Str:D $commands,
-                          Str:D :$language = 'English',
-                          Str:D :defaultTargetsSpec(:$default-targets-spec) = 'R',
+                          Str:D :f(:from(:lang(:$language))) = 'English',
+                          Str:D :t(:to(:target(:defaultTargetsSpec(:$default-targets-spec)))) = 'R',
                           Bool :$ast = False,
-                          Bool :$prepend-setup-code = False,
-                          Int :$degree = 1) {
+                          Bool :setup(:$prepend-setup-code) = False,
+                          Int :$degree = 1
+                          ) {
 
     my Str $commands2 = $commands;
 
@@ -600,8 +602,8 @@ proto sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
         Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
         Str :$sub = '',                                       #= Sub for given URL.
-        Str :t(:$to-language) is copy = 'R',                  #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
-        Str :f(:$from-language) is copy = 'English',          #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
+        Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
+        Str :f(:from(:$from-language)) is copy = 'English',   #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
@@ -611,8 +613,8 @@ multi sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
         Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
         Str :$sub = '',                                       #= Sub for given URL.
-        Str :t(:$to-language) is copy = 'R',                  #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
-        Str :f(:$from-language) is copy = 'English',          #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
+        Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
+        Str :f(:from(:$from-language)) is copy = 'English',   #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
