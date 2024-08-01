@@ -117,15 +117,15 @@ sub MAIN(
         # Find textual answer
         get -> 'find-textual-answer', :$text!, :q(:$questions)!, :$pairs = 'false' {
 
-            my Str $res;
+            my $res;
             if $conf {
                 my Bool $pairs2 = $pairs.Str.lc ∈ <true yes 1> ?? True !! False;
-
-                $res = find-textual-answer($text, $questions, pairs => $pairs2);
+                my @questions = $questions.split( / '?' \n* /, :skip-empty).map({ $_.trim ~ '?' });
+                $res = find-textual-answer($text, @questions, pairs => $pairs2);
             } else {
                 $res = 'LLM QAS is not activated.'
             }
-            content 'text/html', $res;
+            content 'text/html', $res ~~ Iterable:D ?? to-json($res) !! $res.Str;
         }
 
     }
