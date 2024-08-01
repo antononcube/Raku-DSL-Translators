@@ -23,7 +23,7 @@ sub MAIN(
         Str :$host = 'localhost', #= Host name.
         Str :$port = '10000', #= Port.
         Str :$llm = 'ChatGPT', #= LLM service to use.
-        Str :$llm-model = 'gpt-3.5', #= LLM model to use.
+        Str :$llm-model = 'gpt-3.5-turbo', #= LLM model to use.
         Str :$llm-api-key = '', #= LLM API key; if an empty string the corresponding env variable is used.
          ) {
 
