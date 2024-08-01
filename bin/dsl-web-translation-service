@@ -24,7 +24,7 @@ sub MAIN(
         Str :$port = '10000', #= Port.
         Str :$llm = 'ChatGPT', #= LLM service to use.
         Str :$llm-model = 'gpt-3.5', #= LLM model to use.
-        Str :$llm-api-token = '', #= LLM API token; if an empty string the corresponding env variable is used.
+        Str :$llm-api-key = '', #= LLM API key; if an empty string the corresponding env variable is used.
          ) {
 
     # Empty result hash
@@ -39,33 +39,36 @@ sub MAIN(
     # Check LLM configuration
     my $conf;
     if $llm {
-       $conf = llm-configuration($llm, model => $llm-model);
+        $conf = llm-configuration($llm, model => $llm-model, api-key => ($llm-api-key ?? $llm-api-key !! Whatever));
     } else {
-        warn 'Not activating LLM.'
+        note 'Not activating LLM.'
     }
 
     # Cro application
     my $application = route {
 
         # DSL translation by QAS
-        get -> 'translate', 'qas', :$lang='WL', :$command! {
+        get -> 'translate', 'qas', :$template = 'Whatever', :$lang='WL', :$command! {
 
             if $conf {
 
-                my Str $res = dsl-qas-translation($conf, $command, :$lang);
+                my Str $res = dsl-qas-translation($conf, $command, :$template, :$lang);
 
-                content 'text/html', $res;
+                # This is temporary -- concretize should have proper :$format implementation.
+                my %res = %emptyResult, { COMMAND => $command, CODE => $res, DSLFUNCTION => 'concretize'};
+
+                content 'text/html', to-json(%res);
 
             } else {
 
-                my %res = %emptyResult, { STDERR => 'LL QAS was not activated.', COMMAND => $command };
+                my %res = %emptyResult, { STDERR => 'LL QAS was not activated.', COMMAND => $command, DSLFUNCTION => 'concretize' };
 
                 content 'text/html', to-json(%res);
             }
         }
 
         # DSL translation by grammars
-        get -> 'translate', :$command!, :$lang = 'WL', :$from-lang is copy = 'English', :$ast = 'false' {
+        get -> 'translate', :$command!, :to(:$lang) = 'WL', :from(:$from-lang) is copy = 'English', :$ast = 'false' {
 
             # I am not sure should we have these logging lines or not -- keeping them commented for now.
             # say 'translate request at ', DateTime.now.Str;
@@ -93,32 +96,32 @@ sub MAIN(
         }
 
         # Numeric word forms
-        get -> 'translate', 'numeric', :$command! {
+        get -> 'translate', 'numeric', :$command!, :$lang = 'English' {
 
             my Str $command2 = $command;
             $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
 
             my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
-            my $parserRes = $numberQ ?? to-numeric-word-form($command2) !! from-numeric-word-form($command2, 'automatic', :p);
+            my $parserRes = $numberQ ?? to-numeric-word-form($command2, :$lang) !! from-numeric-word-form($command2, 'automatic', :p);
 
             my %res = %( CODE => $parserRes,
                          COMMAND => $command2,
                          USERID => '',
                          DSL => 'Lingua::NumericWordForms',
                          DSLTARGET => 'Lingua::NumericWordForms',
-                         DSLFUNCTION => $numberQ ?? &to-numeric-word-form !! &from-numeric-word-form);
+                         DSLFUNCTION => $numberQ ?? 'to-numeric-word-form' !! 'from-numeric-word-form');
 
             content 'text/html', to-json(%res);
         }
 
         # Find textual answer
-        get -> 'find-textual-answer', :$text!, :$question!, :$pairs = 'false' {
+        get -> 'find-textual-answer', :$text!, :q(:$questions)!, :$pairs = 'false' {
 
             my Str $res;
             if $conf {
                 my Bool $pairs2 = $pairs.Str.lc ∈ <true yes 1> ?? True !! False;
 
-                $res = find-textual-answer($text, $question, pairs => $pairs2);
+                $res = find-textual-answer($text, $questions, pairs => $pairs2);
             } else {
                 $res = 'LLM QAS is not activated.'
             }
@@ -132,13 +135,12 @@ sub MAIN(
 
     $service.start;
 
-    warn 'Started the Cro service.';
+    note 'Started the Cro service.';
 
     react whenever signal(SIGINT) {
         $service.stop;
         exit;
     }
-
 }
 
 
@@ -147,9 +149,10 @@ sub MAIN(
 #============================================================
 
 #| Translate commands by QAS.
-sub dsl-qas-translation($conf, Str $commands, Str :$lang = 'WL') {
+sub dsl-qas-translation($conf, Str:D $commands, Str:D :$template, Str:D :$lang = 'WL') {
 
-    my $message = concretize($commands, finder => $conf, :$lang);
+    my $template2 = $template.lc ∈ <whatever whatevercode auto automatic> ?? Whatever !! $template;
+    my $message = concretize($commands, finder => llm-evaluator($conf), template => $template2, :$lang);
 
     # Return result
     return $message;
