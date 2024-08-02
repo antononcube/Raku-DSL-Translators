@@ -46,7 +46,59 @@ sub MAIN(
 
     # Cro application
     my $application = route {
+        my $user-id = '';
 
+        #=======================================================================
+        # Is ready
+        get -> 'is_ready' {
+            content 'application/json', to-json({ :is-ready });
+        }
+
+        #=======================================================================
+        # Show setup
+        get -> 'show_setup' {
+            content 'application/json', to-json({ :$user-id, conf => $conf.Hash.gist });
+        }
+
+        #=======================================================================
+        # Setup
+        get -> 'setup', Str:D :$api_key= '', Str:D :$user_id= '', Str:D :$llm = $llm, Str:D :$model = $llm-model {
+
+            my $response = '';
+
+            # API key setup
+            if $api_key {
+                given $llm {
+                    when $_.lc ∈ <openai chatgpt> {
+                        %*ENV<OPENAI_API_KEY> = $api_key
+                    }
+                    when $_.lc ∈ <palm bard gemini> {
+                        %*ENV<PALM_API_KEY> = $api_key
+                    }
+                    when $_.lc ∈ <mistral mistralai> {
+                        %*ENV<MISTRAL_API_KEY> = $api_key
+                    }
+                    default {
+                        $response = 'Unknown spec for the parameter llm.'
+                    }
+                }
+            }
+
+            if $user_id { $user-id = $user_id }
+
+            # Response
+            if !$response {
+
+                # Recreate the configuration
+                $conf = llm-configuration($llm, api-key => $api_key, api-user-id => $user-id, :$model);
+
+                $response = 'Setup is successful.';
+            }
+
+            content 'application/json', to-json({ 'import' => $response });
+        }
+
+        #=======================================================================
         # DSL translation by QAS
         get -> 'translate', 'qas', :$template = 'Whatever', :$lang='WL', :$command! {
 
@@ -67,6 +119,7 @@ sub MAIN(
             }
         }
 
+        #=======================================================================
         # DSL translation by grammars
         get -> 'translate', :$command!, :to(:$lang) = 'WL', :from(:$from-lang) is copy = 'English', :$ast = 'false' {
 
@@ -95,6 +148,7 @@ sub MAIN(
             content 'text/html', to-json(%res);
         }
 
+        #=======================================================================
         # Numeric word forms
         get -> 'translate', 'numeric', :$command!, :$lang = 'English' {
 
@@ -114,6 +168,7 @@ sub MAIN(
             content 'text/html', to-json(%res);
         }
 
+        #=======================================================================
         # Find textual answer
         get -> 'find-textual-answer', :$text!, :q(:$questions)!, :$pairs = 'false' {
 
