@@ -59,5 +59,5 @@ zef install https://github.com/antononcube/Raku-DSL-Translators.git --force-inst
 
 ## Install packages used to invoke DSL::Translators
 ## in R, WL, Jupyter notebooks and Markdown, Org-mode, Pod6 files.
-zef install Net::ZMQ --force-install --/test
-zef install Text::CodeProcessing --force-install --/test
+#zef install Net::ZMQ --force-install --/test
+#zef install Text::CodeProcessing --force-install --/test
