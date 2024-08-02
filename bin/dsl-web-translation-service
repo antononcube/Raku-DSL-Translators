@@ -57,7 +57,9 @@ sub MAIN(
         #=======================================================================
         # Show setup
         get -> 'show_setup' {
-            content 'application/json', to-json({ :$user-id, conf => $conf.Hash.gist });
+            my %conf = $conf.Hash;
+            if !%conf<api-key>.isa(Whatever) { %conf<api-key> = '<hidden>'; }
+            content 'application/json', to-json({ :$user-id, conf => %conf.gist });
         }
 
         #=======================================================================
