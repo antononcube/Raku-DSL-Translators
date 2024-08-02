@@ -34,3 +34,9 @@ To stop the container run the command:
 ```
 docker container stop webProdGDT
 ```
+
+In case "no space left on device" pop up when `docker build` is run, do some cleanup with:
+
+```
+docker system prune --all --force
+``
