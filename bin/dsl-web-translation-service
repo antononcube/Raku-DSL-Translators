@@ -176,7 +176,7 @@ sub MAIN(
             if $conf {
                 my Bool $pairs2 = $pairs.Str.lc ∈ <true yes 1> ?? True !! False;
                 my @questions = $questions.split( / '?' \n* /, :skip-empty).map({ $_.trim ~ '?' });
-                $res = find-textual-answer($text, @questions, pairs => $pairs2);
+                $res = find-textual-answer($text, @questions, pairs => $pairs2, finder => llm-evaluator($conf));
             } else {
                 $res = 'LLM QAS is not activated.'
             }
