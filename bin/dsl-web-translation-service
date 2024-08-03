@@ -152,13 +152,14 @@ sub MAIN(
 
         #=======================================================================
         # Numeric word forms
-        get -> 'translate', 'numeric', :$command!, :$lang = 'English' {
+        get -> 'translate', 'numeric', :$command!, :to(:$lang) = 'English', :from(:$from-lang) is copy = Whatever, {
 
             my Str $command2 = $command;
             $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
 
             my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
-            my $parserRes = $numberQ ?? to-numeric-word-form($command2, :$lang) !! from-numeric-word-form($command2, 'automatic', :p);
+            # We ignore :$from-lang -- always using Whatever
+            my $parserRes = $numberQ ?? to-numeric-word-form($command2, :$lang) !! from-numeric-word-form($command2, Whatever, :p);
 
             my %res = %( CODE => $parserRes,
                          COMMAND => $command2,
