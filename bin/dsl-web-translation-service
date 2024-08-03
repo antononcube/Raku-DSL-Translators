@@ -157,7 +157,7 @@ sub MAIN(
             my Str $command2 = $command;
             $command2 = ($command2 ~~ / ['"' | '\''] .* ['"' | '\''] /) ?? $command2.substr(1, *- 1) !! $command2;
 
-            my Bool $numberQ = so $command2 ~~ / ^ [';' | \d]* $ /;
+            my Bool $numberQ = so $command2 ~~ / ^ [';' \s* | \d]* $ /;
             # We ignore :$from-lang -- always using Whatever
             my $parserRes = $numberQ ?? to-numeric-word-form($command2, :$lang) !! from-numeric-word-form($command2, Whatever, :p);
 
