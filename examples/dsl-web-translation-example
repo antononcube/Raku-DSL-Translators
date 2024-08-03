@@ -1,0 +1,13 @@
+#!/usr/bin/env raku
+use v6.d;
+
+use DSL::Translators;
+
+# Start the web service with:
+#   dsl-web-translation-service --port=9191
+
+my $text = q:to/END/;
+двеста деветдесет и осем; one million fifty thousand and twenty seven
+END
+
+say dsl-web-translation($text, to-language => 'English', sub => 'translate/numeric', base-url => 'http://localhost:9191')
