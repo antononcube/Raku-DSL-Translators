@@ -600,8 +600,9 @@ sub get-url-data(Str $url, UInt :$timeout = 10) {
 #| Translates natural language commands into programming code using web (dedicated) service.
 proto sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
-        Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
-        Str :$sub = '',                                       #= Sub for given URL.
+        $url is copy = Whatever,                              #= Web service URL.
+        Str :$base-url = 'http://accendodata.net:5040',       #= Web service base URL.
+        Str :s(:$sub) = 'translate',                          #= Web service sub, one of <translate translate/qas translate/numeric>.
         Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
         Str :f(:from(:$from-language)) is copy = 'English',   #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
@@ -611,19 +612,34 @@ proto sub dsl-web-translation(
 
 multi sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
-        Str :$url = 'http://accendodata.net:5040/translate',  #= Web service URL.
-        Str :$sub = '',                                       #= Sub for given URL.
+        $url is copy = Whatever,                              #= Web service URL.
+        Str :$base-url = 'http://accendodata.net:5040',       #= Web service base URL.
+        Str :s(:$sub) is copy = 'translate',                  #= Web service sub, one of <translate translate/qas translate/numeric>.
         Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
-        Str :f(:from(:$from-language)) is copy = 'English',   #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
+        :f(:from(:$from-language)) is copy = Whatever,        #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
                               ) {
 
+    $sub = do given $sub.lc {
+        when $_ ∈ <qas llm> { 'translate/qas' }
+        when $_ ∈ <numeric number numbers num> { 'translate/numeric' }
+        #when $_ ∈ <textual-answer llm-textual-answer interrogate> { 'find-textual-answer' }
+        default { $_ }
+    }
+
+    if $url.isa(Whatever) { $url = $sub ?? "{$base-url}/{$sub}" !! $base-url }
+    die 'The argument $url is expected to be string or Whatever.'
+    unless $url ~~ Str:D;
+
+    if $from-language.isa(Whatever) { $from-language = 'Whatever' }
+    die 'The argument $from-language is expected to be string or Whatever.'
+    unless $from-language ~~ Str:D;
+
     my $command2 = $command.subst(/<-alnum>/, *.ord.fmt("%%%02X"), :g);
 
-    my $urlQuery = $sub ?? "$url/$sub" !! $url;
-    $urlQuery = "$urlQuery?command=$command2&lang=$to-language&from-lang=$from-language";
+    my $urlQuery = "$url?command=$command2&lang=$to-language&from-lang=$from-language";
 
     #$url-query = "http://accendodata.net:5040/translate?command='make%20a%20document%20term%20matrix'&lang=WL&from-lang=Automatic";
 
@@ -631,7 +647,7 @@ multi sub dsl-web-translation(
     my $resJSON = from-json($urlResult);
 
     if !$resJSON<CODE> && $fallback {
-        return dsl-web-translation($command, :$url, sub => 'qas', :$to-language, :$from-language, :$format, :!fallback, :$timeout);
+        return dsl-web-translation($command, :$base-url, sub => 'translate/qas', :$to-language, :$from-language, :$format, :!fallback, :$timeout);
     }
 
     my $res = do given $format.lc {
