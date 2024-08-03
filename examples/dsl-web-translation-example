@@ -10,4 +10,6 @@ my $text = q:to/END/;
 двеста деветдесет и осем; one million fifty thousand and twenty seven
 END
 
-say dsl-web-translation($text, to-language => 'English', sub => 'translate/numeric', base-url => 'http://localhost:9191')
+say dsl-web-translation($text, to-language => 'English', sub => 'translate/numeric', base-url => 'http://localhost:9191');
+
+say dsl-web-translation('4543; 0030282', to-language => 'Bulgarian', sub => 'translate/numeric', base-url => 'http://localhost:9191');
