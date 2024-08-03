@@ -6,6 +6,7 @@ unit module DSL::Translators;
 use JSON::Fast;
 use Test::Output;
 use HTTP::UserAgent;
+use URI::Encode;
 
 #-----------------------------------------------------------
 use ML::TriesWithFrequencies;
@@ -608,7 +609,8 @@ proto sub dsl-web-translation(
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
-                             ) is export {*}
+        Bool :$encode = True,                                 #= Should the given command be encoded or not?
+                              ) is export {*}
 
 multi sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
@@ -620,6 +622,7 @@ multi sub dsl-web-translation(
         Str :$format is copy = 'json',                        #= Format of the result; one of 'json', 'raku', 'code';
         Bool :$fallback = True,                               #= Should fallback parsing be done or not?
         UInt :$timeout= 10,                                   #= Timeout in seconds.
+        Bool :$encode = True,                                 #= Should the given command be encoded or not?
                               ) {
 
     $sub = do given $sub.lc {
@@ -637,7 +640,7 @@ multi sub dsl-web-translation(
     die 'The argument $from-language is expected to be string or Whatever.'
     unless $from-language ~~ Str:D;
 
-    my $command2 = $command.subst(/<-alnum>/, *.ord.fmt("%%%02X"), :g);
+    my $command2 = $encode ?? uri_encode($command) !! $command;
 
     my $urlQuery = "$url?command=$command2&lang=$to-language&from-lang=$from-language";
 

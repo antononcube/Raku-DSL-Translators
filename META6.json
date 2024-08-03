@@ -30,7 +30,8 @@
     "DSL::English::RecruitingWorkflows",
     "DSL::English::SearchEngineQueries",
     "DSL::Bulgarian:ver<0.1.1+>",
-    "Test::Output"
+    "Test::Output",
+    "URI::Encode"
   ],
   "build-depends": [],
   "test-depends": [],
