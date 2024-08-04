@@ -523,8 +523,8 @@ sub ToDSLSyntaxTree(Str $command,
 
 #| More general and "robust" DSL translation function to be used in web- and notebook interfaces.
 proto sub dsl-translation(Str:D $commands,
-                          Str:D :f(:from(:lang(:$language))) = 'English',
-                          Str:D :t(:to(:target(:defaultTargetsSpec(:$default-targets-spec)))) = 'R',
+                          Str:D :f(:from(:from-lang(:lang(:$language)))) = 'English',
+                          Str:D :t(:to(:to-lang(:target(:defaultTargetsSpec(:$default-targets-spec))))) = 'R',
                           Bool :$ast = False,
                           Bool :setup(:$prepend-setup-code) = False,
                           Int :$degree = 1
@@ -535,8 +535,8 @@ multi sub dsl-translation(@commands, *%args) {
 }
 
 multi sub dsl-translation(Str:D $commands,
-                          Str:D :f(:from(:lang(:$language))) = 'English',
-                          Str:D :t(:to(:target(:defaultTargetsSpec(:$default-targets-spec)))) = 'R',
+                          Str:D :f(:from(:from-lang(:lang(:$language)))) = 'English',
+                          Str:D :t(:to(:to-lang(:target(:defaultTargetsSpec(:$default-targets-spec))))) = 'R',
                           Bool :$ast = False,
                           Bool :setup(:$prepend-setup-code) = False,
                           Int :$degree = 1
