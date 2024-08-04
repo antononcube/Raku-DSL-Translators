@@ -1,0 +1,50 @@
+#!/usr/bin/env raku
+use v6.d;
+
+use DSL::Translators;
+
+my $cmd = q:to/END/;
+DSL MODULE DataQuery;
+use data dfMeals;
+inner join with dfFinelyFoodName over 'FoodID';
+group by 'Cuisine';
+counts
+END
+
+say dsl-translation($cmd, to-lang => 'WL');
+
+
+my $cmd2 = q:to/END/;
+DSL MODULE LSAMon;
+create from textHamlet;
+make document term matrix with stemming FALSE and automatic stop words;
+apply LSI functions global weight function IDF, local term weight function TermFrequency, normalizer function Cosine;
+extract 12 topics using method NNMF and max steps 12 and 20 min number of documents per term;
+show topics table with 12 terms;
+show thesaurus table for king, castle, denmark;
+END
+
+my $cmd3 = q:to/END/;
+DSL MODULE QRMon;
+use tsTemp;
+echo data summary;
+rescale the time axis;
+compute quantile regression for 0.1, 0.5, and 0.9;
+show plot
+END
+
+say dsl-translation($cmd2, to-lang => 'R');
+
+#------------------------------------------------------------------------------------------------------------------------
+#`[
+## Profiling
+say '-' x 120;
+say 'Profiling:';
+my $tstart = now;
+my @commands = [$cmd xx 4, $cmd2 xx 4, $cmd3 xx 4].map(*.Slip);
+for @commands -> $c {
+  dsl-translation($c, to-lang => <R WL Python>.pick );
+}
+my $tend = now;
+say "Total time: {$tend - $tstart} for {@commands.elems} commands."
+]
