@@ -41,7 +41,8 @@ say dsl-translation($cmd2, to-lang => 'R');
 say '-' x 120;
 say 'Profiling:';
 my $tstart = now;
-my @commands = [$cmd xx 4, $cmd2 xx 4, $cmd3 xx 4].map(*.Slip);
+#my @commands = [$cmd xx 20, $cmd2 xx 20, $cmd3 xx 20].map(*.Slip);
+my @commands = $cmd2 xx 60;
 for @commands -> $c {
   dsl-translation($c, to-lang => <R WL Python>.pick );
 }
