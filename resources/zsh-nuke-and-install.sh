@@ -38,6 +38,7 @@ zef install https://github.com/antononcube/Raku-Data-TypeSystem.git --force-inst
 zef install https://github.com/antononcube/Raku-Data-Reshapers.git --force-install --/test
 zef install https://github.com/antononcube/Raku-Data-Summarizers.git --force-install --/test
 zef install https://github.com/antononcube/Raku-Data-ExampleDatasets.git --force-install --/test
+zef install https://github.com/antononcube/Raku-Math-DistanceFunctions-Edit.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Shared.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Entity-Foods.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Entity-Geographics.git --force-install --/test
