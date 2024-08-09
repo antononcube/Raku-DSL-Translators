@@ -601,7 +601,7 @@ sub get-url-data(Str $url, UInt :$timeout = 10) {
 #| Translates natural language commands into programming code using web (dedicated) service.
 proto sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
-        $url is copy = Whatever,                              #= Web service URL.
+        :$url is copy = Whatever,                             #= Web service URL.
         Str :$base-url = 'http://accendodata.net:5040',       #= Web service base URL.
         Str :s(:$sub) = 'translate',                          #= Web service sub, one of <translate translate/qas translate/numeric>.
         Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
@@ -614,7 +614,7 @@ proto sub dsl-web-translation(
 
 multi sub dsl-web-translation(
         Str $command,                                         #= Command to translate.
-        $url is copy = Whatever,                              #= Web service URL.
+        :$url is copy = Whatever,                             #= Web service URL.
         Str :$base-url = 'http://accendodata.net:5040',       #= Web service base URL.
         Str :s(:$sub) is copy = 'translate',                  #= Web service sub, one of <translate translate/qas translate/numeric>.
         Str :t(:to(:$to-language)) is copy = 'R',             #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
