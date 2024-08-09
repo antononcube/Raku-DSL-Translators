@@ -9,19 +9,20 @@ my %*SUB-MAIN-OPTS =
         ;
 
 #| Translates natural language commands into programming code using web (dedicated) service.
-multi sub MAIN(Str $command,                                              #= Command to translate.
-               Str :$base-url = 'http://accendodata.net:5040/translate',  #= Web service URL.
-               Str :$sub = '',                                            #= Sub for given URL.
-               Str :t(:$to-language) is copy = 'R',                       #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
-               Str :f(:$from-language) is copy= 'English',                #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
-               Str :$format is copy = 'json',                             #= Format of the result; one of 'json', 'raku', 'code';
-               Bool :$fallback = True,                                    #= Should fallback parsing be done or not?
-               UInt :$timeout= 10,                                        #= Timeout in seconds.
-               Str :$clipboard-command = 'Whatever'                       #= Copy to clipboard command.
+multi sub MAIN(Str:D $command,                                           #= Command to translate.
+               Str:D :$url = '',                                         #= Web service URL. (If not empty, overwrites $base-url and $sub.)
+               Str:D :$base-url = 'http://accendodata.net:5040/',        #= Web service base-URL.
+               Str:D :s(:$sub) = 'translate',                            #= Sub for given URL.
+               Str:D :t(:$to-language) is copy = 'R',                    #= Language to translate to: one of 'Bulgarian', 'English', 'Python', 'R', 'Raku', 'Russian', or 'WL';
+               Str:D :f(:$from-language) is copy= 'English',             #= Language to translate from; one of 'Bulgarian', 'English', 'Russian', or 'Whatever'.
+               Str:D :$format is copy = 'json',                          #= Format of the result; one of 'json', 'raku', 'code';
+               Bool:D :$fallback = True,                                 #= Should fallback parsing be done or not?
+               UInt:D :$timeout= 10,                                     #= Timeout in seconds.
+               Str:D :$clipboard-command = 'Whatever'                    #= Copy to clipboard command.
                ) {
 
 
-    my $res = dsl-web-translation($command, :$base-url, :$sub, :$to-language, :$from-language, :$format, :$fallback, :$timeout);
+    my $res = dsl-web-translation($command, url => $url ?? $url !! Whatever, :$base-url, :$sub, :$to-language, :$from-language, :$format, :$fallback, :$timeout);
 
     say $res;
 
