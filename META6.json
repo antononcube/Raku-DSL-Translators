@@ -1,56 +1,54 @@
 {
-  "name": "DSL::Translators",
-  "description": "DSL-to-DSL translation with multiple DSLs.",
-  "version": "0.1.0",
-  "perl": "6.d",
-  "authors": [
-    "Anton Antonov"
-  ],
-  "auth": "zef:antononcube",
-  "depends": [
-    "Clipboard:ver<0.1.1+>",
-    "JSON::Fast",
-    "HTTP::UserAgent",
-    "Cro::HTTP",
-    "Lingua::NumericWordForms",
-    "Chemistry::Stoichiometry",
-    "ML::TriesWithFrequencies:ver<0.6.7+>",
-    "LLM::Functions:ver<0.1.24+>",
-    "ML::FindTextualAnswer:ver<0.2.5+>",
-    "ML::NLPTemplateEngine:ver<0.1.3+>",
-    "DSL::Shared:ver<0.2.8+>",
-    "DSL::English::ClassificationWorkflows",
-    "DSL::English::DataAcquisitionWorkflows",
-    "DSL::English::DataQueryWorkflows",
-    "DSL::English::EpidemiologyModelingWorkflows",
-    "DSL::English::FoodPreparationWorkflows",
-    "DSL::English::LatentSemanticAnalysisWorkflows",
-    "DSL::English::QuantileRegressionWorkflows",
-    "DSL::English::RecommenderWorkflows",
-    "DSL::English::RecruitingWorkflows",
-    "DSL::English::SearchEngineQueries",
-    "DSL::Bulgarian:ver<0.1.1+>",
-    "Test::Output",
-    "URI::Encode"
-  ],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "DSL::Translators": "lib/DSL/Translators.rakumod"
-  },
-  "resources": [
-    "dsl-trie-classifier.json"
-  ],
-  "license": "Artistic-2.0",
-  "tags": [
-    "DSL",
-    "grammar",
-    "interpreter",
-    "monad",
-    "parser",
-    "pipeline",
-    "workflow"
-  ],
-  "api": "1",
-  "source-url": "https://github.com/antononcube/Raku-DSL-Translators"
+    "name": "DSL::Translators",
+    "description": "DSL-to-DSL translation with multiple DSLs.",
+    "version": "0.1.1",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "depends": [
+        "Clipboard:ver<0.1.1+>",
+        "JSON::Fast",
+        "HTTP::UserAgent",
+        "Cro::HTTP",
+        "Lingua::NumericWordForms",
+        "Chemistry::Stoichiometry",
+        "ML::TriesWithFrequencies:ver<0.6.7+>",
+        "LLM::Functions:ver<0.1.24+>",
+        "ML::FindTextualAnswer:ver<0.2.5+>",
+        "ML::NLPTemplateEngine:ver<0.1.3+>",
+        "DSL::Shared:ver<0.2.8+>",
+        "DSL::English::ClassificationWorkflows",
+        "DSL::English::DataAcquisitionWorkflows",
+        "DSL::English::DataQueryWorkflows",
+        "DSL::English::EpidemiologyModelingWorkflows",
+        "DSL::English::FoodPreparationWorkflows",
+        "DSL::English::LatentSemanticAnalysisWorkflows",
+        "DSL::English::QuantileRegressionWorkflows",
+        "DSL::English::RecommenderWorkflows:ver<0.6.4+>",
+        "DSL::English::RecruitingWorkflows",
+        "DSL::English::SearchEngineQueries",
+        "DSL::Bulgarian:ver<0.1.1+>",
+        "Test::Output",
+        "URI::Encode"
+    ],
+    "build-depends": [],
+    "provides": {
+        "DSL::Translators": "lib/DSL/Translators.rakumod"
+    },
+    "resources": [
+        "dsl-trie-classifier.json"
+    ],
+    "license": "Artistic-2.0",
+    "tags": [
+        "DSL",
+        "grammar",
+        "interpreter",
+        "monad",
+        "parser",
+        "pipeline",
+        "workflow"
+    ],
+    "api": "1",
+    "source-url": "https://github.com/antononcube/Raku-DSL-Translators"
 }
