@@ -24,11 +24,8 @@ join across with dfTitanic;
 
 my $command1 = 'DSL MODULE RecommenderWorkflows;' ~ $command0;
 
-my $expectedRes1 = '
-my $sbrObj = ML::StreamsBlendingRecommender::CoreSBR.new;
-$sbrObj.makeTagInverseIndexesFromWideForm( dfTitanic);
-$sbrObj.recommendByProfile( profile => ("male", "1st", "died"));
-$sbrObj.joinAcross( dfTitanic )';
+my $expectedRes1 =
+        'my $obj=ML::SparseMatrixRecommender.new.create-from-wide-form(dfTitanic).recommend-by-profile(["male", "1st", "died"]).join-across(dfTitanic)';
 
 is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , ''):g,
         $expectedRes1.subst( rx/ \s / , '' ):g,
@@ -39,7 +36,7 @@ is-deeply ToDSLCode($command1, |%defaultOpts, format => 'code').subst(/ \s / , '
 ##-----------------------------------------------------------
 
 my $command2 = '
-DSL TARGET Raku::SBR;
+DSL TARGET Raku::SMRMon;
 USER ID hhdf;
 include setup code;' ~ $command1;
 is-deeply ToDSLCode($command2, |%defaultOpts).keys.sort,
@@ -60,9 +57,7 @@ is-deeply ToDSLCode($command2, |%defaultOpts)<CODE>.subst(/ \s / , ''):g,
 ##-----------------------------------------------------------
 
 my $expectedRes2 = '
-use ML::StreamsBlendingRecommender;
-use ML::StreamsBlendingRecommender::CoreSBR;
-use ML::StreamsBlendingRecommender::LSAEndowedSBR;
+use ML::SparseMatrixRecommender;
 ';
 
 is-deeply ToDSLCode($command2, |%defaultOpts)<SETUPCODE>.subst(/ \s / , ''):g,
