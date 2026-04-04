@@ -8,26 +8,26 @@
     "auth": "zef:antononcube",
     "depends": [
         "Clipboard:ver<0.1.1+>",
-        "JSON::Fast",
+        "JSON::Fast:ver<0.19+>",
         "HTTP::UserAgent",
         "Cro::HTTP",
-        "Lingua::NumericWordForms",
-        "Chemistry::Stoichiometry",
+        "Lingua::NumericWordForms:ver<0.6.2+>",
+        "Chemistry::Stoichiometry:ver<0.1.10+>",
         "ML::TriesWithFrequencies:ver<0.6.7+>",
         "LLM::Functions:ver<0.1.24+>",
         "ML::FindTextualAnswer:ver<0.2.5+>",
         "ML::NLPTemplateEngine:ver<0.1.3+>",
-        "DSL::Shared:ver<0.2.8+>",
-        "DSL::English::ClassificationWorkflows",
+        "DSL::Shared:ver<0.2.11+>",
+        "DSL::English::ClassificationWorkflows:ver<0.1.5+>",
         "DSL::English::DataAcquisitionWorkflows",
-        "DSL::English::DataQueryWorkflows",
+        "DSL::English::DataQueryWorkflows:ver<0.6.5+>",
         "DSL::English::EpidemiologyModelingWorkflows",
-        "DSL::English::FoodPreparationWorkflows",
-        "DSL::English::LatentSemanticAnalysisWorkflows",
-        "DSL::English::QuantileRegressionWorkflows",
+        "DSL::English::FoodPreparationWorkflows:ver<0.1.0+>",
+        "DSL::English::LatentSemanticAnalysisWorkflows:ver<0.8.1>",
+        "DSL::English::QuantileRegressionWorkflows:ver<0.8.3+>",
         "DSL::English::RecommenderWorkflows:ver<0.6.4+>",
         "DSL::English::RecruitingWorkflows",
-        "DSL::English::SearchEngineQueries",
+        "DSL::English::SearchEngineQueries:ver<0.5.0+>",
         "DSL::Bulgarian:ver<0.1.1+>",
         "Test::Output",
         "URI::Encode"
@@ -50,5 +50,5 @@
         "workflow"
     ],
     "api": "1",
-    "source-url": "https://github.com/antononcube/Raku-DSL-Translators"
+    "source-url": "https://github.com/antononcube/Raku-DSL-Translators.git"
 }
