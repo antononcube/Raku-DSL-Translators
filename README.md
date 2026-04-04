@@ -26,11 +26,8 @@ See the installation code in the resource file ["zsh-nuke-and-install.sh"](./res
 
 Here we load the package:
 
-```perl6
+```raku
 use DSL::Translators;
-```
-```
-# (Any)
 ```
 
 Here is an example that shows:
@@ -39,7 +36,7 @@ Here is an example that shows:
 
 - JSON format of the result
 
-```perl6
+```raku
 ToDSLCode('
     use dfStarWars;
     select the columns name, species, mass and height;
@@ -68,7 +65,7 @@ Here is an example using Bulgarian data transformation spec that explicitly spec
 - Language (Bulgarian)
 - Default targets spec that is usually a programming language name ("Python") 
 
-```perl6
+```raku
 ToDSLCode('
     DSL module DataQueryWorkflows;
     използвай dfStarWars;
@@ -87,7 +84,7 @@ ToDSLCode('
 The function `dsl-translation` is a version of `ToDSLCode` that intended to be used in 
 command line and web interfaces. It returns a `Hash` object. Here is an example:
 
-```perl6
+```raku
 my %res = dsl-translation('
     USER ID dd7833sa;
     DSL MODULE DataQueryWorkflows;
