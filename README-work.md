@@ -1,4 +1,8 @@
-# Comprehensive Translation
+# DSL::Translators (Comprehensive Translation by DSL parser-interpreters)
+
+[![MacOS](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/macos.yml)
+[![Linux](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/linux.yml)
+[![Win64](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-DSL-Translators/actions/workflows/windows.yml)
 
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
