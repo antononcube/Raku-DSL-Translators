@@ -1,7 +1,7 @@
 {
     "name": "DSL::Translators",
     "description": "DSL-to-DSL translation with multiple DSLs.",
-    "version": "0.1.1",
+    "version": "0.1.0",
     "authors": [
         "Anton Antonov"
     ],
@@ -19,14 +19,13 @@
         "ML::NLPTemplateEngine:ver<0.1.3+>",
         "DSL::Shared:ver<0.2.11+>",
         "DSL::English::ClassificationWorkflows:ver<0.1.5+>",
-        "DSL::English::DataAcquisitionWorkflows",
+        "DSL::English::DataAcquisitionWorkflows:ver<0.1.0+>",
         "DSL::English::DataQueryWorkflows:ver<0.6.5+>",
         "DSL::English::EpidemiologyModelingWorkflows",
         "DSL::English::FoodPreparationWorkflows:ver<0.1.0+>",
         "DSL::English::LatentSemanticAnalysisWorkflows:ver<0.8.1>",
         "DSL::English::QuantileRegressionWorkflows:ver<0.8.3+>",
         "DSL::English::RecommenderWorkflows:ver<0.6.4+>",
-        "DSL::English::RecruitingWorkflows",
         "DSL::English::SearchEngineQueries:ver<0.5.0+>",
         "DSL::Bulgarian:ver<0.1.1+>",
         "Test::Output",
