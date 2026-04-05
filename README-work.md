@@ -12,13 +12,29 @@ This Raku package provides comprehensive multi-DSL translations.
 
 ## Installation
 
-To install 
-`DSL::Translators` 
-certain DSL Raku modules have to be installed.
+###
+
+From [Zef ecosystem](https://raku.land):
+
+```
+zef install DSL::Translators
+```
+
+From GitHub:
+
+```
+zef install https://github.com/antononcube/Raku-DSL-Translators.git
+```
+
+### Via a script
+
+The package 
+["DSL::Translators"](https://raku.land/zef:antononcube/DSL::Translators) 
+depends on a large number of specialized DSL Raku packages and several LLM packages.
 
 See the installation code in the resource file ["zsh-nuke-and-install.sh"](./resources/zsh-nuke-and-install.sh). 
 
-(The modules listed above are under development, that is why the installation commands have `--force-test`.)
+(For faster installation the installation commands have `--/test`.)
 
 -------
 
