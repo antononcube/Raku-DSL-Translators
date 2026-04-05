@@ -25,7 +25,7 @@ use DSL::English::RecommenderWorkflows;
 use DSL::English::SearchEngineQueries;
 use DSL::English::FoodPreparationWorkflows;
 use DSL::English::DataAcquisitionWorkflows;
-use DSL::English::RecruitingWorkflows;
+#use DSL::English::RecruitingWorkflows;
 
 #-----------------------------------------------------------
 # DSL target to DSL module
@@ -40,8 +40,8 @@ my %moduleToPythonTarget =
         "DSL::English::QuantileRegressionWorkflows" => "Python-QRMon",
         "DSL::English::RecommenderWorkflows" => "Python-SMRMon",
         "DSL::English::SearchEngineQueries" => "Python-pandas",
-        "DSL::English::DataAcquisitionWorkflows" => "Python-Ecosystem",
-        "DSL::English::RecruitingWorkflows" => "Python-Ecosystem";
+        "DSL::English::DataAcquisitionWorkflows" => "Python-Ecosystem";
+ #       "DSL::English::RecruitingWorkflows" => "Python-Ecosystem";
 
 
 my %moduleToRTarget =
@@ -54,8 +54,8 @@ my %moduleToRTarget =
         "DSL::English::RecommenderWorkflows" => "R-SMRMon",
         "DSL::English::SearchEngineQueries" => "R-tidyverse",
         "DSL::English::FoodPreparationWorkflows" => "R-Ecosystem",
-        "DSL::English::DataAcquisitionWorkflows" => "R-Ecosystem",
-        "DSL::English::RecruitingWorkflows" => "R-Ecosystem";
+        "DSL::English::DataAcquisitionWorkflows" => "R-Ecosystem";
+#        "DSL::English::RecruitingWorkflows" => "R-Ecosystem";
 
 
 my %moduleToRakuTarget =
@@ -64,8 +64,8 @@ my %moduleToRakuTarget =
         "DSL::English::RecommenderWorkflows" => "Raku-SMRMon",
         "DSL::English::SearchEngineQueries" => "Raku-Reshapers",
         "DSL::English::FoodPreparationWorkflows" => "Raku-Ecosystem",
-        "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem",
-        "DSL::English::RecruitingWorkflows" => "Raku-Ecosystem";
+        "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem";
+#        "DSL::English::RecruitingWorkflows" => "Raku-Ecosystem";
 
 my %moduleToWLTarget =
 
@@ -77,8 +77,8 @@ my %moduleToWLTarget =
         "DSL::English::RecommenderWorkflows" => "WL-SMRMon",
         "DSL::English::SearchEngineQueries" => "WL-SMRMon",
         "DSL::English::FoodPreparationWorkflows" => "WL-Ecosystem",
-        "DSL::English::DataAcquisitionWorkflows" => "WL-Ecosystem",
-        "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
+        "DSL::English::DataAcquisitionWorkflows" => "WL-Ecosystem";
+#        "DSL::English::RecruitingWorkflows" => "WL-Ecosystem";
 
 my %moduleToBulgarianTarget =
         ('DSL::English::ClassificationWorkflows',
@@ -133,8 +133,8 @@ my %moduleToDSLGrammar =
         "DSL::English::RecommenderWorkflows" => DSL::English::RecommenderWorkflows::Grammar,
         "DSL::English::SearchEngineQueries" => DSL::English::SearchEngineQueries::Grammar,
         "DSL::English::FoodPreparationWorkflows" => FoodPreparationWorkflowsGrammar(),
-        "DSL::English::DataAcquisitionWorkflows" => DataAcquisitionWorkflowsGrammar(),
-        "DSL::English::RecruitingWorkflows" => RecruitingWorkflowsGrammar();
+        "DSL::English::DataAcquisitionWorkflows" => DataAcquisitionWorkflowsGrammar();
+#        "DSL::English::RecruitingWorkflows" => RecruitingWorkflowsGrammar();
 
 #-----------------------------------------------------------
 # DSL module to DSL workflow code function
@@ -149,8 +149,8 @@ my %moduleToDSLFunction =
         "DSL::English::RecommenderWorkflows" => "ToRecommenderWorkflowCode",
         "DSL::English::SearchEngineQueries" => "ToSearchEngineQueryCode",
         "DSL::English::FoodPreparationWorkflows" => "ToFoodPreparationWorkflowCode",
-        "DSL::English::DataAcquisitionWorkflows" => "ToDataAcquisitionWorkflowCode",
-        "DSL::English::RecruitingWorkflows" => "ToRecruitingWorkflowCode";
+        "DSL::English::DataAcquisitionWorkflows" => "ToDataAcquisitionWorkflowCode";
+#        "DSL::English::RecruitingWorkflows" => "ToRecruitingWorkflowCode";
 
 
 #-----------------------------------------------------------
@@ -166,8 +166,8 @@ my %englishModuleFunctions =
         "DSL::English::RecommenderWorkflows" => &ToRecommenderWorkflowCode,
         "DSL::English::SearchEngineQueries" => &ToSearchEngineQueryCode,
         "DSL::English::FoodPreparationWorkflows" => &ToFoodPreparationWorkflowCode,
-        "DSL::English::DataAcquisitionWorkflows" => &ToDataAcquisitionWorkflowCode,
-        "DSL::English::RecruitingWorkflows" => &ToRecruitingWorkflowCode;
+        "DSL::English::DataAcquisitionWorkflows" => &ToDataAcquisitionWorkflowCode;
+#        "DSL::English::RecruitingWorkflows" => &ToRecruitingWorkflowCode;
 
 
 #-----------------------------------------------------------
@@ -191,8 +191,8 @@ my %moduleToShortcuts =
                 $["RegressionWorkflows", "QuantileRegressionWorkflows", "QuantileRegression", "QRMon", "DSL::English::QuantileRegressionWorkflows"],
         "DSL::English::RecommenderWorkflows" =>
                 $["Recommenders", "RecommenderWorkflows", "SMRMon", "Recommendations", "DSL::English::RecommenderWorkflows"],
-        "DSL::English::RecruitingWorkflows" =>
-                $["RecruitingWorkflows", "DSL::English::RecruitingWorkflows", "Recruiting"],
+#        "DSL::English::RecruitingWorkflows" =>
+#                $["RecruitingWorkflows", "DSL::English::RecruitingWorkflows", "Recruiting"],
         "DSL::English::SearchEngineQueries" =>
                 $["SearchEngineQueries", "DSL::English::SearchEngineQueries", "SearchEngine"];
 
@@ -314,8 +314,7 @@ multi dsl-most-applicable(Str $command, %dslToGrammar = %moduleToDSLGrammar, Int
 proto dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) is export {*};
 
 multi dsl-pick(Str $command, %dslToGrammar = %moduleToDSLGrammar, Str :$norm = 'sum', Int :$degree = 1) {
-    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm, :$degree, batch => max(floor(%dslToGrammar
-            .elems / $degree), 1));
+    my @pairs = dsl-most-applicable($command, %dslToGrammar, n => 3, :$norm, :$degree, batch => max(floor(%dslToGrammar.elems / $degree), 1));
 
     my @pairs2 = grep({ not($_.key eq "DSL::English::SearchEngineQueries") }, @pairs);
 
