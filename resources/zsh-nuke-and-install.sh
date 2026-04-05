@@ -53,10 +53,14 @@ zef install https://github.com/antononcube/Raku-DSL-English-RecommenderWorkflows
 zef install https://github.com/antononcube/Raku-DSL-English-SearchEngineQueries.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-DSL-English-DataAcquisitionWorkflows.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-DSL-English-FoodPreparationWorkflows.git --force-install --/test 
-zef install https://github.com/antononcube/Raku-DSL-English-RecruitingWorkflows.git --force-install --/test 
 zef install https://github.com/antononcube/Raku-ML-StreamsBlendingRecommender.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Bulgarian.git --force-install --/test
 zef install https://github.com/antononcube/Raku-DSL-Translators.git --force-install --/test
+
+# The use of "DSL::English::RecruitingWorkflows" package is commented out in "DSL::Translators",
+# but it can be installed and used by "DSL::Translators".
+# That is risky -- unexpected slowness my break "client" workflows! (Like, the Web service "DSL::Translators" provides.)
+#zef install https://github.com/antononcube/Raku-DSL-English-RecruitingWorkflows.git --force-install --/test
 
 ## Install packages used to invoke DSL::Translators
 ## in R, WL, Jupyter notebooks and Markdown, Org-mode, Pod6 files.
