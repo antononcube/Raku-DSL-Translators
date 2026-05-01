@@ -1,4 +1,7 @@
 Revision history for "DSL::Translators"
 
-0.0.1 2026-04-05
+0.1.1 2026-05-01
+    - Added Raku actions for Latent Semantic Analysis (LSA) workflows translation.
+
+0.1.0 2026-04-05
     - First version
