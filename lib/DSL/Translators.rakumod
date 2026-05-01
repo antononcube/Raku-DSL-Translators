@@ -62,6 +62,7 @@ my %moduleToRakuTarget =
 
         "DSL::English::DataQueryWorkflows" => "Raku-Reshapers",
         "DSL::English::RecommenderWorkflows" => "Raku-SMRMon",
+        "DSL::English::LatentSemanticAnalysisWorkflows" => "Raku-LSAMon",
         "DSL::English::SearchEngineQueries" => "Raku-Reshapers",
         "DSL::English::FoodPreparationWorkflows" => "Raku-Ecosystem",
         "DSL::English::DataAcquisitionWorkflows" => "Raku-Ecosystem";
