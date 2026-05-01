@@ -23,7 +23,7 @@
         "DSL::English::DataQueryWorkflows:ver<0.6.5+>",
         "DSL::English::EpidemiologyModelingWorkflows",
         "DSL::English::FoodPreparationWorkflows:ver<0.1.0+>",
-        "DSL::English::LatentSemanticAnalysisWorkflows:ver<0.8.1>",
+        "DSL::English::LatentSemanticAnalysisWorkflows:ver<0.8.3>",
         "DSL::English::QuantileRegressionWorkflows:ver<0.8.3+>",
         "DSL::English::RecommenderWorkflows:ver<0.6.4+>",
         "DSL::English::SearchEngineQueries:ver<0.5.0+>",
