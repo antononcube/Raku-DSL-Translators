@@ -1,7 +1,7 @@
 {
     "name": "DSL::Translators",
     "description": "DSL-to-DSL translation with multiple DSLs.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "authors": [
         "Anton Antonov"
     ],
